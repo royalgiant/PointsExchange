@@ -1,0 +1,2010 @@
+{
+  "contractName": "EscrowExchange",
+  "abi": [
+    {
+      "inputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "contractCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "contractsForUser",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "_address",
+          "type": "string"
+        },
+        {
+          "internalType": "enum EscrowExchange.Status",
+          "name": "_status",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getContractsForCurrentUser",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "_address",
+              "type": "string"
+            },
+            {
+              "internalType": "enum EscrowExchange.Status",
+              "name": "_status",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct EscrowExchange.EscrowContracts[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_buyer",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_seller",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "_contractAddress",
+          "type": "string"
+        }
+      ],
+      "name": "addContractAddressToRegistry",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"_buyer\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_seller\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_contractAddress\",\"type\":\"string\"}],\"name\":\"addContractAddressToRegistry\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"contractCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"contractsForUser\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"_address\",\"type\":\"string\"},{\"internalType\":\"enum EscrowExchange.Status\",\"name\":\"_status\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"getContractsForCurrentUser\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"_address\",\"type\":\"string\"},{\"internalType\":\"enum EscrowExchange.Status\",\"name\":\"_status\",\"type\":\"uint8\"}],\"internalType\":\"struct EscrowExchange.EscrowContracts[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/donaldlee/Developer/PointsExchange/contracts/EscrowExchange.sol\":\"EscrowExchange\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/donaldlee/Developer/PointsExchange/contracts/Escrow.sol\":{\"keccak256\":\"0x8d8e829c950887725745c524e7a6b554fb10c520dadab590a2eff70b3d8535a8\",\"urls\":[\"bzz-raw://574bed744233074b2c78ff6cb950ac23f0330302c6ce171f9c90abc8693e2575\",\"dweb:/ipfs/QmbWU7zdzw4zn7AYrz4BvjVkesLMVhNH3vNqgqY1p73Bvq\"]},\"/Users/donaldlee/Developer/PointsExchange/contracts/EscrowExchange.sol\":{\"keccak256\":\"0xd31b25b1b0a63297bffe88ae872a4f5c0053531af5181e6ffa93ea296c132cac\",\"urls\":[\"bzz-raw://2cd341586ab7a44516bf6f5641e3446d769a128128c4644d2247260cf5b78126\",\"dweb:/ipfs/Qme44JEdvFvGczqygmWty6Nsb23eCu9WNawbYjdQmuWk5s\"]}},\"version\":1}",
+  "bytecode": "0x60806040526000805534801561001457600080fd5b50610a86806100246000396000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c80631cd6865f14610051578063429987361461006f57806386151ebc146100a05780638736381a146100bc575b600080fd5b6100596100da565b6040516100669190610828565b60405180910390f35b61008960048036036100849190810190610687565b610245565b60405161009792919061084a565b60405180910390f35b6100ba60048036036100b59190810190610620565b610328565b005b6100c46104d2565b6040516100d1919061087a565b60405180910390f35b6060600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020805480602002602001604051908101604052809291908181526020016000905b8282101561023c5783829060005260206000209060020201604051806040016040529081600082018054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156101f75780601f106101cc576101008083540402835291602001916101f7565b820191906000526020600020905b8154815290600101906020018083116101da57829003601f168201915b505050505081526020016001820160009054906101000a900460ff16600281111561021e57fe5b600281111561022957fe5b815250508152602001906001019061013b565b50505050905090565b6001602052816000526040600020818154811061025e57fe5b906000526020600020906002020160009150915050806000018054600181600116156101000203166002900480601f01602080910402602001604051908101604052809291908181526020018280546001816001161561010002031660029004801561030b5780601f106102e05761010080835404028352916020019161030b565b820191906000526020600020905b8154815290600101906020018083116102ee57829003601f168201915b5050505050908060010160009054906101000a900460ff16905082565b60008081548092919060010191905055506103416104d8565b60405180604001604052808381526020016000600281111561035f57fe5b8152509050600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819080600181540180825580915050906001820390600052602060002090600202016000909192909190915060008201518160000190805190602001906103eb9291906104fd565b5060208201518160010160006101000a81548160ff0219169083600281111561041057fe5b0217905550505050600160008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000208190806001815401808255809150509060018203906000526020600020906002020160009091929091909150600082015181600001908051906020019061049f9291906104fd565b5060208201518160010160006101000a81548160ff021916908360028111156104c457fe5b021790555050505050505050565b60005481565b604051806040016040528060608152602001600060028111156104f757fe5b81525090565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061053e57805160ff191683800117855561056c565b8280016001018555821561056c579182015b8281111561056b578251825591602001919060010190610550565b5b509050610579919061057d565b5090565b61059f91905b8082111561059b576000816000905550600101610583565b5090565b90565b6000813590506105b181610a15565b92915050565b600082601f8301126105c857600080fd5b81356105db6105d6826108c2565b610895565b915080825260208301602083018583830111156105f757600080fd5b6106028382846109b5565b50505092915050565b60008135905061061a81610a2c565b92915050565b60008060006060848603121561063557600080fd5b6000610643868287016105a2565b9350506020610654868287016105a2565b925050604084013567ffffffffffffffff81111561067157600080fd5b61067d868287016105b7565b9150509250925092565b6000806040838503121561069a57600080fd5b60006106a8858286016105a2565b92505060206106b98582860161060b565b9150509250929050565b60006106cf83836107dc565b905092915050565b60006106e2826108fe565b6106ec8185610921565b9350836020820285016106fe856108ee565b8060005b8581101561073a578484038952815161071b85826106c3565b945061072683610914565b925060208a01995050600181019050610702565b50829750879550505050505092915050565b610755816109a3565b82525050565b610764816109a3565b82525050565b600061077582610909565b61077f8185610932565b935061078f8185602086016109c4565b610798816109f7565b840191505092915050565b60006107ae82610909565b6107b88185610943565b93506107c88185602086016109c4565b6107d1816109f7565b840191505092915050565b600060408301600083015184820360008601526107f9828261076a565b915050602083015161080e602086018261074c565b508091505092915050565b61082281610999565b82525050565b6000602082019050818103600083015261084281846106d7565b905092915050565b6000604082019050818103600083015261086481856107a3565b9050610873602083018461075b565b9392505050565b600060208201905061088f6000830184610819565b92915050565b6000604051905081810181811067ffffffffffffffff821117156108b857600080fd5b8060405250919050565b600067ffffffffffffffff8211156108d957600080fd5b601f19601f8301169050602081019050919050565b6000819050602082019050919050565b600081519050919050565b600081519050919050565b6000602082019050919050565b600082825260208201905092915050565b600082825260208201905092915050565b600082825260208201905092915050565b600061095f82610979565b9050919050565b600081905061097482610a08565b919050565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000819050919050565b60006109ae82610966565b9050919050565b82818337600083830152505050565b60005b838110156109e25780820151818401526020810190506109c7565b838111156109f1576000848401525b50505050565b6000601f19601f8301169050919050565b60038110610a1257fe5b50565b610a1e81610954565b8114610a2957600080fd5b50565b610a3581610999565b8114610a4057600080fd5b5056fea365627a7a72315820d40e73ee76fe6f840d9923519f75e954ef941f134bfdde687ae28c99a80ff5af6c6578706572696d656e74616cf564736f6c63430005100040",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004c5760003560e01c80631cd6865f14610051578063429987361461006f57806386151ebc146100a05780638736381a146100bc575b600080fd5b6100596100da565b6040516100669190610828565b60405180910390f35b61008960048036036100849190810190610687565b610245565b60405161009792919061084a565b60405180910390f35b6100ba60048036036100b59190810190610620565b610328565b005b6100c46104d2565b6040516100d1919061087a565b60405180910390f35b6060600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020805480602002602001604051908101604052809291908181526020016000905b8282101561023c5783829060005260206000209060020201604051806040016040529081600082018054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156101f75780601f106101cc576101008083540402835291602001916101f7565b820191906000526020600020905b8154815290600101906020018083116101da57829003601f168201915b505050505081526020016001820160009054906101000a900460ff16600281111561021e57fe5b600281111561022957fe5b815250508152602001906001019061013b565b50505050905090565b6001602052816000526040600020818154811061025e57fe5b906000526020600020906002020160009150915050806000018054600181600116156101000203166002900480601f01602080910402602001604051908101604052809291908181526020018280546001816001161561010002031660029004801561030b5780601f106102e05761010080835404028352916020019161030b565b820191906000526020600020905b8154815290600101906020018083116102ee57829003601f168201915b5050505050908060010160009054906101000a900460ff16905082565b60008081548092919060010191905055506103416104d8565b60405180604001604052808381526020016000600281111561035f57fe5b8152509050600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819080600181540180825580915050906001820390600052602060002090600202016000909192909190915060008201518160000190805190602001906103eb9291906104fd565b5060208201518160010160006101000a81548160ff0219169083600281111561041057fe5b0217905550505050600160008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000208190806001815401808255809150509060018203906000526020600020906002020160009091929091909150600082015181600001908051906020019061049f9291906104fd565b5060208201518160010160006101000a81548160ff021916908360028111156104c457fe5b021790555050505050505050565b60005481565b604051806040016040528060608152602001600060028111156104f757fe5b81525090565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061053e57805160ff191683800117855561056c565b8280016001018555821561056c579182015b8281111561056b578251825591602001919060010190610550565b5b509050610579919061057d565b5090565b61059f91905b8082111561059b576000816000905550600101610583565b5090565b90565b6000813590506105b181610a15565b92915050565b600082601f8301126105c857600080fd5b81356105db6105d6826108c2565b610895565b915080825260208301602083018583830111156105f757600080fd5b6106028382846109b5565b50505092915050565b60008135905061061a81610a2c565b92915050565b60008060006060848603121561063557600080fd5b6000610643868287016105a2565b9350506020610654868287016105a2565b925050604084013567ffffffffffffffff81111561067157600080fd5b61067d868287016105b7565b9150509250925092565b6000806040838503121561069a57600080fd5b60006106a8858286016105a2565b92505060206106b98582860161060b565b9150509250929050565b60006106cf83836107dc565b905092915050565b60006106e2826108fe565b6106ec8185610921565b9350836020820285016106fe856108ee565b8060005b8581101561073a578484038952815161071b85826106c3565b945061072683610914565b925060208a01995050600181019050610702565b50829750879550505050505092915050565b610755816109a3565b82525050565b610764816109a3565b82525050565b600061077582610909565b61077f8185610932565b935061078f8185602086016109c4565b610798816109f7565b840191505092915050565b60006107ae82610909565b6107b88185610943565b93506107c88185602086016109c4565b6107d1816109f7565b840191505092915050565b600060408301600083015184820360008601526107f9828261076a565b915050602083015161080e602086018261074c565b508091505092915050565b61082281610999565b82525050565b6000602082019050818103600083015261084281846106d7565b905092915050565b6000604082019050818103600083015261086481856107a3565b9050610873602083018461075b565b9392505050565b600060208201905061088f6000830184610819565b92915050565b6000604051905081810181811067ffffffffffffffff821117156108b857600080fd5b8060405250919050565b600067ffffffffffffffff8211156108d957600080fd5b601f19601f8301169050602081019050919050565b6000819050602082019050919050565b600081519050919050565b600081519050919050565b6000602082019050919050565b600082825260208201905092915050565b600082825260208201905092915050565b600082825260208201905092915050565b600061095f82610979565b9050919050565b600081905061097482610a08565b919050565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000819050919050565b60006109ae82610966565b9050919050565b82818337600083830152505050565b60005b838110156109e25780820151818401526020810190506109c7565b838111156109f1576000848401525b50505050565b6000601f19601f8301169050919050565b60038110610a1257fe5b50565b610a1e81610954565b8114610a2957600080fd5b50565b610a3581610999565b8114610a4057600080fd5b5056fea365627a7a72315820d40e73ee76fe6f840d9923519f75e954ef941f134bfdde687ae28c99a80ff5af6c6578706572696d656e74616cf564736f6c63430005100040",
+  "sourceMap": "84:739:1:-;;;139:1;111:29;;322:25;8:9:-1;5:2;;;30:1;27;20:12;5:2;322:25:1;84:739;;;;;;",
+  "deployedSourceMap": "84:739:1:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;84:739:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;350:136;;;:::i;:::-;;;;;;;;;;;;;;;;144:61;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;492:329;;;;;;;;;;;;;;;;:::i;:::-;;111:29;;;:::i;:::-;;;;;;;;;;;;;;;;350:136;409:24;451:16;:28;468:10;451:28;;;;;;;;;;;;;;;444:35;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;350:136;:::o;144:61::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;492:329::-;610:13;;:15;;;;;;;;;;;;;632:32;;:::i;:::-;667:46;;;;;;;;683:16;667:46;;;;701:11;667:46;;;;;;;;;;;632:81;;723:16;:24;740:6;723:24;;;;;;;;;;;;;;;753:9;723:40;;39:1:-1;33:3;27:10;23:18;57:10;52:3;45:23;79:10;72:17;;0:93;723:40:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;773:16;:25;790:7;773:25;;;;;;;;;;;;;;;804:9;773:41;;39:1:-1;33:3;27:10;23:18;57:10;52:3;45:23;79:10;72:17;;0:93;773:41:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;492:329;;;;:::o;111:29::-;;;;:::o;84:739::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;5:130:-1:-;;85:6;72:20;63:29;;97:33;124:5;97:33;;;57:78;;;;;143:442;;245:3;238:4;230:6;226:17;222:27;212:2;;263:1;260;253:12;212:2;300:6;287:20;322:65;337:49;379:6;337:49;;;322:65;;;313:74;;407:6;400:5;393:21;443:4;435:6;431:17;476:4;469:5;465:16;511:3;502:6;497:3;493:16;490:25;487:2;;;528:1;525;518:12;487:2;538:41;572:6;567:3;562;538:41;;;205:380;;;;;;;;593:130;;673:6;660:20;651:29;;685:33;712:5;685:33;;;645:78;;;;;730:597;;;;878:2;866:9;857:7;853:23;849:32;846:2;;;894:1;891;884:12;846:2;929:1;946:53;991:7;982:6;971:9;967:22;946:53;;;936:63;;908:97;1036:2;1054:53;1099:7;1090:6;1079:9;1075:22;1054:53;;;1044:63;;1015:98;1172:2;1161:9;1157:18;1144:32;1196:18;1188:6;1185:30;1182:2;;;1228:1;1225;1218:12;1182:2;1248:63;1303:7;1294:6;1283:9;1279:22;1248:63;;;1238:73;;1123:194;840:487;;;;;;1334:366;;;1455:2;1443:9;1434:7;1430:23;1426:32;1423:2;;;1471:1;1468;1461:12;1423:2;1506:1;1523:53;1568:7;1559:6;1548:9;1544:22;1523:53;;;1513:63;;1485:97;1613:2;1631:53;1676:7;1667:6;1656:9;1652:22;1631:53;;;1621:63;;1592:98;1417:283;;;;;;1708:269;;1865:106;1967:3;1959:6;1865:106;;;1851:120;;1844:133;;;;;2076:1072;;2277:82;2353:5;2277:82;;;2372:114;2479:6;2474:3;2372:114;;;2365:121;;2509:3;2551:4;2543:6;2539:17;2534:3;2530:27;2578:84;2656:5;2578:84;;;2682:7;2710:1;2695:414;2720:6;2717:1;2714:13;2695:414;;;2782:9;2776:4;2772:20;2767:3;2760:33;2827:6;2821:13;2849:120;2964:4;2949:13;2849:120;;;2841:128;;2986:88;3067:6;2986:88;;;2976:98;;3097:4;3092:3;3088:14;3081:21;;2752:357;2742:1;2739;2735:9;2730:14;;2695:414;;;2699:14;3122:4;3115:11;;3139:3;3132:10;;2256:892;;;;;;;;;;3156:132;3237:45;3276:5;3237:45;;;3232:3;3225:58;3219:69;;;3295:142;3386:45;3425:5;3386:45;;;3381:3;3374:58;3368:69;;;3444:319;;3542:35;3571:5;3542:35;;;3589:61;3643:6;3638:3;3589:61;;;3582:68;;3655:52;3700:6;3695:3;3688:4;3681:5;3677:16;3655:52;;;3728:29;3750:6;3728:29;;;3723:3;3719:39;3712:46;;3522:241;;;;;;3770:339;;3878:35;3907:5;3878:35;;;3925:71;3989:6;3984:3;3925:71;;;3918:78;;4001:52;4046:6;4041:3;4034:4;4027:5;4023:16;4001:52;;;4074:29;4096:6;4074:29;;;4069:3;4065:39;4058:46;;3858:251;;;;;;4201:582;;4352:4;4347:3;4343:14;4439:4;4432:5;4428:16;4422:23;4491:3;4485:4;4481:14;4474:4;4469:3;4465:14;4458:38;4511:69;4575:4;4561:12;4511:69;;;4503:77;;4372:220;4668:4;4661:5;4657:16;4651:23;4680:71;4745:4;4740:3;4736:14;4722:12;4680:71;;;4602:155;4774:4;4767:11;;4325:458;;;;;;4790:113;4873:24;4891:5;4873:24;;;4868:3;4861:37;4855:48;;;4910:473;;5134:2;5123:9;5119:18;5111:26;;5184:9;5178:4;5174:20;5170:1;5159:9;5155:17;5148:47;5209:164;5368:4;5359:6;5209:164;;;5201:172;;5105:278;;;;;5390:420;;5560:2;5549:9;5545:18;5537:26;;5610:9;5604:4;5600:20;5596:1;5585:9;5581:17;5574:47;5635:74;5704:4;5695:6;5635:74;;;5627:82;;5720:80;5796:2;5785:9;5781:18;5772:6;5720:80;;;5531:279;;;;;;5817:213;;5935:2;5924:9;5920:18;5912:26;;5949:71;6017:1;6006:9;6002:17;5993:6;5949:71;;;5906:124;;;;;6037:256;;6099:2;6093:9;6083:19;;6137:4;6129:6;6125:17;6236:6;6224:10;6221:22;6200:18;6188:10;6185:34;6182:62;6179:2;;;6257:1;6254;6247:12;6179:2;6277:10;6273:2;6266:22;6077:216;;;;;6300:322;;6444:18;6436:6;6433:30;6430:2;;;6476:1;6473;6466:12;6430:2;6543:4;6539:9;6532:4;6524:6;6520:17;6516:33;6508:41;;6607:4;6601;6597:15;6589:23;;6367:255;;;;6629:179;;6743:3;6735:11;;6781:4;6776:3;6772:14;6764:22;;6729:79;;;;6815:165;;6952:5;6946:12;6936:22;;6917:63;;;;6987:118;;7077:5;7071:12;7061:22;;7042:63;;;;7112:136;;7238:4;7233:3;7229:14;7221:22;;7215:33;;;;7256:206;;7414:6;7409:3;7402:19;7451:4;7446:3;7442:14;7427:29;;7395:67;;;;;7471:153;;7576:6;7571:3;7564:19;7613:4;7608:3;7604:14;7589:29;;7557:67;;;;;7633:163;;7748:6;7743:3;7736:19;7785:4;7780:3;7776:14;7761:29;;7729:67;;;;;7804:91;;7866:24;7884:5;7866:24;;;7855:35;;7849:46;;;;7902:126;;7974:5;7963:16;;7980:43;8017:5;7980:43;;;7957:71;;;;8035:121;;8108:42;8101:5;8097:54;8086:65;;8080:76;;;;8163:72;;8225:5;8214:16;;8208:27;;;;8242:126;;8329:34;8357:5;8329:34;;;8316:47;;8310:58;;;;8376:145;8457:6;8452:3;8447;8434:30;8513:1;8504:6;8499:3;8495:16;8488:27;8427:94;;;;8530:268;8595:1;8602:101;8616:6;8613:1;8610:13;8602:101;;;8692:1;8687:3;8683:11;8677:18;8673:1;8668:3;8664:11;8657:39;8638:2;8635:1;8631:10;8626:15;;8602:101;;;8718:6;8715:1;8712:13;8709:2;;;8783:1;8774:6;8769:3;8765:16;8758:27;8709:2;8579:219;;;;;8806:97;;8894:2;8890:7;8885:2;8878:5;8874:14;8870:28;8860:38;;8854:49;;;;8911:101;8990:1;8983:5;8980:12;8970:2;;8996:9;8970:2;8964:48;;9019:117;9088:24;9106:5;9088:24;;;9081:5;9078:35;9068:2;;9127:1;9124;9117:12;9068:2;9062:74;;9143:117;9212:24;9230:5;9212:24;;;9205:5;9202:35;9192:2;;9251:1;9248;9241:12;9192:2;9186:74;",
+  "source": "pragma solidity ^0.5.16;\npragma experimental ABIEncoderV2;\n\nimport \"./Escrow.sol\";\n\ncontract EscrowExchange {\n\tuint public contractCount = 0;\n\n\tmapping(address => EscrowContracts[]) public contractsForUser;\n\n\tenum Status { OPEN, PENDING, CLOSED }\n\n\tstruct EscrowContracts {\n\t    string _address;\n\t    Status _status;\n\t}\n\n\tconstructor() public {\n\t}\n\n\tfunction getContractsForCurrentUser() public view returns (EscrowContracts[] memory){\n        return contractsForUser[msg.sender];\n    }\n\n    function addContractAddressToRegistry (address _buyer, address _seller, string memory _contractAddress) public {\n    \tcontractCount++;\n    \tEscrowContracts memory _contract = EscrowContracts(_contractAddress, Status.OPEN);\n        contractsForUser[_buyer].push(_contract);\n        contractsForUser[_seller].push(_contract);\n    }\n}",
+  "sourcePath": "/Users/donaldlee/Developer/PointsExchange/contracts/EscrowExchange.sol",
+  "ast": {
+    "absolutePath": "/Users/donaldlee/Developer/PointsExchange/contracts/EscrowExchange.sol",
+    "exportedSymbols": {
+      "EscrowExchange": [
+        784
+      ]
+    },
+    "id": 785,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 713,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".16"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:1"
+      },
+      {
+        "id": 714,
+        "literals": [
+          "experimental",
+          "ABIEncoderV2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "25:33:1"
+      },
+      {
+        "absolutePath": "/Users/donaldlee/Developer/PointsExchange/contracts/Escrow.sol",
+        "file": "./Escrow.sol",
+        "id": 715,
+        "nodeType": "ImportDirective",
+        "scope": 785,
+        "sourceUnit": 712,
+        "src": "60:22:1",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 784,
+        "linearizedBaseContracts": [
+          784
+        ],
+        "name": "EscrowExchange",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 718,
+            "name": "contractCount",
+            "nodeType": "VariableDeclaration",
+            "scope": 784,
+            "src": "111:29:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 716,
+              "name": "uint",
+              "nodeType": "ElementaryTypeName",
+              "src": "111:4:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": {
+              "argumentTypes": null,
+              "hexValue": "30",
+              "id": 717,
+              "isConstant": false,
+              "isLValue": false,
+              "isPure": true,
+              "kind": "number",
+              "lValueRequested": false,
+              "nodeType": "Literal",
+              "src": "139:1:1",
+              "subdenomination": null,
+              "typeDescriptions": {
+                "typeIdentifier": "t_rational_0_by_1",
+                "typeString": "int_const 0"
+              },
+              "value": "0"
+            },
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 723,
+            "name": "contractsForUser",
+            "nodeType": "VariableDeclaration",
+            "scope": 784,
+            "src": "144:61:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_struct$_EscrowContracts_$732_storage_$dyn_storage_$",
+              "typeString": "mapping(address => struct EscrowExchange.EscrowContracts[])"
+            },
+            "typeName": {
+              "id": 722,
+              "keyType": {
+                "id": 719,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "152:7:1",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "144:37:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_struct$_EscrowContracts_$732_storage_$dyn_storage_$",
+                "typeString": "mapping(address => struct EscrowExchange.EscrowContracts[])"
+              },
+              "valueType": {
+                "baseType": {
+                  "contractScope": null,
+                  "id": 720,
+                  "name": "EscrowContracts",
+                  "nodeType": "UserDefinedTypeName",
+                  "referencedDeclaration": 732,
+                  "src": "163:15:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_EscrowContracts_$732_storage_ptr",
+                    "typeString": "struct EscrowExchange.EscrowContracts"
+                  }
+                },
+                "id": 721,
+                "length": null,
+                "nodeType": "ArrayTypeName",
+                "src": "163:17:1",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_struct$_EscrowContracts_$732_storage_$dyn_storage_ptr",
+                  "typeString": "struct EscrowExchange.EscrowContracts[]"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "EscrowExchange.Status",
+            "id": 727,
+            "members": [
+              {
+                "id": 724,
+                "name": "OPEN",
+                "nodeType": "EnumValue",
+                "src": "223:4:1"
+              },
+              {
+                "id": 725,
+                "name": "PENDING",
+                "nodeType": "EnumValue",
+                "src": "229:7:1"
+              },
+              {
+                "id": 726,
+                "name": "CLOSED",
+                "nodeType": "EnumValue",
+                "src": "238:6:1"
+              }
+            ],
+            "name": "Status",
+            "nodeType": "EnumDefinition",
+            "src": "209:37:1"
+          },
+          {
+            "canonicalName": "EscrowExchange.EscrowContracts",
+            "id": 732,
+            "members": [
+              {
+                "constant": false,
+                "id": 729,
+                "name": "_address",
+                "nodeType": "VariableDeclaration",
+                "scope": 732,
+                "src": "279:15:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 728,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "279:6:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 731,
+                "name": "_status",
+                "nodeType": "VariableDeclaration",
+                "scope": 732,
+                "src": "301:14:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_enum$_Status_$727",
+                  "typeString": "enum EscrowExchange.Status"
+                },
+                "typeName": {
+                  "contractScope": null,
+                  "id": 730,
+                  "name": "Status",
+                  "nodeType": "UserDefinedTypeName",
+                  "referencedDeclaration": 727,
+                  "src": "301:6:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_Status_$727",
+                    "typeString": "enum EscrowExchange.Status"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "EscrowContracts",
+            "nodeType": "StructDefinition",
+            "scope": 784,
+            "src": "249:70:1",
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 735,
+              "nodeType": "Block",
+              "src": "343:4:1",
+              "statements": []
+            },
+            "documentation": null,
+            "id": 736,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 733,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "333:2:1"
+            },
+            "returnParameters": {
+              "id": 734,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "343:0:1"
+            },
+            "scope": 784,
+            "src": "322:25:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 747,
+              "nodeType": "Block",
+              "src": "434:52:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "baseExpression": {
+                      "argumentTypes": null,
+                      "id": 742,
+                      "name": "contractsForUser",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 723,
+                      "src": "451:16:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_struct$_EscrowContracts_$732_storage_$dyn_storage_$",
+                        "typeString": "mapping(address => struct EscrowExchange.EscrowContracts storage ref[] storage ref)"
+                      }
+                    },
+                    "id": 745,
+                    "indexExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 743,
+                        "name": "msg",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 799,
+                        "src": "468:3:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_magic_message",
+                          "typeString": "msg"
+                        }
+                      },
+                      "id": 744,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "sender",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "468:10:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address_payable",
+                        "typeString": "address payable"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "451:28:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_struct$_EscrowContracts_$732_storage_$dyn_storage",
+                      "typeString": "struct EscrowExchange.EscrowContracts storage ref[] storage ref"
+                    }
+                  },
+                  "functionReturnParameters": 741,
+                  "id": 746,
+                  "nodeType": "Return",
+                  "src": "444:35:1"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 748,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getContractsForCurrentUser",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 737,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "385:2:1"
+            },
+            "returnParameters": {
+              "id": 741,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 740,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 748,
+                  "src": "409:24:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_struct$_EscrowContracts_$732_memory_$dyn_memory_ptr",
+                    "typeString": "struct EscrowExchange.EscrowContracts[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "contractScope": null,
+                      "id": 738,
+                      "name": "EscrowContracts",
+                      "nodeType": "UserDefinedTypeName",
+                      "referencedDeclaration": 732,
+                      "src": "409:15:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_EscrowContracts_$732_storage_ptr",
+                        "typeString": "struct EscrowExchange.EscrowContracts"
+                      }
+                    },
+                    "id": 739,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "409:17:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_struct$_EscrowContracts_$732_storage_$dyn_storage_ptr",
+                      "typeString": "struct EscrowExchange.EscrowContracts[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "408:26:1"
+            },
+            "scope": 784,
+            "src": "350:136:1",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 782,
+              "nodeType": "Block",
+              "src": "603:218:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 758,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "UnaryOperation",
+                    "operator": "++",
+                    "prefix": false,
+                    "src": "610:15:1",
+                    "subExpression": {
+                      "argumentTypes": null,
+                      "id": 757,
+                      "name": "contractCount",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 718,
+                      "src": "610:13:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 759,
+                  "nodeType": "ExpressionStatement",
+                  "src": "610:15:1"
+                },
+                {
+                  "assignments": [
+                    761
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 761,
+                      "name": "_contract",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 782,
+                      "src": "632:32:1",
+                      "stateVariable": false,
+                      "storageLocation": "memory",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_EscrowContracts_$732_memory_ptr",
+                        "typeString": "struct EscrowExchange.EscrowContracts"
+                      },
+                      "typeName": {
+                        "contractScope": null,
+                        "id": 760,
+                        "name": "EscrowContracts",
+                        "nodeType": "UserDefinedTypeName",
+                        "referencedDeclaration": 732,
+                        "src": "632:15:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_EscrowContracts_$732_storage_ptr",
+                          "typeString": "struct EscrowExchange.EscrowContracts"
+                        }
+                      },
+                      "value": null,
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 767,
+                  "initialValue": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 763,
+                        "name": "_contractAddress",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 754,
+                        "src": "683:16:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 764,
+                          "name": "Status",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 727,
+                          "src": "701:6:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_enum$_Status_$727_$",
+                            "typeString": "type(enum EscrowExchange.Status)"
+                          }
+                        },
+                        "id": 765,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "lValueRequested": false,
+                        "memberName": "OPEN",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "701:11:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_enum$_Status_$727",
+                          "typeString": "enum EscrowExchange.Status"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        },
+                        {
+                          "typeIdentifier": "t_enum$_Status_$727",
+                          "typeString": "enum EscrowExchange.Status"
+                        }
+                      ],
+                      "id": 762,
+                      "name": "EscrowContracts",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 732,
+                      "src": "667:15:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_type$_t_struct$_EscrowContracts_$732_storage_ptr_$",
+                        "typeString": "type(struct EscrowExchange.EscrowContracts storage pointer)"
+                      }
+                    },
+                    "id": 766,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "structConstructorCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "667:46:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_EscrowContracts_$732_memory",
+                      "typeString": "struct EscrowExchange.EscrowContracts memory"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "632:81:1"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 772,
+                        "name": "_contract",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 761,
+                        "src": "753:9:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_EscrowContracts_$732_memory_ptr",
+                          "typeString": "struct EscrowExchange.EscrowContracts memory"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_struct$_EscrowContracts_$732_memory_ptr",
+                          "typeString": "struct EscrowExchange.EscrowContracts memory"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 768,
+                          "name": "contractsForUser",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 723,
+                          "src": "723:16:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_struct$_EscrowContracts_$732_storage_$dyn_storage_$",
+                            "typeString": "mapping(address => struct EscrowExchange.EscrowContracts storage ref[] storage ref)"
+                          }
+                        },
+                        "id": 770,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "id": 769,
+                          "name": "_buyer",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 750,
+                          "src": "740:6:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "723:24:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_struct$_EscrowContracts_$732_storage_$dyn_storage",
+                          "typeString": "struct EscrowExchange.EscrowContracts storage ref[] storage ref"
+                        }
+                      },
+                      "id": 771,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "push",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "723:29:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_arraypush_nonpayable$_t_struct$_EscrowContracts_$732_storage_$returns$_t_uint256_$",
+                        "typeString": "function (struct EscrowExchange.EscrowContracts storage ref) returns (uint256)"
+                      }
+                    },
+                    "id": 773,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "723:40:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 774,
+                  "nodeType": "ExpressionStatement",
+                  "src": "723:40:1"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 779,
+                        "name": "_contract",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 761,
+                        "src": "804:9:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_EscrowContracts_$732_memory_ptr",
+                          "typeString": "struct EscrowExchange.EscrowContracts memory"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_struct$_EscrowContracts_$732_memory_ptr",
+                          "typeString": "struct EscrowExchange.EscrowContracts memory"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 775,
+                          "name": "contractsForUser",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 723,
+                          "src": "773:16:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_struct$_EscrowContracts_$732_storage_$dyn_storage_$",
+                            "typeString": "mapping(address => struct EscrowExchange.EscrowContracts storage ref[] storage ref)"
+                          }
+                        },
+                        "id": 777,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "id": 776,
+                          "name": "_seller",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 752,
+                          "src": "790:7:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "773:25:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_struct$_EscrowContracts_$732_storage_$dyn_storage",
+                          "typeString": "struct EscrowExchange.EscrowContracts storage ref[] storage ref"
+                        }
+                      },
+                      "id": 778,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "push",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "773:30:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_arraypush_nonpayable$_t_struct$_EscrowContracts_$732_storage_$returns$_t_uint256_$",
+                        "typeString": "function (struct EscrowExchange.EscrowContracts storage ref) returns (uint256)"
+                      }
+                    },
+                    "id": 780,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "773:41:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 781,
+                  "nodeType": "ExpressionStatement",
+                  "src": "773:41:1"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 783,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addContractAddressToRegistry",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 755,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 750,
+                  "name": "_buyer",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 783,
+                  "src": "531:14:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 749,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "531:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 752,
+                  "name": "_seller",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 783,
+                  "src": "547:15:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 751,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "547:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 754,
+                  "name": "_contractAddress",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 783,
+                  "src": "564:30:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 753,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "564:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "530:65:1"
+            },
+            "returnParameters": {
+              "id": 756,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "603:0:1"
+            },
+            "scope": 784,
+            "src": "492:329:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 785,
+        "src": "84:739:1"
+      }
+    ],
+    "src": "0:823:1"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "/Users/donaldlee/Developer/PointsExchange/contracts/EscrowExchange.sol",
+      "exportedSymbols": {
+        "EscrowExchange": [
+          784
+        ]
+      }
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.5",
+            ".16"
+          ]
+        },
+        "id": 713,
+        "name": "PragmaDirective",
+        "src": "0:24:1"
+      },
+      {
+        "attributes": {
+          "literals": [
+            "experimental",
+            "ABIEncoderV2"
+          ]
+        },
+        "id": 714,
+        "name": "PragmaDirective",
+        "src": "25:33:1"
+      },
+      {
+        "attributes": {
+          "SourceUnit": 712,
+          "absolutePath": "/Users/donaldlee/Developer/PointsExchange/contracts/Escrow.sol",
+          "file": "./Escrow.sol",
+          "scope": 785,
+          "symbolAliases": [
+            null
+          ],
+          "unitAlias": ""
+        },
+        "id": 715,
+        "name": "ImportDirective",
+        "src": "60:22:1"
+      },
+      {
+        "attributes": {
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "contract",
+          "documentation": null,
+          "fullyImplemented": true,
+          "linearizedBaseContracts": [
+            784
+          ],
+          "name": "EscrowExchange",
+          "scope": 785
+        },
+        "children": [
+          {
+            "attributes": {
+              "constant": false,
+              "name": "contractCount",
+              "scope": 784,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "uint256",
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "uint",
+                  "type": "uint256"
+                },
+                "id": 716,
+                "name": "ElementaryTypeName",
+                "src": "111:4:1"
+              },
+              {
+                "attributes": {
+                  "argumentTypes": null,
+                  "hexvalue": "30",
+                  "isConstant": false,
+                  "isLValue": false,
+                  "isPure": true,
+                  "lValueRequested": false,
+                  "subdenomination": null,
+                  "token": "number",
+                  "type": "int_const 0",
+                  "value": "0"
+                },
+                "id": 717,
+                "name": "Literal",
+                "src": "139:1:1"
+              }
+            ],
+            "id": 718,
+            "name": "VariableDeclaration",
+            "src": "111:29:1"
+          },
+          {
+            "attributes": {
+              "constant": false,
+              "name": "contractsForUser",
+              "scope": 784,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "mapping(address => struct EscrowExchange.EscrowContracts[])",
+              "value": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "type": "mapping(address => struct EscrowExchange.EscrowContracts[])"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "name": "address",
+                      "type": "address"
+                    },
+                    "id": 719,
+                    "name": "ElementaryTypeName",
+                    "src": "152:7:1"
+                  },
+                  {
+                    "attributes": {
+                      "length": null,
+                      "type": "struct EscrowExchange.EscrowContracts[]"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "contractScope": null,
+                          "name": "EscrowContracts",
+                          "referencedDeclaration": 732,
+                          "type": "struct EscrowExchange.EscrowContracts"
+                        },
+                        "id": 720,
+                        "name": "UserDefinedTypeName",
+                        "src": "163:15:1"
+                      }
+                    ],
+                    "id": 721,
+                    "name": "ArrayTypeName",
+                    "src": "163:17:1"
+                  }
+                ],
+                "id": 722,
+                "name": "Mapping",
+                "src": "144:37:1"
+              }
+            ],
+            "id": 723,
+            "name": "VariableDeclaration",
+            "src": "144:61:1"
+          },
+          {
+            "attributes": {
+              "canonicalName": "EscrowExchange.Status",
+              "name": "Status"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "OPEN"
+                },
+                "id": 724,
+                "name": "EnumValue",
+                "src": "223:4:1"
+              },
+              {
+                "attributes": {
+                  "name": "PENDING"
+                },
+                "id": 725,
+                "name": "EnumValue",
+                "src": "229:7:1"
+              },
+              {
+                "attributes": {
+                  "name": "CLOSED"
+                },
+                "id": 726,
+                "name": "EnumValue",
+                "src": "238:6:1"
+              }
+            ],
+            "id": 727,
+            "name": "EnumDefinition",
+            "src": "209:37:1"
+          },
+          {
+            "attributes": {
+              "canonicalName": "EscrowExchange.EscrowContracts",
+              "name": "EscrowContracts",
+              "scope": 784,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "constant": false,
+                  "name": "_address",
+                  "scope": 732,
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "type": "string",
+                  "value": null,
+                  "visibility": "internal"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "name": "string",
+                      "type": "string"
+                    },
+                    "id": 728,
+                    "name": "ElementaryTypeName",
+                    "src": "279:6:1"
+                  }
+                ],
+                "id": 729,
+                "name": "VariableDeclaration",
+                "src": "279:15:1"
+              },
+              {
+                "attributes": {
+                  "constant": false,
+                  "name": "_status",
+                  "scope": 732,
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "type": "enum EscrowExchange.Status",
+                  "value": null,
+                  "visibility": "internal"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "contractScope": null,
+                      "name": "Status",
+                      "referencedDeclaration": 727,
+                      "type": "enum EscrowExchange.Status"
+                    },
+                    "id": 730,
+                    "name": "UserDefinedTypeName",
+                    "src": "301:6:1"
+                  }
+                ],
+                "id": 731,
+                "name": "VariableDeclaration",
+                "src": "301:14:1"
+              }
+            ],
+            "id": 732,
+            "name": "StructDefinition",
+            "src": "249:70:1"
+          },
+          {
+            "attributes": {
+              "documentation": null,
+              "implemented": true,
+              "isConstructor": true,
+              "kind": "constructor",
+              "modifiers": [
+                null
+              ],
+              "name": "",
+              "scope": 784,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 733,
+                "name": "ParameterList",
+                "src": "333:2:1"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 734,
+                "name": "ParameterList",
+                "src": "343:0:1"
+              },
+              {
+                "attributes": {
+                  "statements": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 735,
+                "name": "Block",
+                "src": "343:4:1"
+              }
+            ],
+            "id": 736,
+            "name": "FunctionDefinition",
+            "src": "322:25:1"
+          },
+          {
+            "attributes": {
+              "documentation": null,
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "getContractsForCurrentUser",
+              "scope": 784,
+              "stateMutability": "view",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 737,
+                "name": "ParameterList",
+                "src": "385:2:1"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "",
+                      "scope": 748,
+                      "stateVariable": false,
+                      "storageLocation": "memory",
+                      "type": "struct EscrowExchange.EscrowContracts[]",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "length": null,
+                          "type": "struct EscrowExchange.EscrowContracts[]"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "contractScope": null,
+                              "name": "EscrowContracts",
+                              "referencedDeclaration": 732,
+                              "type": "struct EscrowExchange.EscrowContracts"
+                            },
+                            "id": 738,
+                            "name": "UserDefinedTypeName",
+                            "src": "409:15:1"
+                          }
+                        ],
+                        "id": 739,
+                        "name": "ArrayTypeName",
+                        "src": "409:17:1"
+                      }
+                    ],
+                    "id": 740,
+                    "name": "VariableDeclaration",
+                    "src": "409:24:1"
+                  }
+                ],
+                "id": 741,
+                "name": "ParameterList",
+                "src": "408:26:1"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 741
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "type": "struct EscrowExchange.EscrowContracts storage ref[] storage ref"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 723,
+                              "type": "mapping(address => struct EscrowExchange.EscrowContracts storage ref[] storage ref)",
+                              "value": "contractsForUser"
+                            },
+                            "id": 742,
+                            "name": "Identifier",
+                            "src": "451:16:1"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "member_name": "sender",
+                              "referencedDeclaration": null,
+                              "type": "address payable"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 799,
+                                  "type": "msg",
+                                  "value": "msg"
+                                },
+                                "id": 743,
+                                "name": "Identifier",
+                                "src": "468:3:1"
+                              }
+                            ],
+                            "id": 744,
+                            "name": "MemberAccess",
+                            "src": "468:10:1"
+                          }
+                        ],
+                        "id": 745,
+                        "name": "IndexAccess",
+                        "src": "451:28:1"
+                      }
+                    ],
+                    "id": 746,
+                    "name": "Return",
+                    "src": "444:35:1"
+                  }
+                ],
+                "id": 747,
+                "name": "Block",
+                "src": "434:52:1"
+              }
+            ],
+            "id": 748,
+            "name": "FunctionDefinition",
+            "src": "350:136:1"
+          },
+          {
+            "attributes": {
+              "documentation": null,
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "addContractAddressToRegistry",
+              "scope": 784,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "_buyer",
+                      "scope": 783,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 749,
+                        "name": "ElementaryTypeName",
+                        "src": "531:7:1"
+                      }
+                    ],
+                    "id": 750,
+                    "name": "VariableDeclaration",
+                    "src": "531:14:1"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "_seller",
+                      "scope": 783,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 751,
+                        "name": "ElementaryTypeName",
+                        "src": "547:7:1"
+                      }
+                    ],
+                    "id": 752,
+                    "name": "VariableDeclaration",
+                    "src": "547:15:1"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "_contractAddress",
+                      "scope": 783,
+                      "stateVariable": false,
+                      "storageLocation": "memory",
+                      "type": "string",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "string",
+                          "type": "string"
+                        },
+                        "id": 753,
+                        "name": "ElementaryTypeName",
+                        "src": "564:6:1"
+                      }
+                    ],
+                    "id": 754,
+                    "name": "VariableDeclaration",
+                    "src": "564:30:1"
+                  }
+                ],
+                "id": 755,
+                "name": "ParameterList",
+                "src": "530:65:1"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 756,
+                "name": "ParameterList",
+                "src": "603:0:1"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "++",
+                          "prefix": false,
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 718,
+                              "type": "uint256",
+                              "value": "contractCount"
+                            },
+                            "id": 757,
+                            "name": "Identifier",
+                            "src": "610:13:1"
+                          }
+                        ],
+                        "id": 758,
+                        "name": "UnaryOperation",
+                        "src": "610:15:1"
+                      }
+                    ],
+                    "id": 759,
+                    "name": "ExpressionStatement",
+                    "src": "610:15:1"
+                  },
+                  {
+                    "attributes": {
+                      "assignments": [
+                        761
+                      ]
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "constant": false,
+                          "name": "_contract",
+                          "scope": 782,
+                          "stateVariable": false,
+                          "storageLocation": "memory",
+                          "type": "struct EscrowExchange.EscrowContracts",
+                          "value": null,
+                          "visibility": "internal"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "contractScope": null,
+                              "name": "EscrowContracts",
+                              "referencedDeclaration": 732,
+                              "type": "struct EscrowExchange.EscrowContracts"
+                            },
+                            "id": 760,
+                            "name": "UserDefinedTypeName",
+                            "src": "632:15:1"
+                          }
+                        ],
+                        "id": 761,
+                        "name": "VariableDeclaration",
+                        "src": "632:32:1"
+                      },
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": true,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "type": "struct EscrowExchange.EscrowContracts memory",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_string_memory_ptr",
+                                  "typeString": "string memory"
+                                },
+                                {
+                                  "typeIdentifier": "t_enum$_Status_$727",
+                                  "typeString": "enum EscrowExchange.Status"
+                                }
+                              ],
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 732,
+                              "type": "type(struct EscrowExchange.EscrowContracts storage pointer)",
+                              "value": "EscrowContracts"
+                            },
+                            "id": 762,
+                            "name": "Identifier",
+                            "src": "667:15:1"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 754,
+                              "type": "string memory",
+                              "value": "_contractAddress"
+                            },
+                            "id": 763,
+                            "name": "Identifier",
+                            "src": "683:16:1"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "lValueRequested": false,
+                              "member_name": "OPEN",
+                              "referencedDeclaration": null,
+                              "type": "enum EscrowExchange.Status"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 727,
+                                  "type": "type(enum EscrowExchange.Status)",
+                                  "value": "Status"
+                                },
+                                "id": 764,
+                                "name": "Identifier",
+                                "src": "701:6:1"
+                              }
+                            ],
+                            "id": 765,
+                            "name": "MemberAccess",
+                            "src": "701:11:1"
+                          }
+                        ],
+                        "id": 766,
+                        "name": "FunctionCall",
+                        "src": "667:46:1"
+                      }
+                    ],
+                    "id": 767,
+                    "name": "VariableDeclarationStatement",
+                    "src": "632:81:1"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "type": "uint256",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_struct$_EscrowContracts_$732_memory_ptr",
+                                  "typeString": "struct EscrowExchange.EscrowContracts memory"
+                                }
+                              ],
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "member_name": "push",
+                              "referencedDeclaration": null,
+                              "type": "function (struct EscrowExchange.EscrowContracts storage ref) returns (uint256)"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "type": "struct EscrowExchange.EscrowContracts storage ref[] storage ref"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 723,
+                                      "type": "mapping(address => struct EscrowExchange.EscrowContracts storage ref[] storage ref)",
+                                      "value": "contractsForUser"
+                                    },
+                                    "id": 768,
+                                    "name": "Identifier",
+                                    "src": "723:16:1"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 750,
+                                      "type": "address",
+                                      "value": "_buyer"
+                                    },
+                                    "id": 769,
+                                    "name": "Identifier",
+                                    "src": "740:6:1"
+                                  }
+                                ],
+                                "id": 770,
+                                "name": "IndexAccess",
+                                "src": "723:24:1"
+                              }
+                            ],
+                            "id": 771,
+                            "name": "MemberAccess",
+                            "src": "723:29:1"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 761,
+                              "type": "struct EscrowExchange.EscrowContracts memory",
+                              "value": "_contract"
+                            },
+                            "id": 772,
+                            "name": "Identifier",
+                            "src": "753:9:1"
+                          }
+                        ],
+                        "id": 773,
+                        "name": "FunctionCall",
+                        "src": "723:40:1"
+                      }
+                    ],
+                    "id": 774,
+                    "name": "ExpressionStatement",
+                    "src": "723:40:1"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "type": "uint256",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_struct$_EscrowContracts_$732_memory_ptr",
+                                  "typeString": "struct EscrowExchange.EscrowContracts memory"
+                                }
+                              ],
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "member_name": "push",
+                              "referencedDeclaration": null,
+                              "type": "function (struct EscrowExchange.EscrowContracts storage ref) returns (uint256)"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "type": "struct EscrowExchange.EscrowContracts storage ref[] storage ref"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 723,
+                                      "type": "mapping(address => struct EscrowExchange.EscrowContracts storage ref[] storage ref)",
+                                      "value": "contractsForUser"
+                                    },
+                                    "id": 775,
+                                    "name": "Identifier",
+                                    "src": "773:16:1"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 752,
+                                      "type": "address",
+                                      "value": "_seller"
+                                    },
+                                    "id": 776,
+                                    "name": "Identifier",
+                                    "src": "790:7:1"
+                                  }
+                                ],
+                                "id": 777,
+                                "name": "IndexAccess",
+                                "src": "773:25:1"
+                              }
+                            ],
+                            "id": 778,
+                            "name": "MemberAccess",
+                            "src": "773:30:1"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 761,
+                              "type": "struct EscrowExchange.EscrowContracts memory",
+                              "value": "_contract"
+                            },
+                            "id": 779,
+                            "name": "Identifier",
+                            "src": "804:9:1"
+                          }
+                        ],
+                        "id": 780,
+                        "name": "FunctionCall",
+                        "src": "773:41:1"
+                      }
+                    ],
+                    "id": 781,
+                    "name": "ExpressionStatement",
+                    "src": "773:41:1"
+                  }
+                ],
+                "id": 782,
+                "name": "Block",
+                "src": "603:218:1"
+              }
+            ],
+            "id": 783,
+            "name": "FunctionDefinition",
+            "src": "492:329:1"
+          }
+        ],
+        "id": 784,
+        "name": "ContractDefinition",
+        "src": "84:739:1"
+      }
+    ],
+    "id": 785,
+    "name": "SourceUnit",
+    "src": "0:823:1"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
+  },
+  "networks": {
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0x8082B91B7721D0eA525c749aeB97181dAC71bdeE",
+      "transactionHash": "0x590566af4c69bec9384ee399bdba1ab8d6caeaf31ed6335b54c8b0f999c347db"
+    }
+  },
+  "schemaVersion": "3.3.3",
+  "updatedAt": "2021-03-12T01:21:43.331Z",
+  "networkType": "ethereum",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}

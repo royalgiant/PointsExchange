@@ -103,7 +103,7 @@ contract Escrow {
     }
 
     /* Function for buyer to retrieve deposit in the scenario where only the
-    buyer has interacted witht he contract and the transaction is no longer
+    buyer has interacted with the contract and the transaction is no longer
     going ahead.*/
     
     function reverseBuyerDeposit() public isBuyer {

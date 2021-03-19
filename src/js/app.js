@@ -77,36 +77,52 @@ App = {
   },
   
   // Escrow Calls
-  buyerDeposit: () => {
-
+  buyerDeposit: async () => {
+    App.setLoading(true)
+    await App.escrow.buyerDeposit();
+    window.location.reload()
   },
 
-  sellerDeposit: () => {
-
+  sellerDeposit: async () => {
+    App.setLoading(true)
+    await App.escrow.sellerDeposit();
+    window.location.reload()
   },
 
-  reverseBuyerDeposit: () => {
-
+  reverseBuyerDeposit: async () => {
+    App.setLoading(true)
+    await App.escrow.reverseBuyerDeposit();
+    window.location.reload()
   },
 
-  reverseSellerDeposit: () => {
-
+  reverseSellerDeposit: async () => {
+    App.setLoading(true)
+    await App.escrow.reverseSellerDeposit();
+    window.location.reload()
   },
 
-  claimDeposits: () => {
-
+  claimDeposits: async () => {
+    App.setLoading(true)
+    await App.escrow.claimDeposits();
+    window.location.reload()
   },
 
-  sendAmount: () => {
-
+  sendAmount: async () => {
+    App.setLoading(true)
+    await App.escrow.sendAmount();
+    window.location.reload()
   },
 
-  paySeller: () => {
-
+  paySeller: async () => {
+    App.setLoading(true)
+    await App.escrow.paySeller();
+    window.location.reload()
   },
 
-  refundBuyer: () => {
-
+  refundBuyer: async () => {
+    App.setLoading(true)
+    await App.escrow.refundBuyer();
+    window.location.reload()
   },
 
   setLoading: (boolean) => {

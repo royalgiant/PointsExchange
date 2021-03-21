@@ -34,8 +34,8 @@ class App extends Component {
     const EscrowExchangeNetworkData = EscrowExchange.networks[networkId]
     const EscrowNetworkData = Escrow.networks[networkId]
     if(EscrowExchangeNetworkData && EscrowNetworkData) {
-      const escrow = web3.eth.Contract(Escrow.abi, EscrowNetworkData.address)
-      const escrowExchange = web3.eth.Contract(EscrowExchange.abi, EscrowExchangeNetworkData.address)
+      const escrow = new web3.eth.Contract(Escrow.abi, EscrowNetworkData.address)
+      const escrowExchange = new web3.eth.Contract(EscrowExchange.abi, EscrowExchangeNetworkData.address)
       this.setState({ escrow, escrowExchange })
       // const contractCount = await marketplace.methods.contractCount().call()
       // this.setState({ contractCount })
@@ -74,7 +74,7 @@ class App extends Component {
     this.reverseSellerDeposit = this.reverseSellerDeposit.bind(this)
     this.claimDeposits = this.claimDeposits.bind(this)
     this.sendAmount = this.sendAmount.bind(this)
-    tihs.paySeller = this.paySeller.bind(this)
+    this.paySeller = this.paySeller.bind(this)
     this.refundBuyer = this.refundBuyer.bind(this)
   }
 
@@ -82,7 +82,7 @@ class App extends Component {
 
   addContractAddressToRegistry(buyerAddress, sellerAddress, contractAddress) {
     this.setState({ loading: true })
-    await App.escrowExchange.addContractAddressToRegistry(buyerAddress, sellerAddress, contractAddress)
+    this.state.escrowExchange.methods.addContractAddressToRegistry(buyerAddress, sellerAddress, contractAddress)
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
@@ -90,12 +90,13 @@ class App extends Component {
   
   // Escrow Calls
 
-  createContract() {
-    newEscrowContract = await new web3.eth.Contract(Escrow.abi)
+  createContract(buyer, seller, amount, deposit) {
+    const web3 = window.web3
+    new web3.eth.Contract(Escrow.abi)
     .deploy({ 
         data: Escrow.bytecode, 
         arguments: [this.state.buyer, this.state.seller, this.state.amount, this.state.deposit] // Writing you arguments in the array
-    }).send({ from: accounts[0], gas: minGas });
+    }).send({ from: this.state.account});
   }
 
   buyerDeposit() {

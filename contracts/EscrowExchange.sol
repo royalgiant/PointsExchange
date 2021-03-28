@@ -1,22 +1,12 @@
 pragma solidity ^0.5.16;
 pragma experimental ABIEncoderV2;
 
-contract EscrowExchange {
-	uint public contractCount = 0;
+import "./EscrowFactory.sol";
 
+contract EscrowExchange is Escrow {
 	mapping(address => EscrowContracts[]) public contractsForUser;
 
-	enum Status { OPEN, PENDING, CLOSED }
-
-	struct EscrowContracts {
-	    string _address;
-	    Status _status;
-	}
-
-	constructor() public {
-	}
-
-	function getContractsForCurrentUser(uint startID) public view returns (string[] memory, string[] memory){
+	function getContractsForCurrentUser(address user) public view returns (string[] memory, string[] memory){
 		uint length;
 
 		string[] memory addresses = new string[](length);
@@ -29,6 +19,13 @@ contract EscrowExchange {
 			statuses[i] = (checkStatus(startID+i));
 		}
         return (addresses, statuses);
+    }
+
+    function createContract(buyer, seller, amount, deposit) {
+    	EscrowContract newContract = _createContract(buyer, seller, amount, deposit);
+    	// For looping through contracts later on.
+    	contractsForUser[buyer].push(newContract);
+    	contractsForUser[seller].push(newContract);
     }
 
     function checkStatus(uint id) public view returns (string memory){
@@ -44,13 +41,5 @@ contract EscrowExchange {
         }
 
         return (status);
-    }
-
-
-    function addContractAddressToRegistry (address _buyer, address _seller, string memory _contractAddress) public {
-    	contractCount++;
-    	EscrowContracts memory _contract = EscrowContracts(_contractAddress, Status.OPEN);
-        contractsForUser[_buyer].push(_contract);
-        contractsForUser[_seller].push(_contract);
     }
 }

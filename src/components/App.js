@@ -32,11 +32,9 @@ class App extends Component {
     this.setState({ account: accounts[0] })
     const networkId = await web3.eth.net.getId()
     const EscrowExchangeNetworkData = EscrowExchange.networks[networkId]
-    const EscrowNetworkData = Escrow.networks[networkId]
-    if(EscrowExchangeNetworkData && EscrowNetworkData) {
-      const escrow = new web3.eth.Contract(Escrow.abi, EscrowNetworkData.address)
+    if(EscrowExchangeNetworkData) {
       const escrowExchange = new web3.eth.Contract(EscrowExchange.abi, EscrowExchangeNetworkData.address)
-      this.setState({ escrow, escrowExchange })
+      this.setState({ escrowExchange })
       // const contractCount = await marketplace.methods.contractCount().call()
       // this.setState({ contractCount })
       // Load Contracts FOR CURRENT USER
@@ -76,6 +74,7 @@ class App extends Component {
     this.sendAmount = this.sendAmount.bind(this)
     this.paySeller = this.paySeller.bind(this)
     this.refundBuyer = this.refundBuyer.bind(this)
+    this.createContract = this.createContract.bind(this)
   }
 
   // EscrowExchange Calls
@@ -91,17 +90,16 @@ class App extends Component {
   // Escrow Calls
 
   createContract(buyer, seller, amount, deposit) {
-    const web3 = window.web3
-    new web3.eth.Contract(Escrow.abi)
-    .deploy({ 
-        data: Escrow.bytecode, 
-        arguments: [this.state.buyer, this.state.seller, this.state.amount, this.state.deposit] // Writing you arguments in the array
-    }).send({ from: this.state.account});
+    this.setState({ loading: true })
+    this.state.escrowExchange.methods.createContract(buyer, seller, amount, deposit)
+    .once('receipt', (receipt) => {
+      this.setState({ loading: false })
+    })
   }
 
   buyerDeposit() {
     this.setState({ loading: true })
-    this.state.escrow.methods.buyerDeposit()
+    this.state.escrowExchange.methods.buyerDeposit()
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
@@ -109,7 +107,7 @@ class App extends Component {
 
   sellerDeposit(){
     this.setState({ loading: true })
-    this.state.escrow.methods.sellerDeposit()
+    this.state.escrowExchange.methods.sellerDeposit()
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
@@ -117,7 +115,7 @@ class App extends Component {
 
   reverseBuyerDeposit() {
     this.setState({ loading: true })
-    this.state.escrow.methods.reverseBuyerDeposit()
+    this.state.escrowExchange.methods.reverseBuyerDeposit()
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
@@ -125,7 +123,7 @@ class App extends Component {
 
   reverseSellerDeposit() {
     this.setState({ loading: true })
-    this.state.escrow.methods.reverseSellerDeposit()
+    this.state.escrowExchange.methods.reverseSellerDeposit()
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
@@ -133,7 +131,7 @@ class App extends Component {
 
   claimDeposits() {
     this.setState({ loading: true })
-    this.state.escrow.methods.claimDeposits()
+    this.state.escrowExchange.methods.claimDeposits()
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
@@ -141,7 +139,7 @@ class App extends Component {
 
   sendAmount() {
     this.setState({ loading: true })
-    this.state.escrow.methods.sendAmount()
+    this.state.escrowExchange.methods.sendAmount()
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
@@ -149,7 +147,7 @@ class App extends Component {
 
   paySeller() {
     this.setState({ loading: true })
-    this.state.escrow.methods.paySeller()
+    this.state.escrowExchange.methods.paySeller()
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
@@ -157,7 +155,7 @@ class App extends Component {
 
   refundBuyer() {
     this.setState({ loading: true })
-    this.state.escrow.methods.refundBuyer()
+    this.state.escrowExchange.methods.refundBuyer()
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
@@ -173,9 +171,16 @@ class App extends Component {
               { this.state.loading
                 ? <div id="loader" className="text-center"><p className="text-center">Loading...</p></div>
                 : <Main
-                  products={this.state.products}
-                  createProduct={this.createProduct}
-                  purchaseProduct={this.purchaseProduct} />
+                  createContract={this.createContract}
+                  buyerDeposit={this.buyerDeposit}
+                  sellerDeposit={this.sellerDeposit}
+                  reverseBuyerDeposit={this.reverseBuyerDeposit}
+                  reverseSellerDeposit={this.reverseSellerDeposit}
+                  claimDeposits={this.claimDeposits}
+                  sendAmount={this.sendAmount}
+                  paySeller={this.paySeller}
+                  refundBuyer={this.refundBuyer}
+                  />
               }
             </main>
           </div>

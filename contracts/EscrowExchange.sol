@@ -3,8 +3,8 @@ pragma experimental ABIEncoderV2;
 
 import "./EscrowFactory.sol";
 
-contract EscrowExchange is Escrow {
-	mapping(address => EscrowContracts[]) public contractsForUser;
+contract EscrowExchange is EscrowFactory {
+	mapping(address => EscrowContract[]) public contractsForUser;
 
 	function getContractsForCurrentUser(address user) public view returns (string[] memory, string[] memory){
 		uint length;
@@ -21,7 +21,7 @@ contract EscrowExchange is Escrow {
         return (addresses, statuses);
     }
 
-    function createContract(buyer, seller, amount, deposit) {
+    function createContract(address payable buyer, address payable seller, uint amount, uint deposit) {
     	EscrowContract newContract = _createContract(buyer, seller, amount, deposit);
     	// For looping through contracts later on.
     	contractsForUser[buyer].push(newContract);

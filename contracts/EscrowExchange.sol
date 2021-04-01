@@ -6,23 +6,31 @@ import "./EscrowFactory.sol";
 contract EscrowExchange is EscrowFactory {
 	mapping(address => EscrowContract[]) public contractsForUser;
 
-	function getContractsForCurrentUser(address user) public view returns (string[] memory, string[] memory){
-		uint length;
+	function getContractsForCurrentUser() public view returns (address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory, Status[] memory){
+		EscrowContract[] memory currentUserContracts = contractsForUser[msg.sender];
+		uint length = currentUserContracts.length;
 
-		string[] memory addresses = new string[](length);
-		string[] memory statuses = new string[](length);
-
+		address[] memory buyers = new string[](length);
+		address[] memory sellers = new string[](length);
+		uint[] memory amounts = new uint[](length);
+		uint[] memory deposits = new uint[](length);
+		uint[] memory signatureCounts = new uint[](length);
+		Status[] memory statuses = new Status[](length);
 
 		for (uint i = 0; i < length; i++)
 		{
-			addresses[i] = (contractsForUser[msg.sender][startID+i]._address);
-			statuses[i] = (checkStatus(startID+i));
+			buyers[i] = (currentUserContracts[i].buyer);
+			sellers[i] = (currentUserContracts[i].seller);
+			amounts[i] = (currentUserContracts[i].amount);
+			deposits[i] = (currentUserContracts[i].deposit);
+			signatureCounts[i] = (currentUserContracts[i].signatureCount);
+			statuses[i] = (currentUserContracts[i].status);
 		}
-        return (addresses, statuses);
+        return (buyers, sellers, amounts, deposits, signatureCounts, statuses);
     }
 
-    function createContract(address payable buyer, address payable seller, uint amount, uint deposit) {
-    	EscrowContract newContract = _createContract(buyer, seller, amount, deposit);
+    function createContract(address payable buyer, address payable seller, uint amount, uint deposit) private {
+    	EscrowContract memory newContract = _createContract(buyer, seller, amount, deposit);
     	// For looping through contracts later on.
     	contractsForUser[buyer].push(newContract);
     	contractsForUser[seller].push(newContract);

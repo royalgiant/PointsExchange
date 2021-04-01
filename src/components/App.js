@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Web3 from 'web3'
 import EscrowExchange from '../abis/EscrowExchange.json'
-import Escrow from '../abis/Escrow.json'
 import Navbar from './Navbar'
 import Main from './Main'
 
@@ -44,10 +43,13 @@ class App extends Component {
       //     products: [...this.state.products, product]
       //   })
       // }
-      var address, status = await escrowExchange.methods.getContractsForCurrentUser(web3.eth.accounts[0])
-      this.setState({ address, status })
-      console.log(address)
-      console.log(status)
+      var buyers, sellers, amounts, deposits, signatureCounts, statuses = await escrowExchange.methods.getContractsForCurrentUser({from: web3.eth.accounts[0]}).call()
+      console.log("Done")
+      console.log(buyers)
+      console.log(sellers)
+      // this.setState({ address, status })
+      // console.log(address)
+      // console.log(status)
       this.setState({ loading: false})
     } else {
       window.alert('Escrow and EscrowExchange contracts not deployed to detected network.')

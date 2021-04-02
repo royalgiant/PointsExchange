@@ -43,7 +43,7 @@ class App extends Component {
       //     products: [...this.state.products, product]
       //   })
       // }
-      var buyers, sellers, amounts, deposits, signatureCounts, statuses = await escrowExchange.methods.getContractsForCurrentUser({from: web3.eth.accounts[0]}).call()
+      var buyers, sellers, amounts, deposits, signatureCounts, statuses = await escrowExchange.methods.getContractsForCurrentUser().call()
       console.log("Done")
       console.log(buyers)
       console.log(sellers)

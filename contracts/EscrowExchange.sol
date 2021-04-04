@@ -7,27 +7,9 @@ contract EscrowExchange is EscrowFactory {
 
 	event ContractCreated(address buyer, address seller, uint amount, uint deposit, uint signatureCount, string status);
 
-	function getContractsForCurrentUser() public view returns (address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory, string[] memory){
-		EscrowContract[] memory currentUserContracts = contractsForUser[msg.sender];
-		uint length = currentUserContracts.length;
-
-		address[] memory buyers = new address[](length);
-		address[] memory sellers = new address[](length);
-		uint[] memory amounts = new uint[](length);
-		uint[] memory deposits = new uint[](length);
-		uint[] memory signatureCounts = new uint[](length);
-		string[] memory statuses = new string[](length);
-
-		for (uint i = 0; i < length; i++)
-		{
-			buyers[i] = (currentUserContracts[i].buyer);
-			sellers[i] = (currentUserContracts[i].seller);
-			amounts[i] = (currentUserContracts[i].amount);
-			deposits[i] = (currentUserContracts[i].deposit);
-			signatureCounts[i] = (currentUserContracts[i].signatureCount);
-			statuses[i] = (checkStatus(uint(currentUserContracts[i].status)));
-		}
-        return (buyers, sellers, amounts, deposits, signatureCounts, statuses);
+	function getContractForCurrentUser(uint index) public view returns (address, address, uint, uint, uint, string memory){
+		EscrowContract memory retrieved_contract = contractsForUser[msg.sender][index];
+        return (retrieved_contract.buyer, retrieved_contract.seller, retrieved_contract.amount, retrieved_contract.deposit, retrieved_contract.signatureCount, checkStatus(uint(retrieved_contract.status)));
     }
 
     function createContract(address payable buyer, address payable seller, uint amount, uint deposit) public {
@@ -35,6 +17,8 @@ contract EscrowExchange is EscrowFactory {
     	// For looping through contracts later on.
     	contractsForUser[buyer].push(newContract);
     	contractsForUser[seller].push(newContract);
+    	ownerContractCount[buyer] = ownerContractCount[buyer].add(1);
+    	ownerContractCount[seller] = ownerContractCount[buyer].add(1);
 
     	emit ContractCreated(buyer, seller, amount, deposit, 0, "Open");
     }

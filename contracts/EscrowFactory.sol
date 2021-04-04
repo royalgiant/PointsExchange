@@ -32,6 +32,7 @@ contract EscrowFactory {
 	enum Status { OPEN, PENDING, CLOSED }
 
 	mapping(address => EscrowContract[]) public contractsForUser;
+	mapping(address => uint) public ownerContractCount;
 
 	//storage
 	struct EscrowContract {

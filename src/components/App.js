@@ -34,20 +34,17 @@ class App extends Component {
     if(EscrowExchangeNetworkData) {
       const escrowExchange = new web3.eth.Contract(EscrowExchange.abi, EscrowExchangeNetworkData.address)
       this.setState({ escrowExchange })
-      // var contractCount = await escrowExchange.methods.ownerContractCount().call()
-      // this.setState({ contractCount })
-      // // Load Contracts FOR CURRENT USER
-      // for (var i = 1; i <= contractCount; i++) {
-      //   const product = await marketplace.methods.products(i).call()
-      //   this.setState({
-      //     products: [...this.state.products, product]
-      //   })
-      // }
-      escrowExchange.methods.getContractForCurrentUser(1).call({from: this.state.account})
-      .then(function(result) {
-        console.log("Done")
-        console.log(result)
-      });
+      const contractCount = await escrowExchange.methods.getContractCountForCurrentUser().call({from: this.state.account})
+      this.setState({ contractCount })
+      // Load Contracts FOR CURRENT USER
+      for (var i = 0; i < contractCount; i++) {
+        var contract = await escrowExchange.methods.getContractForCurrentUser(i).call({from: this.state.account})
+        this.setState({
+          contracts: [...this.state.contracts, contract]
+        })
+      }
+      console.log("Done")
+      console.log(this.state.contracts)
       this.setState({ loading: false})
     } else {
       window.alert('Escrow and EscrowExchange contracts not deployed to detected network.')
@@ -92,7 +89,9 @@ class App extends Component {
 
   createContract(buyer, seller, amount, deposit) {
     this.setState({ loading: true })
-    this.state.escrowExchange.methods.createContract(buyer, seller, amount, deposit).send({ from: this.state.account})
+    var amountInWei = window.web3.utils.toWei((amount).toString(), 'Ether')
+    var depositInWei = window.web3.utils.toWei((deposit).toString(), 'Ether')
+    this.state.escrowExchange.methods.createContract(buyer, seller, amountInWei, depositInWei).send({ from: this.state.account})
     .once('receipt', (receipt) => {
       console.log("Contract created")
       console.log(receipt)

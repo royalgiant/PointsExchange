@@ -82,7 +82,7 @@ contract EscrowFactory {
     event BuyerRefunded(string msg);
 
     function _createContract(address payable _buyer, address payable _seller, uint _amount, uint _deposit) pure internal returns (EscrowContract memory){
-    	return EscrowContract(_buyer, _seller, (_amount.mul(1 ether)), (_deposit.mul(1 ether)), 0,Status.OPEN);
+    	return EscrowContract(_buyer, _seller, _amount, _deposit, 0,Status.OPEN);
 	}
 
 	/* Deposit function for the buyer - checks that the message sender

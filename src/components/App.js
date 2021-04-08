@@ -43,8 +43,6 @@ class App extends Component {
           contracts: [...this.state.contracts, contract]
         })
       }
-      console.log("Done")
-      console.log(this.state.contracts)
       this.setState({ loading: false})
     } else {
       window.alert('Escrow and EscrowExchange contracts not deployed to detected network.')
@@ -87,11 +85,9 @@ class App extends Component {
   
   // Escrow Calls
 
-  createContract(buyer, seller, amount, deposit) {
+  createContract(buyer, seller, amount, deposit, notes) {
     this.setState({ loading: true })
-    var amountInWei = window.web3.utils.toWei((amount).toString(), 'Ether')
-    var depositInWei = window.web3.utils.toWei((deposit).toString(), 'Ether')
-    this.state.escrowExchange.methods.createContract(buyer, seller, amountInWei, depositInWei).send({ from: this.state.account})
+    this.state.escrowExchange.methods.createContract(buyer, seller, amount, deposit, notes).send({ from: this.state.account})
     .once('receipt', (receipt) => {
       console.log("Contract created")
       console.log(receipt)
@@ -182,6 +178,7 @@ class App extends Component {
                   sendAmount={this.sendAmount}
                   paySeller={this.paySeller}
                   refundBuyer={this.refundBuyer}
+                  myContracts={this.state.contracts}
                   />
               }
             </main>

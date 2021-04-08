@@ -42,6 +42,7 @@ contract EscrowFactory {
 	    uint deposit;
 	    uint signatureCount;
 	    Status status;
+	    string notes;
 	    mapping (address => uint) signatures;
 	    mapping (address => uint) depositCheck;
 	    mapping (address => uint) amountCheck;
@@ -81,8 +82,8 @@ contract EscrowFactory {
     event SellerPaid(string msg);
     event BuyerRefunded(string msg);
 
-    function _createContract(address payable _buyer, address payable _seller, uint _amount, uint _deposit) pure internal returns (EscrowContract memory){
-    	return EscrowContract(_buyer, _seller, _amount, _deposit, 0,Status.OPEN);
+    function _createContract(address payable _buyer, address payable _seller, uint _amount, uint _deposit, string memory notes) pure internal returns (EscrowContract memory){
+    	return EscrowContract(_buyer, _seller, _amount, _deposit, 0,Status.OPEN, notes);
 	}
 
 	/* Deposit function for the buyer - checks that the message sender

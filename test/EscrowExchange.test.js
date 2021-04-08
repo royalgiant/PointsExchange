@@ -23,7 +23,7 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 	    let result, buyerContractsCount
 
 	    before(async () => {
-	      result = await escrowExchange.createContract(buyer, seller, web3.utils.toWei('1', 'Ether'), web3.utils.toWei('0.5', 'Ether'), { from: buyer })
+	      result = await escrowExchange.createContract(buyer, seller, web3.utils.toWei('1', 'Ether'), web3.utils.toWei('0.5', 'Ether'), "Some notes", { from: buyer })
 	      buyerContractsCount = await escrowExchange.ownerContractCount(buyer)
 	      sellerContractsCount = await escrowExchange.ownerContractCount(seller)
 	    })
@@ -39,6 +39,8 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 	      assert.equal(event.deposit, '500000000000000000', 'deposit is correct')
 	      assert.equal(event.signatureCount, 0, 'signatureCount is correct')
 	      assert.equal(event.status, "Open", 'status is correct')
+	      assert.equal(event.notes, "Some notes", 'notes is correct')
+
 
 	      // FAILURE: Product must have a buyer
 	      // await await escrowExchange.createContract('', web3.utils.toWei('1', 'Ether'), { from: buyer }).should.be.rejected;
@@ -75,6 +77,7 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 		    assert.equal(result["3"].toString(), '500000000000000000', 'deposit is correct')
 		    assert.equal(result["4"].toNumber(), 0, 'signatureCount is correct')
 		    assert.equal(result["5"], "Open", 'status is correct')
+		    assert.equal(result["6"], "Some notes", 'notes is correct')
 	    })
 
 	    it('gets contract count with getContractCountForCurrentUser', async () => {

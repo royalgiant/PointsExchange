@@ -38,6 +38,8 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 	      assert.equal(event.amount, '1000000000000000000', 'amount is correct')
 	      assert.equal(event.deposit, '500000000000000000', 'deposit is correct')
 	      assert.equal(event.signatureCount, 0, 'signatureCount is correct')
+	      assert.equal(event.depositCount, 0, 'depositCount is correct')
+	      assert.equal(event.amountCount, 0, 'amountCount is correct')
 	      assert.equal(event.status, "Open", 'status is correct')
 	      assert.equal(event.notes, "Some notes", 'notes is correct')
 
@@ -76,8 +78,10 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 		    assert.equal(result["2"].toString(), '1000000000000000000', 'amount is correct')
 		    assert.equal(result["3"].toString(), '500000000000000000', 'deposit is correct')
 		    assert.equal(result["4"].toNumber(), 0, 'signatureCount is correct')
-		    assert.equal(result["5"], "Open", 'status is correct')
-		    assert.equal(result["6"], "Some notes", 'notes is correct')
+		    assert.equal(result["5"].toNumber(), 0, 'depositCount is correct')
+		    assert.equal(result["6"].toNumber(), 0, 'amountCount is correct')
+		    assert.equal(result["7"], "Open", 'status is correct')
+		    assert.equal(result["8"], "Some notes", 'notes is correct')
 	    })
 
 	    it('gets contract count with getContractCountForCurrentUser', async () => {

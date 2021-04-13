@@ -41,6 +41,8 @@ contract EscrowFactory {
 	    uint amount;
 	    uint deposit;
 	    uint signatureCount;
+	    uint depositCount;
+	    uint amountCount;
 	    Status status;
 	    string notes;
 	    mapping (address => uint) signatures;
@@ -83,7 +85,7 @@ contract EscrowFactory {
     event BuyerRefunded(string msg);
 
     function _createContract(address payable _buyer, address payable _seller, uint _amount, uint _deposit, string memory notes) pure internal returns (EscrowContract memory){
-    	return EscrowContract(_buyer, _seller, _amount, _deposit, 0,Status.OPEN, notes);
+    	return EscrowContract(_buyer, _seller, _amount, _deposit, 0, 0, 0, Status.OPEN, notes);
 	}
 
 	/* Deposit function for the buyer - checks that the message sender
@@ -93,6 +95,7 @@ contract EscrowFactory {
         require(msg.value == _getContract(contract_id).deposit); // Require value submitted is equal to the deposit in the _contract.
         require(_getContract(contract_id).depositCheck[msg.sender] == 0); // Require buyer has not deposited yet
         _getContract(contract_id).depositCheck[msg.sender] = 1; // Set buyer deposited to true
+        _getContract(contract_id).depositCount ++; // Increase depositCount by 1
         emit BuyerDeposited(msg.sender, "has made the required deposit of", msg.value);
     }
 
@@ -103,6 +106,7 @@ contract EscrowFactory {
         require(msg.value == _getContract(contract_id).deposit); // Require value submitted is equal to the deposit in the _contract.
         require(_getContract(contract_id).depositCheck[msg.sender] == 0); // Require seller has not deposited yet
         _getContract(contract_id).depositCheck[msg.sender] = 1;// Set seller deposited to true
+        _getContract(contract_id).depositCount ++; // Increase depositCount by 1
         emit SellerDeposited(msg.sender, "has made the required deposit of", msg.value);
     }
 
@@ -171,6 +175,7 @@ contract EscrowFactory {
         require(_getContract(contract_id).depositCheck[_getContract(contract_id).seller] == 1);
         require(_getContract(contract_id).amountCheck[msg.sender] == 0);
         _getContract(contract_id).amountCheck[msg.sender] = 1;
+        _getContract(contract_id).amountCount ++; // Increase amountCount by 1
         emit AmountSent("Buyer has sent the payment amount to the escrow");
     }
 

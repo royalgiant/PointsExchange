@@ -4,8 +4,9 @@ import Tab from 'react-bootstrap/Tab';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Table from 'react-bootstrap/Table'
-import styles from '../css/pointsexchange.module.css'
+import Table from 'react-bootstrap/Table';
+import styles from '../css/pointsexchange.module.css';
+import Button from 'react-bootstrap/Button';
 
 class Main extends Component {
 
@@ -13,6 +14,14 @@ class Main extends Component {
     const hiddenElement = e.currentTarget.nextSibling;
     hiddenElement.className.indexOf("collapse show") > -1 ? hiddenElement.classList.remove("show") : hiddenElement.classList.add("show");
   };
+
+  amountSent(amount){
+    if(Boolean(Number(amount))) {
+      return(<p>The amount requested of the contract <b>has been</b> filled.</p>)
+    } else {
+      return(<p>The amount requested of the contract <b>has not</b> been filled.</p>)
+    }
+  }
 
   render() {
     return (
@@ -103,13 +112,19 @@ class Main extends Component {
                             <td className={styles.address}>{contract[1]}</td>
                             <td>{window.web3.utils.fromWei((contract[2]).toString(), 'Ether')} ETH</td>
                             <td>{window.web3.utils.fromWei((contract[3]).toString(), 'Ether')} ETH</td>
-                            <td>{contract[6]}</td>
-                            <td>{contract[5]}</td>
+                            <td>{contract[8]}</td>
+                            <td>{contract[7]}</td>
                           </tr>
                           <tr className="collapse">
                             <td colSpan="7">
                               <div>
-                              The Signature Count is <strong>{contract[4]}</strong> <i>(2 is required to complete the contract)</i>.
+                              <p>The Signature Count is <strong>{contract[4]}</strong> <i>(2 is required to complete the contract)</i>.</p>
+                              <p>The Deposit Count is <strong>{contract[5]}</strong> <i>(2 is required to complete the contract)</i>.</p>
+                              {this.amountSent(contract[6])}
+                              <Button href="#" className={styles.actionButtons}>Send Deposit</Button>
+                              <Button href="#" className={styles.actionButtons}>Reverse Deposit</Button>
+                              <Button href="#" className={styles.actionButtons}>Claim Deposits</Button>
+                              <Button href="#" className={styles.actionButtons}>Send Amount Requested</Button>
                               </div>
                             </td>
                           </tr>

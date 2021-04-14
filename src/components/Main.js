@@ -23,6 +23,12 @@ class Main extends Component {
     }
   }
 
+  showSendAmountButton(buyer) {
+    if (this.props.account == buyer) {
+      return(<Button href="#" className={styles.actionButtons}>Send Amount Requested</Button>)
+    }
+  }
+
   render() {
     return (
       <Container fluid>
@@ -124,7 +130,7 @@ class Main extends Component {
                               <Button href="#" className={styles.actionButtons}>Send Deposit</Button>
                               <Button href="#" className={styles.actionButtons}>Reverse Deposit</Button>
                               <Button href="#" className={styles.actionButtons}>Claim Deposits</Button>
-                              <Button href="#" className={styles.actionButtons}>Send Amount Requested</Button>
+                              {this.showSendAmountButton(contract[0])}
                               </div>
                             </td>
                           </tr>

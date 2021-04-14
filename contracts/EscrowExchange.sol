@@ -9,6 +9,9 @@ contract EscrowExchange is EscrowFactory {
 
 	function getContractForCurrentUser(uint index) public view returns (address, address, uint, uint, uint, uint, uint, string memory, string memory){
 		EscrowContract memory retrieved_contract = contractsForUser[msg.sender][index];
+
+		// Write a check to see if msg.sender deposited and set in returned value (after notes) if the user deposited.
+
         return (retrieved_contract.buyer, 
         	retrieved_contract.seller, 
         	retrieved_contract.amount, 

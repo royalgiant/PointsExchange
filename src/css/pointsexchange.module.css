@@ -5,3 +5,11 @@
 .actionButtons {
 	margin: 0 5px 0 0;
 }
+
+.contractIndexKey {
+	padding: 2px 0 0 5px !important;
+}
+
+.contractIndexKeyButton {
+	padding: 0;
+}

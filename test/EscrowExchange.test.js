@@ -82,7 +82,9 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 		    assert.equal(result["6"].toNumber(), 0, 'amountCount is correct')
 		    assert.equal(result["7"], "Open", 'status is correct')
 		    assert.equal(result["8"], "Some notes", 'notes is correct')
+		    assert.equal(result["9"], false, 'depositMade is correct')
 	    })
+
 
 	    it('gets contract count with getContractCountForCurrentUser', async () => {
 	    	const contractCount = await escrowExchange.getContractCountForCurrentUser({from: buyer})

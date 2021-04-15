@@ -23,8 +23,14 @@ class Main extends Component {
     }
   }
 
+  showDepositButton(depositMade) {
+    if (!depositMade) {
+      return(<Button href="#" className={styles.actionButtons}>Send Deposit</Button>)
+    }
+  }
+
   showSendAmountButton(buyer) {
-    if (this.props.account == buyer) {
+    if (this.props.account === buyer) {
       return(<Button href="#" className={styles.actionButtons}>Send Amount Requested</Button>)
     }
   }
@@ -113,7 +119,7 @@ class Main extends Component {
                       return(
                         <React.Fragment key={key}>
                           <tr key={key} onClick={this.onClickHandler}>
-                            <td><a href="#">{key}</a></td>
+                            <td className={styles.contractIndexKey}><Button className={styles.contractIndexKeyButton} variant="link">{key}</Button></td>
                             <td className={styles.address}>{contract[0]}</td>
                             <td className={styles.address}>{contract[1]}</td>
                             <td>{window.web3.utils.fromWei((contract[2]).toString(), 'Ether')} ETH</td>
@@ -127,7 +133,7 @@ class Main extends Component {
                               <p>The Signature Count is <strong>{contract[4]}</strong> <i>(2 is required to complete the contract)</i>.</p>
                               <p>The Deposit Count is <strong>{contract[5]}</strong> <i>(2 is required to complete the contract)</i>.</p>
                               {this.amountSent(contract[6])}
-                              <Button href="#" className={styles.actionButtons}>Send Deposit</Button>
+                              {this.showDepositButton(contract[9])}
                               <Button href="#" className={styles.actionButtons}>Reverse Deposit</Button>
                               <Button href="#" className={styles.actionButtons}>Claim Deposits</Button>
                               {this.showSendAmountButton(contract[0])}

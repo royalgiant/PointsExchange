@@ -5,12 +5,12 @@ import "./EscrowFactory.sol";
 
 contract EscrowExchange is EscrowFactory {
 
-	event ContractCreated(address buyer, address seller, uint amount, uint deposit, uint signatureCount, uint depositCount, uint amountCount, string status, string notes);
+	event ContractCreated(address buyer, address seller, uint amount, uint deposit, uint signatureCount, uint depositCount, uint amountCount, string status, string notes, bool depositMade);
 
-	function getContractForCurrentUser(uint index) public view returns (address, address, uint, uint, uint, uint, uint, string memory, string memory){
-		EscrowContract memory retrieved_contract = contractsForUser[msg.sender][index];
+	function getContractForCurrentUser(uint index) public view returns (address, address, uint, uint, uint, uint, uint, string memory, string memory, bool){
+		EscrowContract storage retrieved_contract = contractsForUser[msg.sender][index];
 
-		// Write a check to see if msg.sender deposited and set in returned value (after notes) if the user deposited.
+		bool depositMade = retrieved_contract.depositCheck[msg.sender] == 1;
 
         return (retrieved_contract.buyer, 
         	retrieved_contract.seller, 
@@ -20,7 +20,8 @@ contract EscrowExchange is EscrowFactory {
         	retrieved_contract.depositCount,
         	retrieved_contract.amountCount,
         	checkStatus(uint(retrieved_contract.status)), 
-        	retrieved_contract.notes
+        	retrieved_contract.notes,
+        	depositMade
         );
     }
 
@@ -36,7 +37,7 @@ contract EscrowExchange is EscrowFactory {
     	ownerContractCount[buyer] = ownerContractCount[buyer].add(1);
     	ownerContractCount[seller] = ownerContractCount[seller].add(1);
 
-    	emit ContractCreated(buyer, seller, amount, deposit, 0, 0, 0, "Open", notes);
+    	emit ContractCreated(buyer, seller, amount, deposit, 0, 0, 0, "Open", notes, false);
     }
 
     function checkStatus(uint id) private view returns (string memory){

@@ -23,14 +23,22 @@ class Main extends Component {
     }
   }
 
-  showDepositButton(depositMade) {
-    if (!depositMade) {
-      return(<Button href="#" className={styles.actionButtons}>Send Deposit</Button>)
+  showDepositButton(depositMade, contract, key) {
+    if (!Boolean(Number(depositMade))) {
+      return(<Button href="#" className={styles.actionButtons} onClick={ () => this.sendDepositByBuyerOrSeller(contract, key)}>Send Deposit</Button>)
     }
   }
 
-  showSendAmountButton(buyer) {
-    if (this.props.account === buyer) {
+  sendDepositByBuyerOrSeller(contract, contract_index) {
+    if (this.props.account === contract[0]) {
+      this.props.buyerDeposit(contract_index, contract[3])
+    } else {
+      this.props.sellerDeposit(contract_index, contract[3])
+    }
+  }
+
+  showSendAmountButton(buyer, depositCount) {
+    if (this.props.account === buyer && depositCount == 2) {
       return(<Button href="#" className={styles.actionButtons}>Send Amount Requested</Button>)
     }
   }
@@ -116,27 +124,37 @@ class Main extends Component {
                   </thead>
                   <tbody>
                     { this.props.myContracts.map((contract, key) => {
+                      var buyer = contract[0]
+                      var seller = contract[1]
+                      var amount = contract [2]
+                      var deposit = contract[3]
+                      var signatureCount = contract[4]
+                      var depositCount = contract[5]
+                      var amountCount = contract[6] 
+                      var status = contract[7]
+                      var notes = contract[8]
+                      var depositCheck = contract[9]
                       return(
                         <React.Fragment key={key}>
                           <tr key={key} onClick={this.onClickHandler}>
                             <td className={styles.contractIndexKey}><Button className={styles.contractIndexKeyButton} variant="link">{key}</Button></td>
-                            <td className={styles.address}>{contract[0]}</td>
-                            <td className={styles.address}>{contract[1]}</td>
-                            <td>{window.web3.utils.fromWei((contract[2]).toString(), 'Ether')} ETH</td>
-                            <td>{window.web3.utils.fromWei((contract[3]).toString(), 'Ether')} ETH</td>
-                            <td>{contract[8]}</td>
-                            <td>{contract[7]}</td>
+                            <td className={styles.address}>{buyer}</td>
+                            <td className={styles.address}>{seller}</td>
+                            <td>{window.web3.utils.fromWei((amount).toString(), 'Ether')} ETH</td>
+                            <td>{window.web3.utils.fromWei((deposit).toString(), 'Ether')} ETH</td>
+                            <td>{notes}</td>
+                            <td>{status}</td>
                           </tr>
                           <tr className="collapse">
                             <td colSpan="7">
                               <div>
-                              <p>The Signature Count is <strong>{contract[4]}</strong> <i>(2 is required to complete the contract)</i>.</p>
-                              <p>The Deposit Count is <strong>{contract[5]}</strong> <i>(2 is required to complete the contract)</i>.</p>
-                              {this.amountSent(contract[6])}
-                              {this.showDepositButton(contract[9])}
+                              <p>The Signature Count is <strong>{signatureCount}</strong> <i>(2 is required to complete the contract)</i>.</p>
+                              <p>The Deposit Count is <strong>{depositCount}</strong> <i>(2 is required to complete the contract)</i>.</p>
+                              {this.amountSent(amountCount)}
+                              {this.showDepositButton(depositCheck, contract, key)}
                               <Button href="#" className={styles.actionButtons}>Reverse Deposit</Button>
                               <Button href="#" className={styles.actionButtons}>Claim Deposits</Button>
-                              {this.showSendAmountButton(contract[0])}
+                              {this.showSendAmountButton(buyer, depositCount)}
                               </div>
                             </td>
                           </tr>

@@ -7,10 +7,8 @@ contract EscrowExchange is EscrowFactory {
 
 	event ContractCreated(address buyer, address seller, uint amount, uint deposit, uint signatureCount, uint depositCount, uint amountCount, string status, string notes, bool depositMade);
 
-	function getContractForCurrentUser(uint index) public view returns (address, address, uint, uint, uint, uint, uint, string memory, string memory, bool){
+	function getContractForCurrentUser(uint index) public view returns (address, address, uint, uint, uint, uint, uint, string memory, string memory, uint){
 		EscrowContract storage retrieved_contract = contractsForUser[msg.sender][index];
-
-		bool depositMade = retrieved_contract.depositCheck[msg.sender] == 1;
 
         return (retrieved_contract.buyer, 
         	retrieved_contract.seller, 
@@ -21,7 +19,7 @@ contract EscrowExchange is EscrowFactory {
         	retrieved_contract.amountCount,
         	checkStatus(uint(retrieved_contract.status)), 
         	retrieved_contract.notes,
-        	depositMade
+        	retrieved_contract.depositCheck[msg.sender]
         );
     }
 

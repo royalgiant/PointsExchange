@@ -95,17 +95,17 @@ class App extends Component {
     })
   }
 
-  buyerDeposit() {
+  buyerDeposit(contract_index, deposit) {
     this.setState({ loading: true })
-    this.state.escrowExchange.methods.buyerDeposit().send({ from: this.state.account})
+    this.state.escrowExchange.methods.buyerDeposit(contract_index).send({ from: this.state.account, value: deposit})
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
   }
 
-  sellerDeposit(){
+  sellerDeposit(contract_index, deposit){
     this.setState({ loading: true })
-    this.state.escrowExchange.methods.sellerDeposit().send({ from: this.state.account})
+    this.state.escrowExchange.methods.sellerDeposit(contract_index).send({ from: this.state.account, value: deposit})
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })

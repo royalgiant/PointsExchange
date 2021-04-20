@@ -23,9 +23,17 @@ class Main extends Component {
     }
   }
 
-  showDepositButton(depositMade) {
-    if (!depositMade) {
-      return(<Button href="#" className={styles.actionButtons}>Send Deposit</Button>)
+  showDepositButton(depositMade, contract, key) {
+    if (!Boolean(Number(depositMade))) {
+      return(<Button href="#" className={styles.actionButtons} onClick={ () => this.sendDepositByBuyerOrSeller(contract, key)}>Send Deposit</Button>)
+    }
+  }
+
+  sendDepositByBuyerOrSeller(contract, contract_index) {
+    if (this.props.account === contract[0]) {
+      this.props.buyerDeposit(contract_index, contract[3])
+    } else {
+      this.props.sellerDeposit(contract_index, contract[3])
     }
   }
 
@@ -133,7 +141,7 @@ class Main extends Component {
                               <p>The Signature Count is <strong>{contract[4]}</strong> <i>(2 is required to complete the contract)</i>.</p>
                               <p>The Deposit Count is <strong>{contract[5]}</strong> <i>(2 is required to complete the contract)</i>.</p>
                               {this.amountSent(contract[6])}
-                              {this.showDepositButton(contract[9])}
+                              {this.showDepositButton(contract[9], contract, key)}
                               <Button href="#" className={styles.actionButtons}>Reverse Deposit</Button>
                               <Button href="#" className={styles.actionButtons}>Claim Deposits</Button>
                               {this.showSendAmountButton(contract[0])}

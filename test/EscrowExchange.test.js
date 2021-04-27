@@ -66,7 +66,13 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 			contractInstance["2"].toString()
 			contractInstance["3"].toString()
 			contractInstance["4"].toNumber()
-			contractInstance["5"]
+			contractInstance["5"].toNumber()
+			contractInstance["6"].toNumber()
+	      */
+
+	      /* Get Contract and Contract Balance
+	      const address = await escrowExchange.address
+	      let balance = await web3.eth.getBalance(address)
 	      */
 
 	    })

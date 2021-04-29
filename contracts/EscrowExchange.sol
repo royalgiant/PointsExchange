@@ -4,9 +4,14 @@ pragma experimental ABIEncoderV2;
 import "./EscrowFactory.sol";
 
 contract EscrowExchange is EscrowFactory {
+	uint public contractCount = 0;
+	mapping(address => uint[]) public addressToIndex;
+	mapping(uint => EscrowFactory) public contractIndexesForUsers;
 
+	// TOFIX
 	event ContractCreated(address buyer, address seller, uint amount, uint deposit, uint signatureCount, uint depositCount, uint amountCount, string status, string notes, bool depositMade);
 
+	// TOFIX
 	function getContractForCurrentUser(uint index) public view returns (address, address, uint, uint, uint, uint, uint, string memory, string memory, uint){
 		EscrowContract storage retrieved_contract = contractsForUser[msg.sender][index];
 
@@ -24,20 +29,23 @@ contract EscrowExchange is EscrowFactory {
     }
 
     function getContractCountForCurrentUser() external view returns (uint) {
-	    return ownerContractCount[msg.sender];
+	    return addressToIndex[msg.sender].length;
 	 }
 
     function createContract(address payable buyer, address payable seller, uint amount, uint deposit, string memory notes) public {
-    	EscrowContract memory newContract = _createContract(buyer, seller, amount, deposit, notes);
+
+    	newContract = new EscrowFactory(buyer, seller, amount, deposit, notes);
     	// For looping through contracts later on.
-    	contractsForUser[buyer].push(newContract);
-    	contractsForUser[seller].push(newContract);
-    	ownerContractCount[buyer] = ownerContractCount[buyer].add(1);
-    	ownerContractCount[seller] = ownerContractCount[seller].add(1);
+    	contractIndexesForUsers[contractCount] = newContract;
+    	addressToIndex[buyer].push(contractCount);
+    	addressToIndex[seller].push(contractCount);
+    	contractCount = contractCount.add(1);
 
     	emit ContractCreated(buyer, seller, amount, deposit, 0, 0, 0, "Open", notes, false);
     }
 
+
+    // TOFIX
     function checkStatus(uint id) private view returns (string memory){
 
         string memory status = "";

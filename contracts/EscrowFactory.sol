@@ -38,12 +38,12 @@ contract EscrowFactory {
     uint public amount;
     uint public deposit;
     uint public signatureCount;
-    Status status;
-	string notes;
+    Status public status;
+	string public notes;
     mapping (address => bool) isAParty;
-    mapping (address => uint) signatures;
-    mapping (address => uint) depositCheck;
-    mapping (address => uint) amountCheck;
+    mapping (address => uint) public signatures;
+    mapping (address => uint) public depositCheck;
+    mapping (address => uint) public amountCheck;
 
     //modifiers
     //only buyer can access
@@ -75,7 +75,7 @@ contract EscrowFactory {
     event SellerPaid(string msg);
     event BuyerRefunded(string msg);
 
-    constructor(address payable _buyer, address payable _seller, uint _amount, uint _deposit, string _notes) public {
+    constructor(address payable _buyer, address payable _seller, uint _amount, uint _deposit, string memory _notes) public {
 		buyer = _buyer;
         seller = _seller;
         amount = (_amount.mul(1 ether));
@@ -200,5 +200,43 @@ contract EscrowFactory {
         seller.transfer(deposit);
         buyer.transfer(deposit);
         emit BuyerRefunded("The buyer has been refunded and all deposits have been returned - transaction cancelled");
+    }
+
+    function getBuyer() public view returns (address){
+    	return buyer;
+    }
+
+    function getSeller() public view returns (address){
+    	return seller;
+    }
+
+    function getAmount() public view returns (uint){
+    	return amount;
+    }
+
+    function getDeposit() public view returns (uint){
+    	return deposit;
+    }
+
+    function getSignatureCount() public view returns (uint){
+    	return signatureCount;
+    }
+
+    function getNotes() public view returns (string memory){
+    	return notes;
+    }
+
+    function getIfAddressDeposited(address a) public view returns (uint){
+    	return depositCheck[a];
+    }
+
+    function getContractStatus() public view returns (string memory) {
+		if (status == Status.OPEN){
+            return "Open";
+        } else if (status == Status.PENDING){
+            return "Pending";
+        } else{
+            return "Closed";
+        }
     }
 }

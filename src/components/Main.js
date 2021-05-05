@@ -37,8 +37,8 @@ class Main extends Component {
     }
   }
 
-  showSendAmountButton(buyer, depositCount) {
-    if (this.props.account === buyer && depositCount == 2) {
+  showSendAmountButton(buyer, depositCheck) {
+    if (this.props.account === buyer && Boolean(Number(depositCheck)) === false) {
       return(<Button href="#" className={styles.actionButtons}>Send Amount Requested</Button>)
     }
   }
@@ -129,11 +129,9 @@ class Main extends Component {
                       var amount = contract [2]
                       var deposit = contract[3]
                       var signatureCount = contract[4]
-                      var depositCount = contract[5]
-                      var amountCount = contract[6] 
-                      var status = contract[7]
-                      var notes = contract[8]
-                      var depositCheck = contract[9]
+                      var status = contract[5]
+                      var notes = contract[6]
+                      var depositCheck = contract[7]
                       return(
                         <React.Fragment key={key}>
                           <tr key={key} onClick={this.onClickHandler}>
@@ -149,12 +147,10 @@ class Main extends Component {
                             <td colSpan="7">
                               <div>
                               <p>The Signature Count is <strong>{signatureCount}</strong> <i>(2 is required to complete the contract)</i>.</p>
-                              <p>The Deposit Count is <strong>{depositCount}</strong> <i>(2 is required to complete the contract)</i>.</p>
-                              {this.amountSent(amountCount)}
                               {this.showDepositButton(depositCheck, contract, key)}
                               <Button href="#" className={styles.actionButtons}>Reverse Deposit</Button>
                               <Button href="#" className={styles.actionButtons}>Claim Deposits</Button>
-                              {this.showSendAmountButton(buyer, depositCount)}
+                              {this.showSendAmountButton(buyer, depositCheck)}
                               </div>
                             </td>
                           </tr>

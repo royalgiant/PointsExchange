@@ -78,8 +78,8 @@ contract EscrowFactory {
     constructor(address payable _buyer, address payable _seller, uint _amount, uint _deposit, string memory _notes) public {
 		buyer = _buyer;
         seller = _seller;
-        amount = (_amount.mul(1 ether));
-        deposit = (_deposit.mul(1 ether));
+        amount = _amount;
+        deposit = _deposit;
         notes = _notes;
         status = Status.OPEN;
         party.push(_buyer);

@@ -3,15 +3,15 @@ pragma experimental ABIEncoderV2;
 
 import "./EscrowFactory.sol";
 
-contract EscrowExchange is EscrowFactory {
+contract EscrowExchange {
 	uint public contractCount = 0;
 	mapping(address => uint[]) public addressToIndex;
+	mapping(address => mapping(uint => bool)) public addressContractIndexExists;
 	mapping(uint => EscrowFactory) public contractIndexesForUsers;
 
 	// TOFIX
 	event ContractCreated(address buyer, address seller, uint amount, uint deposit, uint signatureCount, string status, string notes, bool depositMade);
 
-	// TOFIX
 	function getContractForCurrentUser(uint index) public view returns (address, address, uint, uint, uint, string memory, string memory, uint){
 		EscrowFactory retrieved_contract = contractIndexesForUsers[index];
 	
@@ -31,13 +31,17 @@ contract EscrowExchange is EscrowFactory {
 	 }
 
     function createContract(address payable buyer, address payable seller, uint amount, uint deposit, string memory notes) public {
-
+    	require(buyer != address(0), "Invalid buyer address");
+    	require(seller != address(0), "Invalid seller address");
+    	require(amount > 0);
+    	require(deposit > 0);
     	EscrowFactory newContract = new EscrowFactory(buyer, seller, amount, deposit, notes);
-    	// For looping through contracts later on.
     	contractIndexesForUsers[contractCount] = newContract;
     	addressToIndex[buyer].push(contractCount);
     	addressToIndex[seller].push(contractCount);
-    	contractCount = contractCount.add(1);
+    	addressContractIndexExists[buyer][contractCount] = true;
+    	addressContractIndexExists[seller][contractCount] = true;
+    	contractCount = contractCount + 1;
 
     	emit ContractCreated(buyer, seller, amount, deposit, 0, "Open", notes, false);
     }

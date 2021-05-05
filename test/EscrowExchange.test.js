@@ -1,5 +1,12 @@
 const EscrowExchange = artifacts.require("../contracts/EscrowExchange.sol")
 
+const {
+  BN,           // Big Number support
+  constants,    // Common constants, like the zero address and largest integers
+  expectEvent,  // Assertions for emitted events
+  expectRevert, // Assertions for transactions that should fail
+} = require('@openzeppelin/test-helpers');
+
 require('chai').use(require('chai-as-promised')).should()
 
 contract("EscrowExchange", ([deployer, buyer, seller]) => {
@@ -20,32 +27,82 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 	})
 
 	describe('contract', async () => {
-	    let result, buyerContractsCount
-
-	    before(async () => {
-	      result = await escrowExchange.createContract(buyer, seller, web3.utils.toWei('1', 'Ether'), web3.utils.toWei('0.5', 'Ether'), "Some notes", { from: buyer })
-	      buyerContractsCount = await escrowExchange.ownerContractCount(buyer)
-	      sellerContractsCount = await escrowExchange.ownerContractCount(seller)
+	    
+	    it('creates contract', async () => {
+	    	return EscrowExchange.deployed().then(function(instance) {
+	    		escrowInstance = instance;
+	    		contract = escrowExchange.createContract(buyer, seller, web3.utils.toWei('1', 'Ether'), web3.utils.toWei('0.5', 'Ether'), "Some notes", { from: buyer })
+	    		return contract
+	    	}).then(function(receipt) {
+	    		return escrowInstance.addressToIndex(buyer, 0); // 0 is for the uint index, since we only have one element at index 0, which is 0
+	    	}).then(function(addressToIndexBuyerLength) {
+	    		assert.equal(addressToIndexBuyerLength, 0, "Buyer's addressToIndex holds 1 contract  – The first element will be 0");
+	    	}).then(function(receipt) {
+	    		return escrowInstance.addressContractIndexExists(buyer, 0); // 0 is for the uint index, since we only have one element at index 0, which is 0
+	    	}).then(function(buyerContractIndexExists) {
+	    		assert.equal(buyerContractIndexExists, true, "Buyer's addressContractIndexExists for created contract exists");
+	    	}).then(function(receipt){
+	    		return escrowInstance.addressToIndex(seller,0); // 0 is for the uint index, since we only have one element at index 0, which is 0
+	    	}).then(function(addressToIndexSellerLength) {
+	    		assert.equal(addressToIndexSellerLength, 0, "Seller's addressToIndex holds 1 contract – The first element will be 0");
+	    	}).then(function(receipt) {
+	    		return escrowInstance.addressContractIndexExists(seller, 0); // 0 is for the uint index, since we only have one element at index 0, which is 0
+	    	}).then(function(sellerContractIndexExists) {
+	    		assert.equal(sellerContractIndexExists, true, "Seller's addressContractIndexExists for created contract exists");
+	    	}).then(function(receipt){
+	    		return escrowInstance.contractIndexesForUsers(0);
+	    	}).then(function(contractAtIndex){
+	    		assert.notEqual(contractAtIndex, 0x0, "The contract is in the array contractIndexesForUsers and has an address");
+	    	}).then(function(receipt){ // 
+	    		return escrowInstance.contractCount();
+	    	}).then(function(contractCount){
+	    		assert.equal(contractCount, 1, "The contractCount is increased to 1");
+	    	})
 	    })
 
-	    it('creates contract', async () => {
-	      // SUCCESS
-	      assert.equal(buyerContractsCount, 1)
-	      assert.equal(sellerContractsCount, 1)
-	      const event = result.logs[0].args
-	      assert.equal(event.buyer, buyer, 'buyer is correct')
-	      assert.equal(event.seller, seller, 'seller is correct')
-	      assert.equal(event.amount, '1000000000000000000', 'amount is correct')
-	      assert.equal(event.deposit, '500000000000000000', 'deposit is correct')
-	      assert.equal(event.signatureCount, 0, 'signatureCount is correct')
-	      assert.equal(event.depositCount, 0, 'depositCount is correct')
-	      assert.equal(event.amountCount, 0, 'amountCount is correct')
-	      assert.equal(event.status, "Open", 'status is correct')
-	      assert.equal(event.notes, "Some notes", 'notes is correct')
+	   	it('getContractCountForCurrentUser', async () => {
+	   		return EscrowExchange.deployed().then(function(instance) {
+	    		const contract_count = escrowExchange.getContractCountForCurrentUser({from: buyer});
+	   			return contract_count
+	    	}).then(function(contract_count) {
+	    		assert.equal(contract_count, 1, "The getContractCountForCurrentUser returns 1 for array size");
+	    	})
+	   	})
 
+	   	it('getContractForCurrentUser', async () => {
+	   		return EscrowExchange.deployed().then(function(instance) {
+	    		const retrieved_contract = escrowExchange.getContractForCurrentUser(0);
+	   			return retrieved_contract
+	    	}).then(function(retrieved_contract) {
+	    		assert.equal(retrieved_contract[0], buyer, 'buyer is correct')
+			    assert.equal(retrieved_contract[1], seller, 'seller is correct')
+			    assert.equal(retrieved_contract[2].toString(), '1000000000000000000', 'amount is correct')
+			    assert.equal(retrieved_contract[3].toString(), '500000000000000000', 'deposit is correct')
+			    assert.equal(retrieved_contract[4].toNumber(), 0, 'signatureCount is correct')
+			    assert.equal(retrieved_contract[5], "Open", 'status is correct')
+			    assert.equal(retrieved_contract[6], "Some notes", 'notes is correct')
+			    assert.equal(retrieved_contract[7].toNumber(), 0, 'depositCount is correct')
+	    	})
+	   	})
+
+	   	it('rejects contract without buyer parameter', async () => {
+	   		await expectRevert(escrowExchange.createContract(constants.ZERO_ADDRESS, seller, web3.utils.toWei('1', 'Ether'), web3.utils.toWei('0.5', 'Ether'), "Some notes"), "Invalid buyer address")
+	   	})
+
+	   	it('rejects contract without seller parameter', async () => {
+	   		await expectRevert(escrowExchange.createContract(buyer, constants.ZERO_ADDRESS, web3.utils.toWei('1', 'Ether'), web3.utils.toWei('0.5', 'Ether'), "Some notes"), "Invalid seller address")
+	   	})
+
+	   	it('rejects create contract with 0 amount parameter', async () => {
+	    	await expectRevert(escrowExchange.createContract(buyer, seller, web3.utils.toWei('0', 'Ether'), web3.utils.toWei('0.5', 'Ether'), "Some notes"), "revert")
+	   	})
+
+	   	it('rejects create contract with 0 deposit parameter', async () => {
+	   		await expectRevert(escrowExchange.createContract(buyer, seller, web3.utils.toWei('1', 'Ether'), web3.utils.toWei('0', 'Ether'), "Some notes"),  "revert")
+	   	})
 
 	      // FAILURE: Product must have a buyer
-	      // await await escrowExchange.createContract('', web3.utils.toWei('1', 'Ether'), { from: buyer }).should.be.rejected;
+	      
 	      // FAILURE: Product must have a seller
 	      // await await escrowExchange.createContract('iPhone X', 0, { from: buyer }).should.be.rejected;
 	      // FAILURE: Product must have a amount
@@ -54,7 +111,7 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 
 	      /* To replicate ON TRUFFLE CONSOLE, deploy the contract and run the following
 			let accounts = await web3.eth.getAccounts()
-			escrowExchange.createContract(accounts[0], accounts[1], "2000000000000000000", "1000000000000000000")
+			escrowExchange.createContract(accounts[0], accounts[1], "2000000000000000000", "1000000000000000000", "some notes")
 			
 			// Get owner's contract count
 			escrowExchange.ownerContractCount(accounts[0]).then(function(balance) {numberInstance = balance})
@@ -75,27 +132,5 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 	      let balance = await web3.eth.getBalance(address)
 	      */
 
-	    })
-
-	    it('gets contract', async () => {
-	    	const result = await escrowExchange.getContractForCurrentUser(0, {from: buyer})
-	    	assert.equal(result["0"], buyer, 'buyer is correct')
-		    assert.equal(result["1"], seller, 'seller is correct')
-		    assert.equal(result["2"].toString(), '1000000000000000000', 'amount is correct')
-		    assert.equal(result["3"].toString(), '500000000000000000', 'deposit is correct')
-		    assert.equal(result["4"].toNumber(), 0, 'signatureCount is correct')
-		    assert.equal(result["5"].toNumber(), 0, 'depositCount is correct')
-		    assert.equal(result["6"].toNumber(), 0, 'amountCount is correct')
-		    assert.equal(result["7"], "Open", 'status is correct')
-		    assert.equal(result["8"], "Some notes", 'notes is correct')
-		    assert.equal(result["9"], 0, 'depositMade is correct')
-	    })
-
-
-	    it('gets contract count with getContractCountForCurrentUser', async () => {
-	    	const contractCount = await escrowExchange.getContractCountForCurrentUser({from: buyer})
-	    	assert.equal(contractCount, 1, "correct count received")
-	    })
 	})
-
 })

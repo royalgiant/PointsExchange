@@ -12,7 +12,7 @@ contract EscrowExchange {
 	// TOFIX
 	event ContractCreated(address buyer, address seller, uint amount, uint deposit, uint signatureCount, string status, string notes, bool depositMade);
 
-	function getContractForCurrentUser(uint index) public view returns (address, address, uint, uint, uint, string memory, string memory, uint){
+	function getContractForCurrentUser(uint index) public view returns (address, address, uint, uint, uint, string memory, string memory, uint, uint, uint){
 		if (addressContractIndexExists[msg.sender][index]) {
 	 		EscrowFactory retrieved_contract = contractIndexesForUsers[index];
 		
@@ -23,7 +23,9 @@ contract EscrowExchange {
 	        	retrieved_contract.getSignatureCount(),
 	        	retrieved_contract.getContractStatus(), 
 	        	retrieved_contract.getNotes(),
-	        	retrieved_contract.getIfAddressDeposited(msg.sender)
+	        	retrieved_contract.getIfAddressDeposited(msg.sender),
+	        	retrieved_contract.getAmountCheck(msg.sender),
+	        	retrieved_contract.getSignature(msg.sender)
 	        );
 		}
     }
@@ -51,5 +53,15 @@ contract EscrowExchange {
     	contractCount = contractCount + 1;
 
     	emit ContractCreated(buyer, seller, amount, deposit, 0, "Open", notes, false);
+    }
+
+    function buyerDeposit(uint contract_index) public payable {
+    	EscrowFactory retrieved_contract = contractIndexesForUsers[contract_index];
+    	retrieved_contract.buyerDeposit(msg.sender, msg.value);
+    }
+
+    function sellerDeposit(uint contract_index) public payable {
+    	EscrowFactory retrieved_contract = contractIndexesForUsers[contract_index];
+    	retrieved_contract.sellerDeposit(msg.sender, msg.value);
     }
 }

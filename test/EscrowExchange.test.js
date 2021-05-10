@@ -27,7 +27,8 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 	})
 
 	describe('contract', async () => {
-	    
+	    let depositValue = "500000000000000000"
+	    let amountValue = "1000000000000000000"
 	    it('creates contract', async () => {
 	    	return EscrowExchange.deployed().then(function(instance) {
 	    		escrowInstance = instance;
@@ -82,12 +83,14 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 	    	}).then(function(retrieved_contract) {
 	    		assert.equal(retrieved_contract[0], buyer, 'buyer is correct')
 			    assert.equal(retrieved_contract[1], seller, 'seller is correct')
-			    assert.equal(retrieved_contract[2].toString(), '1000000000000000000', 'amount is correct')
-			    assert.equal(retrieved_contract[3].toString(), '500000000000000000', 'deposit is correct')
+			    assert.equal(retrieved_contract[2].toString(), amountValue, 'amount is correct')
+			    assert.equal(retrieved_contract[3].toString(), depositValue, 'deposit is correct')
 			    assert.equal(retrieved_contract[4].toNumber(), 0, 'signatureCount is correct')
 			    assert.equal(retrieved_contract[5], "Open", 'status is correct')
 			    assert.equal(retrieved_contract[6], "Some notes", 'notes is correct')
-			    assert.equal(retrieved_contract[7].toNumber(), 0, 'depositCount is correct')
+			    assert.equal(retrieved_contract[7].toNumber(), 0, 'buyer depositCheck is correct')
+			    assert.equal(retrieved_contract[8].toNumber(), 0, 'buyer amountCheck is correct')
+			    assert.equal(retrieved_contract[9].toNumber(), 0, 'buyer signatures is correct')
 	    	})
 	   	})
 
@@ -106,6 +109,45 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 	   	it('rejects create contract with 0 deposit parameter', async () => {
 	   		await expectRevert(escrowExchange.createContract(buyer, seller, web3.utils.toWei('1', 'Ether'), web3.utils.toWei('0', 'Ether'), "Some notes"),  "revert")
 	   	})
+
+	   	it('allows buyer to deposit', async() => {
+	   		return EscrowExchange.deployed().then(function(instance){
+	   			const deposit_receipt = escrowExchange.buyerDeposit(0, {from: buyer, value: depositValue});
+	   		}).then(function(deposit_receipt){
+	   			const retrieved_contract = escrowExchange.getContractForCurrentUser(0, {from: buyer});
+	   			return retrieved_contract
+	    	}).then(function(retrieved_contract){
+	    		assert.equal(retrieved_contract[7].toNumber(), 1, "buyer has deposited")
+	    	})
+	   	})
+
+	   	it('rejects buyer deposit with invalid deposit parameter', async () => {
+	   		await expectRevert(escrowExchange.buyerDeposit(0, {from: buyer, value: "1000"}),  "Invalid deposit")
+	   	})
+
+	   	it('rejects buyer deposit with invalid deposit parameter', async () => {
+	   		await expectRevert(escrowExchange.buyerDeposit(0, {from: buyer, value: depositValue}),  "Buyer already deposited")
+	   	})
+
+	   	it('allows seller to deposit', async() => {
+	   		return EscrowExchange.deployed().then(function(instance){
+	   			const deposit_receipt = escrowExchange.sellerDeposit(0, {from: seller, value: depositValue});
+	   		}).then(function(deposit_receipt){
+	   			const retrieved_contract = escrowExchange.getContractForCurrentUser(0, {from: seller});
+	   			return retrieved_contract
+	    	}).then(function(retrieved_contract){
+	    		assert.equal(retrieved_contract[7].toNumber(), 1, "seller has deposited")
+	    	})
+	   	})
+
+	   	it('rejects buyer deposit with invalid deposit parameter', async () => {
+	   		await expectRevert(escrowExchange.sellerDeposit(0, {from: seller, value: "1000"}),  "Invalid deposit")
+	   	})
+
+	   	it('rejects buyer deposit with invalid deposit parameter', async () => {
+	   		await expectRevert(escrowExchange.sellerDeposit(0, {from: seller, value: depositValue}),  "Seller already deposited")
+	   	})
+
 
 	      // FAILURE: Product must have a buyer
 	      

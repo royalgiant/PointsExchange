@@ -65,13 +65,19 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 	    		const contract_count = escrowExchange.getContractCountForCurrentUser({from: buyer});
 	   			return contract_count
 	    	}).then(function(contract_count) {
-	    		assert.equal(contract_count, 1, "The getContractCountForCurrentUser returns 1 for array size");
+	    		assert.equal(1, contract_count, "The getContractCountForCurrentUser returns 1 for array size of 1 in if statement");
+	    	}).then(function(receipt) {
+	    		contract2 = escrowExchange.createContract(buyer, seller, web3.utils.toWei('2', 'Ether'), web3.utils.toWei('0.7', 'Ether'), "Some notes 2", { from: buyer })
+	    		const contract_count2 = escrowExchange.getContractCountForCurrentUser({from: buyer});
+	   			return contract_count2
+	    	}).then(function(contract_count2) {
+	    		assert.equal(2, contract_count2, "The getContractCountForCurrentUser returns 1 for array size of 2 in else statement");
 	    	})
 	   	})
 
 	   	it('getContractForCurrentUser', async () => {
 	   		return EscrowExchange.deployed().then(function(instance) {
-	    		const retrieved_contract = escrowExchange.getContractForCurrentUser(0);
+	    		const retrieved_contract = escrowExchange.getContractForCurrentUser(0, {from: buyer});
 	   			return retrieved_contract
 	    	}).then(function(retrieved_contract) {
 	    		assert.equal(retrieved_contract[0], buyer, 'buyer is correct')

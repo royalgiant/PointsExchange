@@ -13,21 +13,28 @@ contract EscrowExchange {
 	event ContractCreated(address buyer, address seller, uint amount, uint deposit, uint signatureCount, string status, string notes, bool depositMade);
 
 	function getContractForCurrentUser(uint index) public view returns (address, address, uint, uint, uint, string memory, string memory, uint){
-		EscrowFactory retrieved_contract = contractIndexesForUsers[index];
-	
-        return (retrieved_contract.getBuyer(), 
-        	retrieved_contract.getSeller(), 
-        	retrieved_contract.getAmount(), 
-        	retrieved_contract.getDeposit(), 
-        	retrieved_contract.getSignatureCount(),
-        	retrieved_contract.getContractStatus(), 
-        	retrieved_contract.getNotes(),
-        	retrieved_contract.getIfAddressDeposited(msg.sender)
-        );
+		if (addressContractIndexExists[msg.sender][index]) {
+	 		EscrowFactory retrieved_contract = contractIndexesForUsers[index];
+		
+	        return (retrieved_contract.getBuyer(), 
+	        	retrieved_contract.getSeller(), 
+	        	retrieved_contract.getAmount(), 
+	        	retrieved_contract.getDeposit(), 
+	        	retrieved_contract.getSignatureCount(),
+	        	retrieved_contract.getContractStatus(), 
+	        	retrieved_contract.getNotes(),
+	        	retrieved_contract.getIfAddressDeposited(msg.sender)
+	        );
+		}
     }
 
     function getContractCountForCurrentUser() external view returns (uint) {
-	    return addressToIndex[msg.sender].length;
+    	if (addressToIndex[msg.sender].length == 1) {
+    		return addressToIndex[msg.sender].length;
+    	} else {
+	    	uint lastContractId = addressToIndex[msg.sender].length; // Get the length of the user's uint addressToIndex (array of contracts)
+		    return addressToIndex[msg.sender][lastContractId - 1] + 1; // To access the last contract id user made, so we don't have to iterate entire contract array. We do +1 to take into account the user's last contract.
+    	}
 	 }
 
     function createContract(address payable buyer, address payable seller, uint amount, uint deposit, string memory notes) public {

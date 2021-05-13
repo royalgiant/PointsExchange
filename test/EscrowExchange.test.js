@@ -113,26 +113,32 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 	   	it('allows buyer to deposit', async() => {
 	   		return EscrowExchange.deployed().then(function(instance){
 	   			const deposit_receipt = escrowExchange.buyerDeposit(0, {from: buyer, value: depositValue});
+	   			return deposit_receipt
 	   		}).then(function(deposit_receipt){
+	   			expectEvent(deposit_receipt, 'BuyerDeposited', { from: buyer,  msg: "has made the required deposit of", amount: depositValue });
 	   			const retrieved_contract = escrowExchange.getContractForCurrentUser(0, {from: buyer});
 	   			return retrieved_contract
 	    	}).then(function(retrieved_contract){
 	    		assert.equal(retrieved_contract[7].toNumber(), 1, "buyer has deposited")
 	    	})
+
+	    	
 	   	})
 
 	   	it('rejects buyer deposit with invalid deposit parameter', async () => {
 	   		await expectRevert(escrowExchange.buyerDeposit(0, {from: buyer, value: "1000"}),  "Invalid deposit")
 	   	})
 
-	   	it('rejects buyer deposit with invalid deposit parameter', async () => {
+	   	it('rejects buyer deposit because buyer already deposited', async () => {
 	   		await expectRevert(escrowExchange.buyerDeposit(0, {from: buyer, value: depositValue}),  "Buyer already deposited")
 	   	})
 
 	   	it('allows seller to deposit', async() => {
 	   		return EscrowExchange.deployed().then(function(instance){
 	   			const deposit_receipt = escrowExchange.sellerDeposit(0, {from: seller, value: depositValue});
+	   			return deposit_receipt
 	   		}).then(function(deposit_receipt){
+	   			expectEvent(deposit_receipt, 'SellerDeposited', { from: seller,  msg: "has made the required deposit of", amount: depositValue });
 	   			const retrieved_contract = escrowExchange.getContractForCurrentUser(0, {from: seller});
 	   			return retrieved_contract
 	    	}).then(function(retrieved_contract){
@@ -140,11 +146,11 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 	    	})
 	   	})
 
-	   	it('rejects buyer deposit with invalid deposit parameter', async () => {
+	   	it('rejects seller deposit with invalid deposit parameter', async () => {
 	   		await expectRevert(escrowExchange.sellerDeposit(0, {from: seller, value: "1000"}),  "Invalid deposit")
 	   	})
 
-	   	it('rejects buyer deposit with invalid deposit parameter', async () => {
+	   	it('rejects seller deposit because seller already deposited', async () => {
 	   		await expectRevert(escrowExchange.sellerDeposit(0, {from: seller, value: depositValue}),  "Seller already deposited")
 	   	})
 

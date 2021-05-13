@@ -53,8 +53,8 @@ contract EscrowFactory {
     }
     
     //only seller can access
-    modifier isSeller() {
-        require(msg.sender == seller);
+    modifier isSeller(address sender) {
+        require(sender == seller);
         _;
     }
     
@@ -101,7 +101,7 @@ contract EscrowFactory {
     /* Deposit function for the seller - checks that the message sender
     is the seller, the amount being sent is equal to the deposit amount
     and restricts the seller from depositing more than once */
-    function sellerDeposit(address seller_address, uint deposit_amount) public payable isSeller {
+    function sellerDeposit(address seller_address, uint deposit_amount) public payable isSeller(seller_address) {
         require(deposit_amount == deposit, "Invalid deposit"); // Require value submitted is equal to the deposit in the contract.
         require(depositCheck[seller_address] == 0,  "Seller already deposited"); // Require seller has not deposited yet
         depositCheck[seller_address] = 1;// Set seller deposited to true
@@ -125,7 +125,7 @@ contract EscrowFactory {
     seller has interacted with the contract and the transaction is no longer
     going ahead.*/
     
-    function reverseSellerDeposit() public isSeller {
+    function reverseSellerDeposit(address seller_address) public isSeller(seller_address) {
         require(depositCheck[seller] == 1);
         require(depositCheck[buyer] == 0);
         require(amountCheck[buyer] == 0);
@@ -192,7 +192,7 @@ contract EscrowFactory {
     /*cancel transaction: refunding the specified amount to the buyer and 
     returning deposits to both parties */
     /* NEW FUNCTION EXTRA: This can only be called before the expiry time. (i.e. 1 or 2 days before flight time) and then automatically return deposits. Developer fee should be collected here */
-    function refundBuyer() public isSeller {
+    function refundBuyer(address seller_address) public isSeller(seller_address) {
         require(depositCheck[buyer] == 1);
         require(depositCheck[seller] == 1);
         require(amountCheck[buyer] == 1);

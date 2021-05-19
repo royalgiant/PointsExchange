@@ -64,4 +64,19 @@ contract EscrowExchange {
     	EscrowFactory retrieved_contract = contractIndexesForUsers[contract_index];
     	retrieved_contract.sellerDeposit(msg.sender, msg.value);
     }
+
+    function reverseBuyerDeposit(uint contract_index) public {
+    	EscrowFactory retrieved_contract = contractIndexesForUsers[contract_index];
+    	retrieved_contract.reverseBuyerDeposit(msg.sender);
+    }
+
+    function reverseSellerDeposit(uint contract_index) public {
+    	EscrowFactory retrieved_contract = contractIndexesForUsers[contract_index];
+    	retrieved_contract.reverseSellerDeposit(msg.sender);
+    }
+
+    function claimDeposits(uint contract_index) public {
+    	EscrowFactory retrieved_contract = contractIndexesForUsers[contract_index];
+    	retrieved_contract.claimDeposits(msg.sender);
+    }
 }

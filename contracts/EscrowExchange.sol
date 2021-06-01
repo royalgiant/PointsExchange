@@ -12,7 +12,7 @@ contract EscrowExchange {
 	// TOFIX
 	event ContractCreated(address buyer, address seller, uint amount, uint deposit, uint signatureCount, string status, string notes, bool depositMade);
 
-	function getContractForCurrentUser(uint index) public view returns (address, address, uint, uint, uint, string memory, string memory, uint, uint, uint){
+	function getContractForCurrentUser(uint index) public view returns (address, address, uint, uint, uint, string memory, string memory, uint, uint, uint, address){
 		if (addressContractIndexExists[msg.sender][index]) {
 	 		EscrowFactory retrieved_contract = contractIndexesForUsers[index];
 		
@@ -25,7 +25,8 @@ contract EscrowExchange {
 	        	retrieved_contract.getNotes(),
 	        	retrieved_contract.getIfAddressDeposited(msg.sender),
 	        	retrieved_contract.getAmountCheck(msg.sender),
-	        	retrieved_contract.getSignature(msg.sender)
+	        	retrieved_contract.getSignature(msg.sender),
+	        	address(retrieved_contract)
 	        );
 		}
     }

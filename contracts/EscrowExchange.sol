@@ -32,7 +32,9 @@ contract EscrowExchange {
     }
 
     function getContractCountForCurrentUser() external view returns (uint) {
-    	if (addressToIndex[msg.sender].length == 1) {
+    	if (addressToIndex[msg.sender].length == 0) {
+    		return 0;
+    	} else if (addressToIndex[msg.sender].length == 1) {
     		return addressToIndex[msg.sender].length;
     	} else {
 	    	uint lastContractId = addressToIndex[msg.sender].length; // Get the length of the user's uint addressToIndex (array of contracts)

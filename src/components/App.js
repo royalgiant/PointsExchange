@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Web3 from 'web3'
 import EscrowExchange from '../abis/EscrowExchange.json'
+import EscrowFactory from '../abis/EscrowFactory.json'
 import Navbar from './Navbar'
 import Main from './Main'
 
@@ -38,9 +39,11 @@ class App extends Component {
       this.setState({ contractCount })
       // Load Contracts FOR CURRENT USER
       for (var i = 0; i < contractCount; i++) {
-        var contract = await escrowExchange.methods.getContractForCurrentUser(i).call({from: this.state.account})
+        var contractDetails = await escrowExchange.methods.getContractForCurrentUser(i).call({from: this.state.account})
+        var contract = new web3.eth.Contract(EscrowFactory.abi, contractDetails[10])
         this.setState({
-          contracts: [...this.state.contracts, contract]
+          contracts: [...this.state.contracts, contract],
+          contractDetails: [...this.state.contractDetails, contractDetails]
         })
       }
       this.setState({ loading: false})
@@ -54,6 +57,7 @@ class App extends Component {
     this.state = {
       account: '',
       contracts: [],
+      contractDetails: [],
       buyer:'',
       seller: '',
       amount: 0,
@@ -178,7 +182,7 @@ class App extends Component {
                   sendAmount={this.sendAmount}
                   paySeller={this.paySeller}
                   refundBuyer={this.refundBuyer}
-                  myContracts={this.state.contracts}
+                  myContracts={this.state.contractDetails}
                   account={this.state.account}
                   />
               }

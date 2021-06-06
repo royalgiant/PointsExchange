@@ -132,10 +132,11 @@ class Main extends Component {
                       var status = contract[5]
                       var notes = contract[6]
                       var depositCheck = contract[7]
+                      var contractAddress = contract[10]
                       return(
                         <React.Fragment key={key}>
                           <tr key={key} onClick={this.onClickHandler}>
-                            <td className={styles.contractIndexKey}><Button className={styles.contractIndexKeyButton} variant="link">{key}</Button></td>
+                            <td className={styles.contractIndexKey}><Button className={styles.contractIndexKeyButton} variant="link">{contractAddress}</Button></td>
                             <td className={styles.address}>{buyer}</td>
                             <td className={styles.address}>{seller}</td>
                             <td>{window.web3.utils.fromWei((amount).toString(), 'Ether')} ETH</td>

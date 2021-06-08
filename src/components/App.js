@@ -182,7 +182,8 @@ class App extends Component {
                   sendAmount={this.sendAmount}
                   paySeller={this.paySeller}
                   refundBuyer={this.refundBuyer}
-                  myContracts={this.state.contractDetails}
+                  myContractsDetails={this.state.contractDetails}
+                  contractObjects={this.state.contracts}
                   account={this.state.account}
                   />
               }

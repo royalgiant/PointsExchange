@@ -47,14 +47,14 @@ contract EscrowFactory {
 
     //modifiers
     //only buyer can access
-    modifier isBuyer(address sender) {
-        require(sender == buyer);
+    modifier isBuyer() {
+        require(msg.sender == buyer);
         _;
     }
     
     //only seller can access
-    modifier isSeller(address sender) {
-        require(sender == seller);
+    modifier isSeller() {
+        require(msg.sender == seller);
         _;
     }
     
@@ -91,28 +91,28 @@ contract EscrowFactory {
 	/* Deposit function for the buyer - checks that the message sender
     is the buyer, the amount being sent is equal to the deposit amount
     and restricts the buyer from depositing more than once – TESTED*/
-    function buyerDeposit(address buyer_address, uint deposit_amount) public payable isBuyer(buyer_address) {
-        require(deposit_amount == deposit, "Invalid deposit"); // Require value submitted is equal to the deposit in the contract.
-        require(depositCheck[buyer_address] == 0, "Buyer already deposited"); // Require buyer has not deposited yet
-        depositCheck[buyer_address] = 1; // Set buyer deposited to true
-        emit BuyerDeposited(buyer_address, "has made the required deposit of", deposit_amount);
+    function buyerDeposit() public payable isBuyer {
+        require(msg.value == deposit, "Invalid deposit"); // Require value submitted is equal to the deposit in the contract.
+        require(depositCheck[msg.sender] == 0, "Buyer already deposited"); // Require buyer has not deposited yet
+        depositCheck[msg.sender] = 1; // Set buyer deposited to true
+        emit BuyerDeposited(msg.sender, "has made the required deposit of", msg.value);
     }
 
     /* Deposit function for the seller - checks that the message sender
     is the seller, the amount being sent is equal to the deposit amount
     and restricts the seller from depositing more than once – TESTED*/
-    function sellerDeposit(address seller_address, uint deposit_amount) public payable isSeller(seller_address) {
-        require(deposit_amount == deposit, "Invalid deposit"); // Require value submitted is equal to the deposit in the contract.
-        require(depositCheck[seller_address] == 0,  "Seller already deposited"); // Require seller has not deposited yet
-        depositCheck[seller_address] = 1;// Set seller deposited to true
-        emit SellerDeposited(seller_address, "has made the required deposit of", deposit_amount);
+    function sellerDeposit() public payable isSeller {
+        require(msg.value == deposit, "Invalid deposit"); // Require value submitted is equal to the deposit in the contract.
+        require(depositCheck[msg.sender] == 0,  "Seller already deposited"); // Require seller has not deposited yet
+        depositCheck[msg.sender] = 1;// Set seller deposited to true
+        emit SellerDeposited(msg.sender, "has made the required deposit of", msg.value);
     }
 
     /* Function for buyer to retrieve deposit in the scenario where only the
     buyer has interacted with the contract and the transaction is no longer
     going ahead.*/
     
-    function reverseBuyerDeposit(address buyer_address) public isBuyer(buyer_address) {
+    function reverseBuyerDeposit() public isBuyer {
         require(depositCheck[buyer] == 1, "the buyer has not desposited CANNOT reverseDeposit");
         require(depositCheck[seller] == 0, "the seller has deposited already CANNOT reverseDeposit");
         require(amountCheck[buyer] == 0, "the buyer has already sent the amount CANNOT reverseDeposit"); // To Do: Write a amountcheck test
@@ -125,7 +125,7 @@ contract EscrowFactory {
     seller has interacted with the contract and the transaction is no longer
     going ahead.*/
     
-    function reverseSellerDeposit(address seller_address) public isSeller(seller_address) {
+    function reverseSellerDeposit() public isSeller {
         require(depositCheck[seller] == 1);
         require(depositCheck[buyer] == 0);
         require(amountCheck[buyer] == 0);
@@ -138,12 +138,12 @@ contract EscrowFactory {
     and seller have made their deposits but no longer wish to proceed, both must
     sign off on this by calling this function – TESTED*/
  
-    function claimDeposits(address sender) public ifIsAParty(sender) {
+    function claimDeposits() public ifIsAParty(msg.sender) {
         require(depositCheck[buyer] == 1, "the buyer has not made a deposit for claimDeposits");
         require(depositCheck[seller] == 1, "the seller has not made a deposit for claimDeposits");
         require(amountCheck[buyer] == 0, "the buyer has already sent an amount for claimDeposits"); // TODO TEST
-        require(signatures[sender] == 0, "the sender have already signed off on claimDeposit");
-        signatures[sender] = 1;
+        require(signatures[msg.sender] == 0, "the sender have already signed off on claimDeposit");
+        signatures[msg.sender] = 1;
         signatureCount ++;
         
         if (signatureCount == 1) {
@@ -167,7 +167,7 @@ contract EscrowFactory {
     amount, checks that both seller and buyer have made the required deposits 
     and restricts the buyer from making multiple payments */
     
-    function sendAmount(address buyer_address) public payable isBuyer(buyer_address) {
+    function sendAmount() public payable isBuyer {
         require(msg.value == amount); // Check to see correct amount is sent.
         require(depositCheck[buyer] == 1);
         require(depositCheck[seller] == 1);
@@ -179,7 +179,7 @@ contract EscrowFactory {
     /* complete transaction: transferring specified amount to the seller and 
     returning deposits to both parties */
     /* NEW FUNCTION EXTRA: This should automatically pay seller when it passes expiry time (i.e. the flight time) and then automatically return deposits. Developer fee should be collected here */
-    function paySeller(address buyer_address) public isBuyer(buyer_address) {
+    function paySeller() public isBuyer {
         require(depositCheck[buyer] == 1);
         require(depositCheck[seller] == 1);
         require(amountCheck[buyer] == 1);
@@ -192,7 +192,7 @@ contract EscrowFactory {
     /*cancel transaction: refunding the specified amount to the buyer and 
     returning deposits to both parties */
     /* NEW FUNCTION EXTRA: This can only be called before the expiry time. (i.e. 1 or 2 days before flight time) and then automatically return deposits. Developer fee should be collected here */
-    function refundBuyer(address seller_address) public isSeller(seller_address) {
+    function refundBuyer() public isSeller {
         require(depositCheck[buyer] == 1);
         require(depositCheck[seller] == 1);
         require(amountCheck[buyer] == 1);

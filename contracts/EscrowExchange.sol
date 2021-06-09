@@ -57,29 +57,4 @@ contract EscrowExchange {
 
     	emit ContractCreated(buyer, seller, amount, deposit, 0, "Open", notes, false);
     }
-
-    function buyerDeposit(uint contract_index) public payable {
-    	EscrowFactory retrieved_contract = contractIndexesForUsers[contract_index];
-    	retrieved_contract.buyerDeposit(msg.sender, msg.value);
-    }
-
-    function sellerDeposit(uint contract_index) public payable {
-    	EscrowFactory retrieved_contract = contractIndexesForUsers[contract_index];
-    	retrieved_contract.sellerDeposit(msg.sender, msg.value);
-    }
-
-    function reverseBuyerDeposit(uint contract_index) public {
-    	EscrowFactory retrieved_contract = contractIndexesForUsers[contract_index];
-    	retrieved_contract.reverseBuyerDeposit(msg.sender);
-    }
-
-    function reverseSellerDeposit(uint contract_index) public {
-    	EscrowFactory retrieved_contract = contractIndexesForUsers[contract_index];
-    	retrieved_contract.reverseSellerDeposit(msg.sender);
-    }
-
-    function claimDeposits(uint contract_index) public {
-    	EscrowFactory retrieved_contract = contractIndexesForUsers[contract_index];
-    	retrieved_contract.claimDeposits(msg.sender);
-    }
 }

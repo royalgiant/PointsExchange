@@ -99,65 +99,65 @@ class App extends Component {
     })
   }
 
-  buyerDeposit(contract_index, deposit) {
+  buyerDeposit(contract, deposit) {
     this.setState({ loading: true })
-    this.state.escrowExchange.methods.buyerDeposit(contract_index).send({ from: this.state.account, value: deposit})
+    contract.methods.buyerDeposit().send({ from: this.state.account, value: deposit })
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
   }
 
-  sellerDeposit(contract_index, deposit){
+  sellerDeposit(contract, deposit){
     this.setState({ loading: true })
-    this.state.escrowExchange.methods.sellerDeposit(contract_index).send({ from: this.state.account, value: deposit})
+    contract.methods.sellerDeposit().send({ from: this.state.account, value: deposit})
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
   }
 
-  reverseBuyerDeposit() {
+  reverseBuyerDeposit(contract) {
     this.setState({ loading: true })
-    this.state.escrowExchange.methods.reverseBuyerDeposit().send({ from: this.state.account})
+    contract.methods.reverseBuyerDeposit().send({from: this.state.account })
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
   }
 
-  reverseSellerDeposit() {
+  reverseSellerDeposit(contract) {
     this.setState({ loading: true })
-    this.state.escrowExchange.methods.reverseSellerDeposit().send({ from: this.state.account})
+    contract.methods.reverseSellerDeposit().send({ from: this.state.account })
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
   }
 
-  claimDeposits() {
+  claimDeposits(contract) {
     this.setState({ loading: true })
-    this.state.escrowExchange.methods.claimDeposits().send({ from: this.state.account})
+    contract.methods.claimDeposits().send({ from: this.state.account })
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
   }
 
-  sendAmount() {
+  sendAmount(contract) {
     this.setState({ loading: true })
-    this.state.escrowExchange.methods.sendAmount().send({ from: this.state.account})
+    contract.methods.sendAmount().send({ from: this.state.account })
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
   }
 
-  paySeller() {
+  paySeller(contract) {
     this.setState({ loading: true })
-    this.state.escrowExchange.methods.paySeller().send({ from: this.state.account})
+    contract.methods.paySeller().send({ from: this.state.account})
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
   }
 
-  refundBuyer() {
+  refundBuyer(contract) {
     this.setState({ loading: true })
-    this.state.escrowExchange.methods.refundBuyer().send({ from: this.state.account})
+    contract.methods.refundBuyer().send({ from: this.state.account })
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })

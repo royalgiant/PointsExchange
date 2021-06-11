@@ -115,7 +115,6 @@ contract EscrowFactory {
     function reverseBuyerDeposit() public isBuyer {
         require(depositCheck[buyer] == 1, "the buyer has not desposited CANNOT reverseDeposit");
         require(depositCheck[seller] == 0, "the seller has deposited already CANNOT reverseDeposit");
-        require(amountCheck[buyer] == 0, "the buyer has already sent the amount CANNOT reverseDeposit"); // To Do: Write a amountcheck test
         depositCheck[buyer] = 0;
         buyer.transfer(deposit);
         emit BuyerDepositReversed("the buyer has reversed their deposit");
@@ -126,9 +125,8 @@ contract EscrowFactory {
     going ahead.*/
     
     function reverseSellerDeposit() public isSeller {
-        require(depositCheck[seller] == 1);
-        require(depositCheck[buyer] == 0);
-        require(amountCheck[buyer] == 0);
+        require(depositCheck[seller] == 1, "the seller has not desposited CANNOT reverseDeposit");
+        require(depositCheck[buyer] == 0, "the buyer has deposited already CANNOT reverseDeposit");
         depositCheck[seller] = 0;
         seller.transfer(deposit);
         emit SellerDepositReversed("the seller has reversed their deposit");
@@ -141,7 +139,7 @@ contract EscrowFactory {
     function claimDeposits() public ifIsAParty(msg.sender) {
         require(depositCheck[buyer] == 1, "the buyer has not made a deposit for claimDeposits");
         require(depositCheck[seller] == 1, "the seller has not made a deposit for claimDeposits");
-        require(amountCheck[buyer] == 0, "the buyer has already sent an amount for claimDeposits"); // TODO TEST
+        require(amountCheck[buyer] == 0, "the buyer has already sent an amount for claimDeposits");
         require(signatures[msg.sender] == 0, "the sender have already signed off on claimDeposit");
         signatures[msg.sender] = 1;
         signatureCount ++;
@@ -168,10 +166,10 @@ contract EscrowFactory {
     and restricts the buyer from making multiple payments */
     
     function sendAmount() public payable isBuyer {
-        require(msg.value == amount); // Check to see correct amount is sent.
-        require(depositCheck[buyer] == 1);
-        require(depositCheck[seller] == 1);
-        require(amountCheck[msg.sender] == 0);
+        require(msg.value == amount, "Invalid amount"); // Check to see correct amount is sent.
+        require(depositCheck[buyer] == 1, "the buyer has not deposited yet");
+        require(depositCheck[seller] == 1, "the seller has not deposited yet");
+        require(amountCheck[msg.sender] == 0, "the buyer has already send the amount");
         amountCheck[msg.sender] = 1;
         emit AmountSent("Buyer has sent the payment amount to the escrow");
     }
@@ -180,9 +178,9 @@ contract EscrowFactory {
     returning deposits to both parties */
     /* NEW FUNCTION EXTRA: This should automatically pay seller when it passes expiry time (i.e. the flight time) and then automatically return deposits. Developer fee should be collected here */
     function paySeller() public isBuyer {
-        require(depositCheck[buyer] == 1);
-        require(depositCheck[seller] == 1);
-        require(amountCheck[buyer] == 1);
+        require(depositCheck[buyer] == 1, "the buyer has not deposited yet");
+        require(depositCheck[seller] == 1, "the seller has not deposited yet");
+        require(amountCheck[buyer] == 1, "the buyer has not sent the amount yet");
         seller.transfer(amount);
         buyer.transfer(deposit);
         seller.transfer(deposit);
@@ -193,9 +191,9 @@ contract EscrowFactory {
     returning deposits to both parties */
     /* NEW FUNCTION EXTRA: This can only be called before the expiry time. (i.e. 1 or 2 days before flight time) and then automatically return deposits. Developer fee should be collected here */
     function refundBuyer() public isSeller {
-        require(depositCheck[buyer] == 1);
-        require(depositCheck[seller] == 1);
-        require(amountCheck[buyer] == 1);
+        require(depositCheck[buyer] == 1, "the buyer has not deposited yet");
+        require(depositCheck[seller] == 1, "the seller has not deposited yet");
+        require(amountCheck[buyer] == 1, "the buyer has not sent the amount yet");
         buyer.transfer(amount);
         seller.transfer(deposit);
         buyer.transfer(deposit);
@@ -246,5 +244,9 @@ contract EscrowFactory {
 
     function getAmountCheck(address a) public view returns (uint){
     	return amountCheck[a];
+    }
+
+    function getContractBalance() public view returns (uint) {
+        return address(this).balance;
     }
 }

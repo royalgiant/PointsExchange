@@ -38,6 +38,21 @@ class Main extends Component {
     }
   }
 
+  reverseDepositButton(depositMade, contractDetails, key) {
+    if (Boolean(Number(depositMade))) {
+      var contract = this.props.contractObjects[key]
+      return(<Button href="#" className={styles.actionButtons} onClick={ () => this.reverseDepositByBuyerOrSeller(contract, contractDetails)}>Reverse Deposit</Button>)
+    }
+  }
+
+  reverseDepositByBuyerOrSeller(contract, contractDetails) {
+    if (this.props.account === contractDetails[0]) {
+      this.props.reverseBuyerDeposit(contract)
+    } else {
+      this.props.reverseSellerDeposit(contract)
+    }
+  }
+
   showSendAmountButton(buyer, depositCheck) {
     if (this.props.account === buyer && Boolean(Number(depositCheck)) === false) {
       return(<Button href="#" className={styles.actionButtons}>Send Amount Requested</Button>)
@@ -114,9 +129,7 @@ class Main extends Component {
                 <Table size="sm" responsive="sm" hover>
                   <thead>
                     <tr>
-                      <th>#</th>
-                      <th>Buyer Address</th>
-                      <th>Seller Address</th>
+                      <th>Contract Addresses:</th>
                       <th>Amount</th>
                       <th>Deposit</th>
                       <th>Notes</th>
@@ -137,9 +150,11 @@ class Main extends Component {
                       return(
                         <React.Fragment key={key}>
                           <tr key={key} onClick={this.onClickHandler}>
-                            <td className={styles.contractIndexKey}><Button className={styles.contractIndexKeyButton} variant="link">{contractAddress}</Button></td>
-                            <td className={styles.address}>{buyer}</td>
-                            <td className={styles.address}>{seller}</td>
+                            <td className={styles.contractIndexKey}>
+                              <Button className={styles.contractIndexKeyButton} variant="link">Contract Address:{contractAddress}</Button>
+                              <p className={styles.address}><b>Buyer Address:</b> {buyer}</p>
+                              <p className={styles.address}><b>Seller Address:</b>{seller}</p>
+                            </td>
                             <td>{window.web3.utils.fromWei((amount).toString(), 'Ether')} ETH</td>
                             <td>{window.web3.utils.fromWei((deposit).toString(), 'Ether')} ETH</td>
                             <td>{notes}</td>
@@ -148,9 +163,9 @@ class Main extends Component {
                           <tr className="collapse">
                             <td colSpan="7">
                               <div>
-                              <p>The Signature Count is <strong>{signatureCount}</strong> <i>(2 is required to complete the contract)</i>.</p>
+                              <p>The Signature Count is <strong>{signatureCount}</strong> <i>(2 is required to reclaim Deposit)</i>.</p>
                               {this.showDepositButton(depositCheck, contractDetails, key)}
-                              <Button href="#" className={styles.actionButtons}>Reverse Deposit</Button>
+                              {this.reverseDepositButton(depositCheck, contractDetails, key)}
                               <Button href="#" className={styles.actionButtons}>Claim Deposits</Button>
                               {this.showSendAmountButton(buyer, depositCheck)}
                               </div>

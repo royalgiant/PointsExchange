@@ -16,8 +16,10 @@ contract EscrowExchange {
 		if (addressContractIndexExists[msg.sender][index]) {
 	 		EscrowFactory retrieved_contract = contractIndexesForUsers[index];
 		
+	 		address seller = retrieved_contract.getSeller();
+
 	        return (retrieved_contract.getBuyer(), 
-	        	retrieved_contract.getSeller(), 
+	        	seller, 
 	        	retrieved_contract.getAmount(), 
 	        	retrieved_contract.getDeposit(), 
 	        	retrieved_contract.getSignatureCount(),

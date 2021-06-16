@@ -93,7 +93,7 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 			    assert.equal(retrieved_contract[7].toNumber(), 0, 'buyer depositCheck is correct')
 			    assert.equal(retrieved_contract[8].toNumber(), 0, 'buyer amountCheck is correct')
 			    assert.equal(retrieved_contract[9].toNumber(), 0, 'buyer signatures is correct')
-			    assert.notEqual(retrieved_contract[10], 0x0, "contract address is not 0x0");
+			    assert.notEqual(retrieved_contract[10], 0x0, "contract address is not 0x0")
 	    	})
 	   	})
 

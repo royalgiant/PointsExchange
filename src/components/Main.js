@@ -53,18 +53,32 @@ class Main extends Component {
     }
   }
 
-  showClaimDepositsButton(depositCheck, sellerDepositCheck, amountCheck, signed, key) {
-    if (Boolean(Number(depositCheck)) === true && Boolean(Number(sellerDepositCheck)) === true &&  Boolean(Number(amountCheck)) === false && Boolean(Number(signed)) === false) {
+  showClaimDepositsButton(buyerDepositCheck, sellerDepositCheck, amountCheck, signed, key) {
+    if (Boolean(Number(buyerDepositCheck)) === true && Boolean(Number(sellerDepositCheck)) === true &&  Boolean(Number(amountCheck)) === false && Boolean(Number(signed)) === false) {
       var contract = this.props.contractObjects[key]
       return(<Button href="#" className={styles.actionButtons} onClick={ () => this.claimDeposits(contract)}>Claim Deposit</Button>)
     }
   }
 
 
-  showSendAmountButton(buyer, depositCheck, sellerDepositCheck, amountCheck, key) {
+  showSendAmountButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, key) {
     var contract = this.props.contractObjects[key]
-    if (this.props.account === buyer && Boolean(Number(depositCheck)) === true && Boolean(Number(sellerDepositCheck)) === true && Boolean(Number(amountCheck)) === false ) {
-      return(<Button href="#" className={styles.actionButtons}>Send Amount Requested</Button>)
+    if (this.props.account === buyer && Boolean(Number(buyerDepositCheck)) === true && Boolean(Number(sellerDepositCheck)) === true && Boolean(Number(amountCheck)) === false ) {
+      return(<Button href="#" className={styles.actionButtons} onClick={ () => this.sendAmount(contract)}>Send Amount Requested</Button>)
+    }
+  }
+
+  showPaySellerButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, key) {
+    var contract = this.props.contractObjects[key]
+    if (this.props.account === buyer && Boolean(Number(buyerDepositCheck)) === true && Boolean(Number(sellerDepositCheck)) === true && Boolean(Number(amountCheck)) === true ) {
+      return(<Button href="#" className={styles.actionButtons} onClick={ () => this.paySeller(contract)}>Pay Seller Requested</Button>)
+    }
+  }
+
+  showRefundBuyerButton(seller, buyerDepositCheck, sellerDepositCheck, amountCheck, key) {
+    var contract = this.props.contractObjects[key]
+    if (this.props.account === seller && Boolean(Number(buyerDepositCheck)) === true && Boolean(Number(sellerDepositCheck)) === true && Boolean(Number(amountCheck)) === true ) {
+      return(<Button href="#" className={styles.actionButtons} onClick={ () => this.refundBuyer(contract)}>Refund Buyer Requested</Button>)
     }
   }
 
@@ -159,6 +173,7 @@ class Main extends Component {
                       var currentUserSignature = contractDetails[9]
                       var contractAddress = contractDetails[10]
                       var sellerDepositCheck = contractDetails[11]
+                      var buyerDepositCheck = contractDetails[12]
                       return(
                         <React.Fragment key={key}>
                           <tr key={key} onClick={this.onClickHandler}>
@@ -178,8 +193,10 @@ class Main extends Component {
                               <p>The Signature Count is <strong>{signatureCount}</strong> <i>(2 is required to reclaim Deposit)</i>.</p>
                               {this.showDepositButton(depositCheck, contractDetails, key)}
                               {this.reverseDepositButton(depositCheck, contractDetails, key)}
-                              {this.showClaimDepositsButton(depositCheck, sellerDepositCheck, amountCheck, currentUserSignature, key)}
-                              {this.showSendAmountButton(buyer, depositCheck, sellerDepositCheck, amountCheck, key)}
+                              {this.showClaimDepositsButton(buyerDepositCheck, sellerDepositCheck, amountCheck, currentUserSignature, key)}
+                              {this.showSendAmountButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, key)}
+                              {this.showPaySellerButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, key)}
+                              {this.showRefundBuyerButton(seller, buyerDepositCheck, sellerDepositCheck, amountCheck, key)}
                               </div>
                             </td>
                           </tr>

@@ -41,6 +41,9 @@ class App extends Component {
       for (var i = 0; i < contractCount; i++) {
         var contractDetails = await escrowExchange.methods.getContractForCurrentUser(i).call({from: this.state.account})
         var contract = new web3.eth.Contract(EscrowFactory.abi, contractDetails[10])
+        var buyerDepositCheck = await contract.methods.getIfAddressDeposited(contractDetails[0]).call({ from: this.state.account })
+        var sellerDepositCheck = await contract.methods.getIfAddressDeposited(contractDetails[1]).call({ from: this.state.account })
+        Object.assign(contractDetails, {11: sellerDepositCheck, 12: buyerDepositCheck})
         this.setState({
           contracts: [...this.state.contracts, contract],
           contractDetails: [...this.state.contractDetails, contractDetails]

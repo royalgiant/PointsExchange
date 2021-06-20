@@ -38,8 +38,12 @@ class Main extends Component {
     }
   }
 
-  reverseDepositButton(depositMade, contractDetails, key) {
-    if (Boolean(Number(depositMade))) {
+  reverseDepositButton(contractDetails, key) {
+    var sellerDepositCheck = contractDetails[11]
+    var buyerDepositCheck = contractDetails[12]
+    var buyerCanReverseDeposit = Boolean(Number(buyerDepositCheck)) === true && Boolean(Number(sellerDepositCheck)) === false
+    var sellerCanReverseDeposit = Boolean(Number(buyerDepositCheck)) === false && Boolean(Number(sellerDepositCheck)) === true
+    if (buyerCanReverseDeposit || sellerCanReverseDeposit) {
       var contract = this.props.contractObjects[key]
       return(<Button href="#" className={styles.actionButtons} onClick={ () => this.reverseDepositByBuyerOrSeller(contract, contractDetails)}>Reverse Deposit</Button>)
     }
@@ -87,7 +91,7 @@ class Main extends Component {
       <Container fluid>
         <Row className="justify-content-md-center">
           <Col md="auto">
-            <Tabs fill justify defaultActiveKey="create-contract" id="uncontrolled-contract-template" variant="pills">
+            <Tabs fill justify defaultActiveKey="my-contracts" id="uncontrolled-contract-template" variant="pills">
               <Tab eventKey="create-contract" title="Create Contract">
                 <h1>Start a New Contract</h1>
                 <form onSubmit={(event) => {
@@ -192,7 +196,7 @@ class Main extends Component {
                               <div>
                               <p>The Signature Count is <strong>{signatureCount}</strong> <i>(2 is required to reclaim Deposit)</i>.</p>
                               {this.showDepositButton(depositCheck, contractDetails, key)}
-                              {this.reverseDepositButton(depositCheck, contractDetails, key)}
+                              {this.reverseDepositButton(contractDetails, key)}
                               {this.showClaimDepositsButton(buyerDepositCheck, sellerDepositCheck, amountCheck, currentUserSignature, key)}
                               {this.showSendAmountButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, key)}
                               {this.showPaySellerButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, key)}

@@ -99,6 +99,7 @@ class App extends Component {
       console.log("Contract created")
       console.log(receipt)
       this.setState({ loading: false })
+      window.location.reload()
     })
   }
 
@@ -107,6 +108,7 @@ class App extends Component {
     contract.methods.buyerDeposit().send({ from: this.state.account, value: deposit })
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
+      window.location.reload()
     })
   }
 
@@ -115,6 +117,7 @@ class App extends Component {
     contract.methods.sellerDeposit().send({ from: this.state.account, value: deposit})
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
+      window.location.reload()
     })
   }
 
@@ -123,6 +126,7 @@ class App extends Component {
     contract.methods.reverseBuyerDeposit().send({from: this.state.account })
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
+      window.location.reload()
     })
   }
 
@@ -131,6 +135,7 @@ class App extends Component {
     contract.methods.reverseSellerDeposit().send({ from: this.state.account })
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
+      window.location.reload()
     })
   }
 
@@ -139,6 +144,7 @@ class App extends Component {
     contract.methods.claimDeposits().send({ from: this.state.account })
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
+      window.location.reload()
     })
   }
 
@@ -147,6 +153,7 @@ class App extends Component {
     contract.methods.sendAmount().send({ from: this.state.account })
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
+      window.location.reload()
     })
   }
 
@@ -155,6 +162,7 @@ class App extends Component {
     contract.methods.paySeller().send({ from: this.state.account})
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
+      window.location.reload()
     })
   }
 
@@ -163,6 +171,7 @@ class App extends Component {
     contract.methods.refundBuyer().send({ from: this.state.account })
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
+      window.location.reload()
     })
   }
 

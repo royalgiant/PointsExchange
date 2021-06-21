@@ -41,8 +41,8 @@ class Main extends Component {
   reverseDepositButton(contractDetails, key) {
     var sellerDepositCheck = contractDetails[11]
     var buyerDepositCheck = contractDetails[12]
-    var buyerCanReverseDeposit = Boolean(Number(buyerDepositCheck)) === true && Boolean(Number(sellerDepositCheck)) === false
-    var sellerCanReverseDeposit = Boolean(Number(buyerDepositCheck)) === false && Boolean(Number(sellerDepositCheck)) === true
+    var buyerCanReverseDeposit = this.props.account === contractDetails[0] && Boolean(Number(buyerDepositCheck)) === true && Boolean(Number(sellerDepositCheck)) === false
+    var sellerCanReverseDeposit =  this.props.account === contractDetails[1] && Boolean(Number(buyerDepositCheck)) === false && Boolean(Number(sellerDepositCheck)) === true
     if (buyerCanReverseDeposit || sellerCanReverseDeposit) {
       var contract = this.props.contractObjects[key]
       return(<Button href="#" className={styles.actionButtons} onClick={ () => this.reverseDepositByBuyerOrSeller(contract, contractDetails)}>Reverse Deposit</Button>)
@@ -64,12 +64,20 @@ class Main extends Component {
     }
   }
 
+  claimDeposits(contract) {
+    this.props.claimDeposits(contract)
+  }
 
-  showSendAmountButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, key) {
+
+  showSendAmountButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, amount, key) {
     var contract = this.props.contractObjects[key]
     if (this.props.account === buyer && Boolean(Number(buyerDepositCheck)) === true && Boolean(Number(sellerDepositCheck)) === true && Boolean(Number(amountCheck)) === false ) {
-      return(<Button href="#" className={styles.actionButtons} onClick={ () => this.sendAmount(contract)}>Send Amount Requested</Button>)
+      return(<Button href="#" className={styles.actionButtons} onClick={ () => this.sendAmount(contract, amount)}>Send Amount Requested</Button>)
     }
+  }
+
+  sendAmount(contract, amount) {
+    this.props.sendAmount(contract, amount)
   }
 
   showPaySellerButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, key) {
@@ -79,11 +87,19 @@ class Main extends Component {
     }
   }
 
+  paySeller(contract) {
+    this.props.paySeller(contract)
+  }
+
   showRefundBuyerButton(seller, buyerDepositCheck, sellerDepositCheck, amountCheck, key) {
     var contract = this.props.contractObjects[key]
     if (this.props.account === seller && Boolean(Number(buyerDepositCheck)) === true && Boolean(Number(sellerDepositCheck)) === true && Boolean(Number(amountCheck)) === true ) {
       return(<Button href="#" className={styles.actionButtons} onClick={ () => this.refundBuyer(contract)}>Refund Buyer Requested</Button>)
     }
+  }
+
+  refundBuyer(contract) {
+    this.props.refundBuyer(contract)
   }
 
   render() {
@@ -198,7 +214,7 @@ class Main extends Component {
                               {this.showDepositButton(depositCheck, contractDetails, key)}
                               {this.reverseDepositButton(contractDetails, key)}
                               {this.showClaimDepositsButton(buyerDepositCheck, sellerDepositCheck, amountCheck, currentUserSignature, key)}
-                              {this.showSendAmountButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, key)}
+                              {this.showSendAmountButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, amount, key)}
                               {this.showPaySellerButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, key)}
                               {this.showRefundBuyerButton(seller, buyerDepositCheck, sellerDepositCheck, amountCheck, key)}
                               </div>

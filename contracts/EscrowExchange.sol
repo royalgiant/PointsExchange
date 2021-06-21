@@ -17,8 +17,9 @@ contract EscrowExchange {
 	 		EscrowFactory retrieved_contract = contractIndexesForUsers[index];
 		
 	 		address seller = retrieved_contract.getSeller();
+	 		address buyer = retrieved_contract.getBuyer();
 
-	        return (retrieved_contract.getBuyer(), 
+	        return (buyer, 
 	        	seller, 
 	        	retrieved_contract.getAmount(), 
 	        	retrieved_contract.getDeposit(), 
@@ -26,7 +27,7 @@ contract EscrowExchange {
 	        	retrieved_contract.getContractStatus(), 
 	        	retrieved_contract.getNotes(),
 	        	retrieved_contract.getIfAddressDeposited(msg.sender),
-	        	retrieved_contract.getAmountCheck(msg.sender),
+	        	retrieved_contract.getAmountCheck(buyer),
 	        	retrieved_contract.getSignature(msg.sender),
 	        	address(retrieved_contract)
 	        );

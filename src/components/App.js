@@ -148,9 +148,9 @@ class App extends Component {
     })
   }
 
-  sendAmount(contract) {
+  sendAmount(contract, amount) {
     this.setState({ loading: true })
-    contract.methods.sendAmount().send({ from: this.state.account })
+    contract.methods.sendAmount().send({ from: this.state.account, value: amount })
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
       window.location.reload()

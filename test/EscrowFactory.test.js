@@ -216,7 +216,9 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       var pay_seller = await contractPaySeller.paySeller({from: buyer})
       expectEvent(pay_seller, 'SellerPaid', {msg: "The seller has been paid and all deposits have been returned - transaction complete"});
       var balance = await contractPaySeller.getContractBalance()
+      var contractComplete = await contractPaySeller.getContractComplete()
       assert.equal(balance, 0)
+      assert.equal(contractComplete, true)
     })
   })
 
@@ -240,7 +242,9 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       var refund_buyer = await contractRefundBuyer.refundBuyer({from: seller})
       expectEvent(refund_buyer, 'BuyerRefunded', {msg: "The buyer has been refunded and all deposits have been returned - transaction cancelled"});
       var balance = await contractRefundBuyer.getContractBalance()
+      var contractComplete = await contractPaySeller.getContractComplete()
       assert.equal(balance, 0)
+      assert.equal(contractComplete, true)
     })
   })
    

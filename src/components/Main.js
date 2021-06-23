@@ -80,10 +80,15 @@ class Main extends Component {
     this.props.sendAmount(contract, amount)
   }
 
-  showPaySellerButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, key) {
+  showPaySellerButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, contractComplete, key) {
     var contract = this.props.contractObjects[key]
-    if (this.props.account === buyer && Boolean(Number(buyerDepositCheck)) === true && Boolean(Number(sellerDepositCheck)) === true && Boolean(Number(amountCheck)) === true ) {
-      return(<Button href="#" className={styles.actionButtons} onClick={ () => this.paySeller(contract)}>Pay Seller Requested</Button>)
+    if (this.props.account === buyer && Boolean(Number(buyerDepositCheck)) === true && Boolean(Number(sellerDepositCheck)) === true && Boolean(Number(amountCheck)) === true  && contractComplete == false ) {
+      return(
+        <div>
+          <Button href="#" className={styles.actionButtons} onClick={ () => this.paySeller(contract)}>Pay Seller Requested</Button>
+          <i>Warning: Please be aware that paying the seller is an irreversible action and will complete the contract.</i>
+        </div>
+      )
     }
   }
 
@@ -91,10 +96,15 @@ class Main extends Component {
     this.props.paySeller(contract)
   }
 
-  showRefundBuyerButton(seller, buyerDepositCheck, sellerDepositCheck, amountCheck, key) {
+  showRefundBuyerButton(seller, buyerDepositCheck, sellerDepositCheck, amountCheck, contractComplete, key) {
     var contract = this.props.contractObjects[key]
-    if (this.props.account === seller && Boolean(Number(buyerDepositCheck)) === true && Boolean(Number(sellerDepositCheck)) === true && Boolean(Number(amountCheck)) === true ) {
-      return(<Button href="#" className={styles.actionButtons} onClick={ () => this.refundBuyer(contract)}>Refund Buyer Requested</Button>)
+    if (this.props.account === seller && Boolean(Number(buyerDepositCheck)) === true && Boolean(Number(sellerDepositCheck)) === true && Boolean(Number(amountCheck)) === true && contractComplete == false ) {
+      return(
+        <div>
+          <Button href="#" className={styles.actionButtons} onClick={ () => this.refundBuyer(contract)}>Refund Buyer Requested</Button>
+          <i>Warning: Please be aware that the refunding the buyer is an irreversible contract and will complete the contract.</i>
+        </div>
+      )
     }
   }
 
@@ -194,6 +204,7 @@ class Main extends Component {
                       var contractAddress = contractDetails[10]
                       var sellerDepositCheck = contractDetails[11]
                       var buyerDepositCheck = contractDetails[12]
+                      var contractComplete = contractDetails[13]
                       return(
                         <React.Fragment key={key}>
                           <tr key={key} onClick={this.onClickHandler}>
@@ -215,8 +226,8 @@ class Main extends Component {
                               {this.reverseDepositButton(contractDetails, key)}
                               {this.showClaimDepositsButton(buyerDepositCheck, sellerDepositCheck, amountCheck, currentUserSignature, key)}
                               {this.showSendAmountButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, amount, key)}
-                              {this.showPaySellerButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, key)}
-                              {this.showRefundBuyerButton(seller, buyerDepositCheck, sellerDepositCheck, amountCheck, key)}
+                              {this.showPaySellerButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, contractComplete, key)}
+                              {this.showRefundBuyerButton(seller, buyerDepositCheck, sellerDepositCheck, amountCheck, contractComplete, key)}
                               </div>
                             </td>
                           </tr>

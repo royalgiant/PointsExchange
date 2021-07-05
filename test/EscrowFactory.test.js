@@ -17,19 +17,18 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
   let contractSendAmount;
   let contractPaySeller;
   let contractRefundBuyer;
-  let contract2;
   let depositValue = "10"
   let amountValue = "10"
 
   before(async() => {
-    contractClaimDeposit = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes")
-    contractBuyerSellerDeposit = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes")
-    contractReverseBuyerDeposit = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes")
-    contractReverseSellerDeposit = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes")
-    contractSendAmount = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes")
-    contractPaySeller = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes")
-    contractRefundBuyer = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes")
-    contract2 = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes")
+    contractClaimDeposit = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
+    contractBuyerSellerDeposit = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
+    contractReverseBuyerDeposit = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
+    contractReverseSellerDeposit = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
+    contractSendAmount = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
+    contractPaySeller = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
+    contractRefundBuyer = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
+    contractAdminReverse = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
   })
 
   describe('EscrowFactory BuyerDeposit', async () => {
@@ -245,6 +244,23 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       var contractComplete = await contractPaySeller.getContractComplete()
       assert.equal(balance, 0)
       assert.equal(contractComplete, true)
+    })
+  })
+
+   describe('EscrowFactory adminReverseContract', async () => {
+    it('succeeds', async() => {
+      await contractAdminReverse.sendAmount({from: buyer, value: amountValue})
+      var reversed_contract = await contractAdminReverse.adminReverseContract(true)
+      expectEvent(reversed_contract, 'ContractRevertedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded."});
+      var balance = await contractAdminReverse.getContractBalance()
+      var contractComplete = await contractAdminReverse.getContractComplete()
+      assert.equal(balance, 0)
+      var buyer_deposit = await contractAdminReverse.getIfAddressDeposited(buyer)
+      assert.equal(buyer_deposit, 0, "depositCheck[buyer] is 0")
+      var seller_deposit = await contractAdminReverse.getIfAddressDeposited(seller)
+      assert.equal(seller_deposit, 0, "depositCheck[seller] is 0")
+      var amount_check = await contractAdminReverse.getAmountCheck(buyer)
+      assert.equal(amount_check, 0, "amountCheck[buyer] is 0")
     })
   })
    

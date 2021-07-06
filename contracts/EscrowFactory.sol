@@ -286,4 +286,8 @@ contract EscrowFactory {
     function getContractComplete() public view returns (bool) {
         return contractComplete;
     }
+
+    function getOwner() public view returns (address) {
+        return owner;
+    }
 }

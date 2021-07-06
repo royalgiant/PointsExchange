@@ -249,6 +249,8 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
 
    describe('EscrowFactory adminReverseContract', async () => {
     it('succeeds', async() => {
+      await contractAdminReverse.buyerDeposit({from: buyer, value: depositValue});
+      await contractAdminReverse.sellerDeposit({from: seller, value: depositValue});
       await contractAdminReverse.sendAmount({from: buyer, value: amountValue})
       var reversed_contract = await contractAdminReverse.adminReverseContract(true)
       expectEvent(reversed_contract, 'ContractRevertedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded."});
@@ -261,6 +263,11 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       assert.equal(seller_deposit, 0, "depositCheck[seller] is 0")
       var amount_check = await contractAdminReverse.getAmountCheck(buyer)
       assert.equal(amount_check, 0, "amountCheck[buyer] is 0")
+    })
+
+    it('gets the contract owner', async() => {
+      var owner = await contractAdminReverse.getOwner()
+      assert.equal(owner, deployer, "Owner exists")
     })
   })
    

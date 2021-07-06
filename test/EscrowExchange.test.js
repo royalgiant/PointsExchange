@@ -113,6 +113,24 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 	   		await expectRevert(escrowExchange.createContract(buyer, seller, web3.utils.toWei('1', 'Ether'), web3.utils.toWei('0', 'Ether'), "Some notes"),  "revert")
 	   	})
 
+	   	it('setAdmin and GetAdmin', async () => {
+	   		return EscrowExchange.deployed().then(function(instance) {
+	    		const adminSet = escrowExchange.setAdmin(true, seller, {from: deployer});
+	    		const adminGet = escrowExchange.getAdmin(seller, {from: deployer});
+	   			return adminGet
+	    	}).then(function(retrieved_admin) {
+	    		assert.equal(retrieved_admin, true, 'retrieved admin is true')
+	    	})
+	   	})
+
+	   	it('reverses contract by admin', async () => {
+	   		return EscrowExchange.deployed().then(function(instance) {
+	    		var contract_reversed = escrowExchange.adminReverseContract(0, {from: deployer});
+	    		return contract_reversed
+	    	}).then(function(contract_reversed) {
+	    		expectRevert(contract_reversed, 'AdminReversedContract', { msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded." });
+	    	})
+	   	})
 	    /* To replicate ON TRUFFLE CONSOLE, deploy the contract and run the following
 			let accounts = await web3.eth.getAccounts()
 			escrowExchange.createContract(accounts[0], accounts[1], "2000000000000000000", "1000000000000000000", "some notes")

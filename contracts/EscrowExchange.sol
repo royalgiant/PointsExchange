@@ -56,7 +56,7 @@ contract EscrowExchange {
     		return addressToIndex[msg.sender][0] + 1;
     	} else {
 	    	uint lastContractId = addressToIndex[msg.sender].length; // Get the length of the user's uint addressToIndex (array of contracts)
-		    return addressToIndex[msg.sender][lastContractId - 1]; // To access the last contract id user made, so we don't have to iterate entire contract array. We do +1 to take into account the user's last contract.
+		    return addressToIndex[msg.sender][lastContractId - 1] + 1; // To access the last contract id user made, so we don't have to iterate entire contract array. We do +1 to take into account the user's last contract.
     	}
 	 }
 
@@ -78,7 +78,7 @@ contract EscrowExchange {
 
     function adminReverseContract(uint index) public isAdministrator{
     	EscrowFactory retrieved_contract = contractIndexesForUsers[index];
-    	retrieved_contract.adminReverseContract(true); // Write a function from web3 that if gas > contract value, this function can't be ran.
+    	retrieved_contract.adminReverseContract(true);
     }
 
     function setAdmin(bool state, address newAdmin) public isAdministrator {

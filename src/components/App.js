@@ -44,7 +44,8 @@ class App extends Component {
         var buyerDepositCheck = await contract.methods.getIfAddressDeposited(contractDetails[0]).call({ from: this.state.account })
         var sellerDepositCheck = await contract.methods.getIfAddressDeposited(contractDetails[1]).call({ from: this.state.account })
         var contractCompleted = await contract.methods.getContractComplete().call({ from: this.state.account })
-        Object.assign(contractDetails, {11: sellerDepositCheck, 12: buyerDepositCheck, 13: contractCompleted})
+        var isAdmin = await escrowExchange.methods.getAdmin(this.state.account).call({from: this.state.account})
+        Object.assign(contractDetails, {11: sellerDepositCheck, 12: buyerDepositCheck, 13: contractCompleted, 14: isAdmin})
         this.setState({
           contracts: [...this.state.contracts, contract],
           contractDetails: [...this.state.contractDetails, contractDetails]
@@ -79,6 +80,7 @@ class App extends Component {
     this.paySeller = this.paySeller.bind(this)
     this.refundBuyer = this.refundBuyer.bind(this)
     this.createContract = this.createContract.bind(this)
+    this.adminReverseContract = this.adminReverseContract.bind(this)
   }
 
   // EscrowExchange Calls
@@ -91,6 +93,14 @@ class App extends Component {
     })
   }
   
+  adminReverseContract(index) {
+    this.setState({ loading: true })
+    this.state.escrowExchange.methods.adminReverseContract(index).send({ from: this.state.account})
+    .once('receipt', (receipt) => {
+      this.setState({ loading: false })
+    })
+  }
+
   // Escrow Calls
 
   createContract(buyer, seller, amount, deposit, notes) {

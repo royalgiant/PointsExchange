@@ -29,7 +29,7 @@ library SafeMath {
 contract EscrowFactory {
 	using SafeMath for uint256;
 
-	enum Status { OPEN, PENDING, CLOSED }
+	enum Status { OPEN, PENDING, CLOSED, ADMININTERVATION }
 
 	//storage
     address payable public buyer;
@@ -266,6 +266,8 @@ contract EscrowFactory {
             return "Open";
         } else if (status == Status.PENDING){
             return "Pending";
+        } else if (status == Status.ADMININTERVATION) {
+            return "Admin Assistance Requested";
         } else{
             return "Closed";
         }

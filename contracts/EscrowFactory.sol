@@ -29,7 +29,7 @@ library SafeMath {
 contract EscrowFactory {
 	using SafeMath for uint256;
 
-	enum Status { OPEN, PENDING, CLOSED, ADMININTERVATION }
+	enum Status { OPEN, PENDING, CLOSED, REQUESTADMINREFUND }
 
 	//storage
     address payable public buyer;
@@ -82,6 +82,7 @@ contract EscrowFactory {
     event SellerPaid(string msg);
     event BuyerRefunded(string msg);
     event ContractRevertedByAdmin(string msg);
+    event AdminRefundRequested(string msg);
 
     constructor(address payable _buyer, address payable _seller, uint _amount, uint _deposit, string memory _notes, address payable _owner) public {
 		buyer = _buyer;
@@ -212,6 +213,14 @@ contract EscrowFactory {
         emit BuyerRefunded("The buyer has been refunded and all deposits have been returned - transaction cancelled");
     }
 
+    function requestAdminRefund() public isBuyer {
+        require(depositCheck[buyer] == 1, "the buyer has not deposited yet");
+        require(depositCheck[seller] == 1, "the seller has not deposited yet");
+        require(amountCheck[buyer] == 1, "the buyer has not sent the amount yet");
+        status = Status.REQUESTADMINREFUND;
+        emit AdminRefundRequested("A refund from admin has been requested.");
+    }
+
     function adminReverseContract(bool isAdmin) public isAdminCalled(isAdmin) {
         // Charge a fee (i.e. 1-2%) for reversing the contract. Send this fee to me. And I will reimburse our employees/admins. And keep the difference.
         uint ownerReverseFee = deposit * 15 / 1000; // 1.5% fee for reversing contract.
@@ -266,8 +275,8 @@ contract EscrowFactory {
             return "Open";
         } else if (status == Status.PENDING){
             return "Pending";
-        } else if (status == Status.ADMININTERVATION) {
-            return "Admin Assistance Requested";
+        } else if (status == Status.REQUESTADMINREFUND) {
+            return "Request Admin Refund";
         } else{
             return "Closed";
         }

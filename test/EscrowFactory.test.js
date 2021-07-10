@@ -29,6 +29,7 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
     contractPaySeller = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
     contractRefundBuyer = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
     contractAdminReverse = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
+    contractRequestAdminRefund = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
   })
 
   describe('EscrowFactory BuyerDeposit', async () => {
@@ -268,6 +269,30 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
     it('gets the contract owner', async() => {
       var owner = await contractAdminReverse.getOwner()
       assert.equal(owner, deployer, "Owner exists")
+    })
+  })
+
+  describe('EscrowFactory RequestAdminRefund', async () => {
+    it('rejects with the buyer has not deposited yet', async () => {
+      await expectRevert(contractRequestAdminRefund.requestAdminRefund({from: buyer}),  "the buyer has not deposited yet")
+    })
+
+    it('rejects with the seller has not deposited yet', async () => {
+      await contractRequestAdminRefund.buyerDeposit({from: buyer, value: depositValue});
+      await expectRevert(contractRequestAdminRefund.requestAdminRefund({from: buyer}),  "the seller has not deposited yet")
+    })
+
+    it('rejects with the buyer has not sent the amount yet', async () => {
+      await contractRequestAdminRefund.sellerDeposit({from: seller, value: depositValue});
+      await expectRevert(contractRequestAdminRefund.requestAdminRefund({from: buyer}),  "the buyer has not sent the amount yet")
+    })
+
+    it('succeeds', async() => {
+      await contractRequestAdminRefund.sendAmount({from: buyer, value: amountValue})
+      var pay_seller = await contractRequestAdminRefund.requestAdminRefund({from: buyer})
+      expectEvent(pay_seller, 'AdminRefundRequested', {msg: "A refund from admin has been requested."});
+      var status = await contractRequestAdminRefund.getContractStatus()
+      assert.equal(status, "Request Admin Refund")
     })
   })
    

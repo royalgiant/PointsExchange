@@ -249,11 +249,31 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
   })
 
    describe('EscrowFactory adminContractTakeAction', async () => {
-    it('succeeds', async() => {
+    it('succeeds refunds', async() => {
       await contractAdminActionComplete.buyerDeposit({from: buyer, value: depositValue});
       await contractAdminActionComplete.sellerDeposit({from: seller, value: depositValue});
       await contractAdminActionComplete.sendAmount({from: buyer, value: amountValue})
-      var reversed_contract = await contractAdminActionComplete.adminContractTakeAction(true)
+      await contractAdminActionComplete.requestAdminAction({from: buyer})
+      var reversed_contract = await contractAdminActionComplete.adminContractTakeAction(true, 0)
+      expectEvent(reversed_contract, 'ContractActionCompletedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded."});
+      var balance = await contractAdminActionComplete.getContractBalance()
+      var contractComplete = await contractAdminActionComplete.getContractComplete()
+      assert.equal(balance, 0)
+      assert.equal(contractComplete, false)
+      var buyer_deposit = await contractAdminActionComplete.getIfAddressDeposited(buyer)
+      assert.equal(buyer_deposit, 0, "depositCheck[buyer] is 0")
+      var seller_deposit = await contractAdminActionComplete.getIfAddressDeposited(seller)
+      assert.equal(seller_deposit, 0, "depositCheck[seller] is 0")
+      var amount_check = await contractAdminActionComplete.getAmountCheck(buyer)
+      assert.equal(amount_check, 0, "amountCheck[buyer] is 0")
+    })
+
+    it('succeeds pay seller', async() => {
+      await contractAdminActionComplete.buyerDeposit({from: buyer, value: depositValue});
+      await contractAdminActionComplete.sellerDeposit({from: seller, value: depositValue});
+      await contractAdminActionComplete.sendAmount({from: buyer, value: amountValue})
+      await contractAdminActionComplete.requestAdminAction({from: seller})
+      var reversed_contract = await contractAdminActionComplete.adminContractTakeAction(true, 1)
       expectEvent(reversed_contract, 'ContractActionCompletedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded."});
       var balance = await contractAdminActionComplete.getContractBalance()
       var contractComplete = await contractAdminActionComplete.getContractComplete()

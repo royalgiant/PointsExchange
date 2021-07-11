@@ -1,35 +1,8 @@
 pragma solidity ^0.5.16;
 
-library SafeMath {
-    function mul(uint256 a, uint256 b) internal pure returns(uint256) {
-        uint256 c = a * b;
-        assert(a == 0 || c / a == b);
-        return c;
-    }
-
-    function div(uint256 a, uint256 b) internal pure returns(uint256) {
-        assert(b > 0); // Solidity automatically throws when dividing by 0
-        uint256 c = a / b;
-        assert(a == b * c + a % b); // There is no case in which this doesn't hold
-        return c;
-    }
-
-    function sub(uint256 a, uint256 b) internal pure returns(uint256) {
-        assert(b <= a);
-        return a - b;
-    }
-
-    function add(uint256 a, uint256 b) internal pure returns(uint256) {
-        uint256 c = a + b;
-        assert(c >= a);
-        return c;
-    }
-}
-
 contract EscrowFactory {
-	using SafeMath for uint256;
-
 	enum Status { OPEN, PENDING, CLOSED, REQUESTADMINACTION }
+    enum AdminAction { REFUNDBUYER, PAYSELLER}
 
 	//storage
     address payable public buyer;
@@ -38,7 +11,7 @@ contract EscrowFactory {
     address[] public party;
     uint public amount;
     uint public deposit;
-    uint public signatureCount;
+    uint8 public signatureCount;
     Status public status;
 	string public notes;
     bool public contractComplete;
@@ -157,9 +130,7 @@ contract EscrowFactory {
         
         if (signatureCount == 1) {
             emit DepositPartialClaim("the deposit claim has 1 out of 2 necessary signatures");
-        }
-        
-        if (signatureCount == 2) {
+        } else if (signatureCount == 2) {
             buyer.transfer(deposit);
             seller.transfer(deposit);
             depositCheck[buyer] = 0;
@@ -213,7 +184,7 @@ contract EscrowFactory {
         emit BuyerRefunded("The buyer has been refunded and all deposits have been returned - transaction cancelled");
     }
 
-    function requestAdminAction() public isBuyer {
+    function requestAdminAction() public {
         require(depositCheck[buyer] == 1, "the buyer has not deposited yet");
         require(depositCheck[seller] == 1, "the seller has not deposited yet");
         require(amountCheck[buyer] == 1, "the buyer has not sent the amount yet");
@@ -221,7 +192,7 @@ contract EscrowFactory {
         emit AdminActionRequested("An action from admin has been requested.");
     }
 
-    function adminContractTakeAction(bool isAdmin) public isAdminCalled(isAdmin) {
+    function adminContractTakeAction(bool isAdmin, uint8 _action) public isAdminCalled(isAdmin) {
         // Charge a fee (i.e. 1-2%) for reversing the contract. Send this fee to me. And I will reimburse our employees/admins. And keep the difference.
         uint ownerReverseFee = deposit * 15 / 1000; // 1.5% fee for reversing contract.
         uint depositAfterFees = (deposit / 2) - ownerReverseFee ;
@@ -235,8 +206,11 @@ contract EscrowFactory {
             seller.transfer(depositAfterFees);
             depositCheck[seller] = 0;
         }
-        if (amountCheck[buyer] == 1) {
+        if (amountCheck[buyer] == 1 && status == Status.REQUESTADMINACTION && _action == uint8(AdminAction.REFUNDBUYER)) {
             buyer.transfer(amount);
+            amountCheck[buyer] = 0;
+        } else if (amountCheck[buyer] == 1 && status == Status.REQUESTADMINACTION && _action == uint8(AdminAction.PAYSELLER)) {
+            seller.transfer(amount);
             amountCheck[buyer] = 0;
         }
         emit ContractActionCompletedByAdmin("The contract has been completely reverted by admin. All deposits and amounts have been refunded.");

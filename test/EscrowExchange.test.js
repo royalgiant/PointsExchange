@@ -123,14 +123,6 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 	    	})
 	   	})
 
-	   	it('reverses contract by admin', async () => {
-	   		return EscrowExchange.deployed().then(function(instance) {
-	    		var contract_reversed = escrowExchange.adminReverseContract(0, {from: deployer});
-	    		return contract_reversed
-	    	}).then(function(contract_reversed) {
-	    		expectRevert(contract_reversed, 'AdminReversedContract', { msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded." });
-	    	})
-	   	})
 	    /* To replicate ON TRUFFLE CONSOLE, deploy the contract and run the following
 			let accounts = await web3.eth.getAccounts()
 			escrowExchange.createContract(accounts[0], accounts[1], "2000000000000000000", "1000000000000000000", "some notes")

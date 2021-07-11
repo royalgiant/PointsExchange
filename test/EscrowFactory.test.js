@@ -28,8 +28,8 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
     contractSendAmount = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
     contractPaySeller = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
     contractRefundBuyer = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
-    contractAdminReverse = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
-    contractRequestAdminRefund = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
+    contractAdminActionComplete = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
+    contractRequestAdminAction = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
   })
 
   describe('EscrowFactory BuyerDeposit', async () => {
@@ -248,51 +248,52 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
     })
   })
 
-   describe('EscrowFactory adminReverseContract', async () => {
+   describe('EscrowFactory adminContractTakeAction', async () => {
     it('succeeds', async() => {
-      await contractAdminReverse.buyerDeposit({from: buyer, value: depositValue});
-      await contractAdminReverse.sellerDeposit({from: seller, value: depositValue});
-      await contractAdminReverse.sendAmount({from: buyer, value: amountValue})
-      var reversed_contract = await contractAdminReverse.adminReverseContract(true)
-      expectEvent(reversed_contract, 'ContractRevertedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded."});
-      var balance = await contractAdminReverse.getContractBalance()
-      var contractComplete = await contractAdminReverse.getContractComplete()
+      await contractAdminActionComplete.buyerDeposit({from: buyer, value: depositValue});
+      await contractAdminActionComplete.sellerDeposit({from: seller, value: depositValue});
+      await contractAdminActionComplete.sendAmount({from: buyer, value: amountValue})
+      var reversed_contract = await contractAdminActionComplete.adminContractTakeAction(true)
+      expectEvent(reversed_contract, 'ContractActionCompletedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded."});
+      var balance = await contractAdminActionComplete.getContractBalance()
+      var contractComplete = await contractAdminActionComplete.getContractComplete()
       assert.equal(balance, 0)
-      var buyer_deposit = await contractAdminReverse.getIfAddressDeposited(buyer)
+      assert.equal(contractComplete, false)
+      var buyer_deposit = await contractAdminActionComplete.getIfAddressDeposited(buyer)
       assert.equal(buyer_deposit, 0, "depositCheck[buyer] is 0")
-      var seller_deposit = await contractAdminReverse.getIfAddressDeposited(seller)
+      var seller_deposit = await contractAdminActionComplete.getIfAddressDeposited(seller)
       assert.equal(seller_deposit, 0, "depositCheck[seller] is 0")
-      var amount_check = await contractAdminReverse.getAmountCheck(buyer)
+      var amount_check = await contractAdminActionComplete.getAmountCheck(buyer)
       assert.equal(amount_check, 0, "amountCheck[buyer] is 0")
     })
 
     it('gets the contract owner', async() => {
-      var owner = await contractAdminReverse.getOwner()
+      var owner = await contractAdminActionComplete.getOwner()
       assert.equal(owner, deployer, "Owner exists")
     })
   })
 
-  describe('EscrowFactory RequestAdminRefund', async () => {
+  describe('EscrowFactory RequestAdminAction', async () => {
     it('rejects with the buyer has not deposited yet', async () => {
-      await expectRevert(contractRequestAdminRefund.requestAdminRefund({from: buyer}),  "the buyer has not deposited yet")
+      await expectRevert(contractRequestAdminAction.requestAdminAction({from: buyer}),  "the buyer has not deposited yet")
     })
 
     it('rejects with the seller has not deposited yet', async () => {
-      await contractRequestAdminRefund.buyerDeposit({from: buyer, value: depositValue});
-      await expectRevert(contractRequestAdminRefund.requestAdminRefund({from: buyer}),  "the seller has not deposited yet")
+      await contractRequestAdminAction.buyerDeposit({from: buyer, value: depositValue});
+      await expectRevert(contractRequestAdminAction.requestAdminAction({from: buyer}),  "the seller has not deposited yet")
     })
 
     it('rejects with the buyer has not sent the amount yet', async () => {
-      await contractRequestAdminRefund.sellerDeposit({from: seller, value: depositValue});
-      await expectRevert(contractRequestAdminRefund.requestAdminRefund({from: buyer}),  "the buyer has not sent the amount yet")
+      await contractRequestAdminAction.sellerDeposit({from: seller, value: depositValue});
+      await expectRevert(contractRequestAdminAction.requestAdminAction({from: buyer}),  "the buyer has not sent the amount yet")
     })
 
     it('succeeds', async() => {
-      await contractRequestAdminRefund.sendAmount({from: buyer, value: amountValue})
-      var pay_seller = await contractRequestAdminRefund.requestAdminRefund({from: buyer})
-      expectEvent(pay_seller, 'AdminRefundRequested', {msg: "A refund from admin has been requested."});
-      var status = await contractRequestAdminRefund.getContractStatus()
-      assert.equal(status, "Request Admin Refund")
+      await contractRequestAdminAction.sendAmount({from: buyer, value: amountValue})
+      var pay_seller = await contractRequestAdminAction.requestAdminAction({from: buyer})
+      expectEvent(pay_seller, 'AdminActionRequested', {msg: "An action from admin has been requested."});
+      var status = await contractRequestAdminAction.getContractStatus()
+      assert.equal(status, "Request Admin Action")
     })
   })
    

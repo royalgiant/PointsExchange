@@ -83,26 +83,26 @@ contract("EscrowExchange", ([deployer, buyer, seller]) => {
 	    		const retrieved_contract = escrowExchange.getContractForCurrentUser(0, {from: buyer});
 	   			return retrieved_contract
 	    	}).then(function(retrieved_contract) {
-	    		assert.equal(retrieved_contract[0], buyer, 'buyer is correct')
-			    assert.equal(retrieved_contract[1], seller, 'seller is correct')
-			    assert.equal(retrieved_contract[2].toString(), amountValue, 'amount is correct')
-			    assert.equal(retrieved_contract[3].toString(), depositValue, 'deposit is correct')
-			    assert.equal(retrieved_contract[4].toNumber(), 0, 'signatureCount is correct')
-			    assert.equal(retrieved_contract[5], "Open", 'status is correct')
-			    assert.equal(retrieved_contract[6], "Some notes", 'notes is correct')
-			    assert.equal(retrieved_contract[7].toNumber(), 0, 'buyer depositCheck is correct')
-			    assert.equal(retrieved_contract[8].toNumber(), 0, 'buyer amountCheck is correct')
-			    assert.equal(retrieved_contract[9].toNumber(), 0, 'buyer signatures is correct')
-			    assert.notEqual(retrieved_contract[10], 0x0, "contract address is not 0x0")
+	    		assert.equal(retrieved_contract[1], buyer, 'buyer is correct')
+			    assert.equal(retrieved_contract[2], seller, 'seller is correct')
+			    assert.equal(retrieved_contract[3].toString(), amountValue, 'amount is correct')
+			    assert.equal(retrieved_contract[4].toString(), depositValue, 'deposit is correct')
+			    assert.equal(retrieved_contract[5].toNumber(), 0, 'signatureCount is correct')
+			    assert.equal(retrieved_contract[6], "Open", 'status is correct')
+			    assert.equal(retrieved_contract[7], "Some notes", 'notes is correct')
+			    assert.equal(retrieved_contract[8].toNumber(), 0, 'buyer depositCheck is correct')
+			    assert.equal(retrieved_contract[9].toNumber(), 0, 'buyer amountCheck is correct')
+			    assert.equal(retrieved_contract[10].toNumber(), 0, 'buyer signatures is correct')
+			    assert.notEqual(retrieved_contract[11], 0x0, "contract address is not 0x0")
 	    	})
 	   	})
 
 	   	it('rejects contract without buyer parameter', async () => {
-	   		await expectRevert(escrowExchange.createContract(constants.ZERO_ADDRESS, seller, web3.utils.toWei('1', 'Ether'), web3.utils.toWei('0.5', 'Ether'), "Some notes"), "Invalid buyer address")
+	   		await expectRevert(escrowExchange.createContract(constants.ZERO_ADDRESS, seller, web3.utils.toWei('1', 'Ether'), web3.utils.toWei('0.5', 'Ether'), "Some notes"), "Invalid buyer")
 	   	})
 
 	   	it('rejects contract without seller parameter', async () => {
-	   		await expectRevert(escrowExchange.createContract(buyer, constants.ZERO_ADDRESS, web3.utils.toWei('1', 'Ether'), web3.utils.toWei('0.5', 'Ether'), "Some notes"), "Invalid seller address")
+	   		await expectRevert(escrowExchange.createContract(buyer, constants.ZERO_ADDRESS, web3.utils.toWei('1', 'Ether'), web3.utils.toWei('0.5', 'Ether'), "Some notes"), "Invalid seller")
 	   	})
 
 	   	it('rejects create contract with 0 amount parameter', async () => {

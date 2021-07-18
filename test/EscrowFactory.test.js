@@ -149,7 +149,7 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       var seller_deposit = await contractClaimDeposit.getIfAddressDeposited(seller)
       var buyer_signature = await contractClaimDeposit.getSignature(buyer)
       var seller_signature = await contractClaimDeposit.getSignature(seller)
-      var signature_count = await contractClaimDeposit.getSignatureCount()
+      var signature_count = await contractClaimDeposit.signatureCount()
       var balance = await web3.eth.getBalance(contractClaimDeposit.address)
       assert.equal(balance, 0)
       assert.equal(buyer_signature, 0, "depositCheck[buyer] is 0")
@@ -216,7 +216,7 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       var pay_seller = await contractPaySeller.paySeller({from: buyer})
       expectEvent(pay_seller, 'SellerPaid', {msg: "The seller has been paid and all deposits have been returned - transaction complete"});
       var balance = await web3.eth.getBalance(contractPaySeller.address)
-      var contractComplete = await contractPaySeller.getContractComplete()
+      var contractComplete = await contractPaySeller.contractComplete()
       assert.equal(balance, 0)
       assert.equal(contractComplete, true)
     })
@@ -242,7 +242,7 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       var refund_buyer = await contractRefundBuyer.refundBuyer({from: seller})
       expectEvent(refund_buyer, 'BuyerRefunded', {msg: "The buyer has been refunded and all deposits have been returned - transaction cancelled"});
       var balance = await web3.eth.getBalance(contractRefundBuyer.address)
-      var contractComplete = await contractPaySeller.getContractComplete()
+      var contractComplete = await contractPaySeller.contractComplete()
       assert.equal(balance, 0)
       assert.equal(contractComplete, true)
     })
@@ -257,7 +257,7 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       var reversed_contract = await contractAdminActionComplete.adminContractTakeAction(true, 0)
       expectEvent(reversed_contract, 'ContractActionCompletedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded."});
       var balance = await web3.eth.getBalance(contractAdminActionComplete.address)
-      var contractComplete = await contractAdminActionComplete.getContractComplete()
+      var contractComplete = await contractAdminActionComplete.contractComplete()
       assert.equal(balance, 0)
       assert.equal(contractComplete, false)
       var buyer_deposit = await contractAdminActionComplete.getIfAddressDeposited(buyer)
@@ -276,7 +276,7 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       var reversed_contract = await contractAdminActionComplete.adminContractTakeAction(true, 1)
       expectEvent(reversed_contract, 'ContractActionCompletedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded."});
       var balance = await web3.eth.getBalance(contractAdminActionComplete.address)
-      var contractComplete = await contractAdminActionComplete.getContractComplete()
+      var contractComplete = await contractAdminActionComplete.contractComplete()
       assert.equal(balance, 0)
       assert.equal(contractComplete, false)
       var buyer_deposit = await contractAdminActionComplete.getIfAddressDeposited(buyer)
@@ -288,7 +288,7 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
     })
 
     it('gets the contract owner', async() => {
-      var owner = await contractAdminActionComplete.getOwner()
+      var owner = await contractAdminActionComplete.owner()
       assert.equal(owner, deployer, "Owner exists")
     })
   })

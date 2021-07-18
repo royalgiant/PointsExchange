@@ -5,37 +5,44 @@ import "./EscrowFactory.sol";
 
 contract EscrowExchange {
 	uint public contractCount = 0;
+	uint adminNeededContractCount = 0;
 	address payable public owner;
 	mapping(address => bool) public isAdmin;
 	mapping(address => uint[]) public addressToIndex; // i.e. [0, 4, 5, 6, 8, 10] contract indices
 	mapping(address => mapping(uint => bool)) public addressContractIndexExists; // Booleans to check whether an contract index (i.e. contract id) exists for this user.
 	mapping(uint => EscrowFactory) public contractIndexesForUsers; // Map of id to the contract. Used to retrieve the contract
+	// mapping(uint => ThirdPartyNeededContract) public adminNeededContracts;
 
 	modifier isAdministrator() {
-        require(msg.sender == owner || isAdmin[msg.sender] == true, "only an administrator is allowed to run this function");
+        require(msg.sender == owner || isAdmin[msg.sender] == true, "administrator only");
         _;
     }
 
 	event ContractCreated(address buyer, address seller, uint amount, uint deposit, uint signatureCount, string status, string notes, bool depositMade);
 
+	// struct ThirdPartyNeededContract {
+	// 	uint contractIndex;
+	// 	uint8 completed;
+	// } 
+
 	constructor() public {
 		owner = msg.sender;
 	}
 
-	function getContractForCurrentUser(uint index) public view returns (address, address, uint, uint, uint, string memory, string memory, uint, uint, uint, address){
+	function getContractForCurrentUser(uint index) public view returns (uint, address, address, uint, uint, uint, string memory, string memory, uint, uint, uint, address){
 		if (addressContractIndexExists[msg.sender][index]) {
 	 		EscrowFactory retrieved_contract = contractIndexesForUsers[index];
 		
-	 		address seller = retrieved_contract.getSeller();
-	 		address buyer = retrieved_contract.getBuyer();
+	 		address buyer = retrieved_contract.buyer();
 
-	        return (buyer, 
-	        	seller, 
-	        	retrieved_contract.getAmount(), 
-	        	retrieved_contract.getDeposit(), 
-	        	retrieved_contract.getSignatureCount(),
+	        return ( index,
+	        	buyer, 
+	        	retrieved_contract.seller(), 
+	        	retrieved_contract.amount(),
+	        	retrieved_contract.deposit(), 
+	        	retrieved_contract.signatureCount(),
 	        	retrieved_contract.getContractStatus(), 
-	        	retrieved_contract.getNotes(),
+	        	retrieved_contract.notes(),
 	        	retrieved_contract.getIfAddressDeposited(msg.sender),
 	        	retrieved_contract.getAmountCheck(buyer),
 	        	retrieved_contract.getSignature(msg.sender),
@@ -61,8 +68,8 @@ contract EscrowExchange {
 	 }
 
     function createContract(address payable buyer, address payable seller, uint amount, uint deposit, string memory notes) public {
-    	require(buyer != address(0), "Invalid buyer address");
-    	require(seller != address(0), "Invalid seller address");
+    	require(buyer != address(0), "Invalid buyer");
+    	require(seller != address(0), "Invalid seller");
     	require(amount > 0);
     	require(deposit > 0);
     	EscrowFactory newContract = new EscrowFactory(buyer, seller, amount, deposit, notes, owner);
@@ -75,6 +82,13 @@ contract EscrowExchange {
 
     	emit ContractCreated(buyer, seller, amount, deposit, 0, "Open", notes, false);
     }
+
+    // function contractInterventionRequest(uint index, string memory _notes) public {
+    // 	adminNeededContracts[adminNeededContractCount] = ThirdPartyNeededContract(index, 0);
+    // 	adminNeededContractCount = adminNeededContractCount + 1;
+    // 	EscrowFactory retrieved_contract = contractIndexesForUsers[index];
+    // 	retrieved_contract.requestAdminAction(_notes);
+    // }
 
     function adminContractTakeAction(uint index, uint8 action) public isAdministrator{
     	EscrowFactory retrieved_contract = contractIndexesForUsers[index];

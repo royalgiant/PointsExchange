@@ -77,9 +77,9 @@ contract EscrowFactory {
     and restricts the buyer from depositing more than once – TESTED*/
     function buyerDeposit() public payable isBuyer {
         require(msg.value == deposit, "Invalid deposit"); // Require value submitted is equal to the deposit in the contract.
-        require(depositCheck[msg.sender] == 0, "Buyer already deposited"); // Require buyer has not deposited yet
+        require(depositCheck[msg.sender] == 0, "Deposited"); // Require buyer has not deposited yet
         depositCheck[msg.sender] = 1; // Set buyer deposited to true
-        emit BuyerDeposited(msg.sender, "has made the required deposit of", msg.value);
+        emit BuyerDeposited(msg.sender, "deposited", msg.value);
     }
 
     /* Deposit function for the seller - checks that the message sender
@@ -87,9 +87,9 @@ contract EscrowFactory {
     and restricts the seller from depositing more than once – TESTED*/
     function sellerDeposit() public payable isSeller {
         require(msg.value == deposit, "Invalid deposit"); // Require value submitted is equal to the deposit in the contract.
-        require(depositCheck[msg.sender] == 0,  "Seller already deposited"); // Require seller has not deposited yet
+        require(depositCheck[msg.sender] == 0,  "Deposited"); // Require seller has not deposited yet
         depositCheck[msg.sender] = 1;// Set seller deposited to true
-        emit SellerDeposited(msg.sender, "has made the required deposit of", msg.value);
+        emit SellerDeposited(msg.sender, "deposited", msg.value);
     }
 
     /* Function for buyer to retrieve deposit in the scenario where only the
@@ -97,11 +97,11 @@ contract EscrowFactory {
     going ahead.*/
     
     function reverseBuyerDeposit() public isBuyer {
-        require(depositCheck[buyer] == 1, "the buyer has not desposited CANNOT reverseDeposit");
-        require(depositCheck[seller] == 0, "the seller has deposited already CANNOT reverseDeposit");
+        require(depositCheck[buyer] == 1, "deposit required");
+        require(depositCheck[seller] == 0, "deposit required");
         depositCheck[buyer] = 0;
         buyer.transfer(deposit);
-        emit BuyerDepositReversed("the buyer has reversed their deposit");
+        emit BuyerDepositReversed("buyer reversed deposit");
     }
 
     /* Function for seller to retrieve deposit in the scenario where only the
@@ -109,11 +109,11 @@ contract EscrowFactory {
     going ahead.*/
     
     function reverseSellerDeposit() public isSeller {
-        require(depositCheck[seller] == 1, "the seller has not desposited CANNOT reverseDeposit");
-        require(depositCheck[buyer] == 0, "the buyer has deposited already CANNOT reverseDeposit");
+        require(depositCheck[seller] == 1, "deposit required");
+        require(depositCheck[buyer] == 0, "deposit required");
         depositCheck[seller] = 0;
         seller.transfer(deposit);
-        emit SellerDepositReversed("the seller has reversed their deposit");
+        emit SellerDepositReversed("seller reversed deposit");
     }
 
     /* Function for both parties to reverse their deposits when both the buyer
@@ -121,10 +121,10 @@ contract EscrowFactory {
     sign off on this by calling this function – TESTED*/
  
     function claimDeposits() public ifIsAParty(msg.sender) {
-        require(depositCheck[buyer] == 1, "the buyer has not made a deposit for claimDeposits");
-        require(depositCheck[seller] == 1, "the seller has not made a deposit for claimDeposits");
-        require(amountCheck[buyer] == 0, "the buyer has already sent an amount for claimDeposits");
-        require(signatures[msg.sender] == 0, "the sender have already signed off on claimDeposit");
+        require(depositCheck[buyer] == 1, "deposit required");
+        require(depositCheck[seller] == 1, "deposit required");
+        require(amountCheck[buyer] == 0, "amount exist");
+        require(signatures[msg.sender] == 0, "already signed");
         signatures[msg.sender] = 1;
         signatureCount ++;
         
@@ -149,9 +149,9 @@ contract EscrowFactory {
     
     function sendAmount() public payable isBuyer {
         require(msg.value == amount, "Invalid amount"); // Check to see correct amount is sent.
-        require(depositCheck[buyer] == 1, "the buyer has not deposited yet");
-        require(depositCheck[seller] == 1, "the seller has not deposited yet");
-        require(amountCheck[msg.sender] == 0, "the buyer has already send the amount");
+        require(depositCheck[buyer] == 1, "deposit required");
+        require(depositCheck[seller] == 1, "deposit required");
+        require(amountCheck[msg.sender] == 0, "amount exist");
         amountCheck[msg.sender] = 1;
         emit AmountSent("Buyer has sent the payment amount to the escrow");
     }
@@ -160,9 +160,9 @@ contract EscrowFactory {
     returning deposits to both parties */
     /* NEW FUNCTION EXTRA: This should automatically pay seller when it passes expiry time (i.e. the flight time) and then automatically return deposits. Developer fee should be collected here */
     function paySeller() public isBuyer {
-        require(depositCheck[buyer] == 1, "the buyer has not deposited yet");
-        require(depositCheck[seller] == 1, "the seller has not deposited yet");
-        require(amountCheck[buyer] == 1, "the buyer has not sent the amount yet");
+        require(depositCheck[buyer] == 1, "deposit required");
+        require(depositCheck[seller] == 1, "deposit required");
+        require(amountCheck[buyer] == 1, "amount required");
         contractComplete = true;
         seller.transfer(amount);
         buyer.transfer(deposit);
@@ -174,9 +174,9 @@ contract EscrowFactory {
     returning deposits to both parties */
     /* NEW FUNCTION EXTRA: This can only be called before the expiry time. (i.e. 1 or 2 days before flight time) and then automatically return deposits. Developer fee should be collected here */
     function refundBuyer() public isSeller {
-        require(depositCheck[buyer] == 1, "the buyer has not deposited yet");
-        require(depositCheck[seller] == 1, "the seller has not deposited yet");
-        require(amountCheck[buyer] == 1, "the buyer has not sent the amount yet");
+        require(depositCheck[buyer] == 1, "deposit required");
+        require(depositCheck[seller] == 1, "deposit required");
+        require(amountCheck[buyer] == 1, "amount required");
         contractComplete = true;
         buyer.transfer(amount);
         seller.transfer(deposit);
@@ -184,10 +184,10 @@ contract EscrowFactory {
         emit BuyerRefunded("The buyer has been refunded and all deposits have been returned - transaction cancelled");
     }
 
-    function requestAdminAction() public {
-        require(depositCheck[buyer] == 1, "the buyer has not deposited yet");
-        require(depositCheck[seller] == 1, "the seller has not deposited yet");
-        require(amountCheck[buyer] == 1, "the buyer has not sent the amount yet");
+    function requestAdminAction(string memory _notes) public {
+        require(depositCheck[buyer] == 1, "deposit required");
+        require(depositCheck[seller] == 1, "deposit required");
+        require(amountCheck[buyer] == 1, "amount required");
         status = Status.REQUESTADMINACTION;
         emit AdminActionRequested("An action from admin has been requested.");
     }
@@ -250,7 +250,7 @@ contract EscrowFactory {
         } else if (status == Status.PENDING){
             return "Pending";
         } else if (status == Status.REQUESTADMINACTION) {
-            return "Request Admin Action";
+            return "Request Action";
         } else{
             return "Closed";
         }
@@ -264,15 +264,15 @@ contract EscrowFactory {
     	return amountCheck[a];
     }
 
-    function getContractBalance() public view returns (uint) {
-        return address(this).balance;
-    }
-
     function getContractComplete() public view returns (bool) {
         return contractComplete;
     }
 
     function getOwner() public view returns (address) {
         return owner;
+    }
+
+    function append(string memory a, string memory b, string memory c) internal pure returns (string memory) {
+        return string(abi.encodePacked(a, b, c));
     }
 }

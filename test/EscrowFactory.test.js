@@ -39,15 +39,15 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
 
     it('buyer deposits', async() => {
       var buyerDeposit_receipt = await contractBuyerSellerDeposit.buyerDeposit({from: buyer, value: depositValue});
-      expectEvent(buyerDeposit_receipt, 'BuyerDeposited', {from: buyer, msg: "has made the required deposit of", amount: depositValue });
+      expectEvent(buyerDeposit_receipt, 'BuyerDeposited', {from: buyer, msg: "deposited", amount: depositValue });
       var buyer_deposit = await contractBuyerSellerDeposit.getIfAddressDeposited(buyer)
       assert.equal(buyer_deposit, 1, "depositCheck[buyer] is 1")
-      var balance = await contractBuyerSellerDeposit.getContractBalance()
+      var balance = await  web3.eth.getBalance(contractBuyerSellerDeposit.address)
       assert.equal(balance, parseInt(depositValue))
     })
 
     it('rejects buyerDeposit with Buyer already deposited ', async () => {
-      await expectRevert(contractBuyerSellerDeposit.buyerDeposit({from: buyer, value: depositValue}),  "Buyer already deposited")
+      await expectRevert(contractBuyerSellerDeposit.buyerDeposit({from: buyer, value: depositValue}),  "Deposited")
     })
   })
 
@@ -58,76 +58,76 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
 
     it('seller deposits', async() => {
       var sellerDeposit_receipt = await contractBuyerSellerDeposit.sellerDeposit({from: seller, value: depositValue});
-      expectEvent(sellerDeposit_receipt, 'SellerDeposited', {from: seller, msg: "has made the required deposit of", amount: depositValue });
+      expectEvent(sellerDeposit_receipt, 'SellerDeposited', {from: seller, msg: "deposited", amount: depositValue });
       var seller_deposit = await contractBuyerSellerDeposit.getIfAddressDeposited(seller)
       assert.equal(seller_deposit, 1, "depositCheck[seller] is 1")
-      var balance = await contractBuyerSellerDeposit.getContractBalance()
+      var balance = await web3.eth.getBalance(contractBuyerSellerDeposit.address)
       assert.equal(balance, parseInt(depositValue) + parseInt(depositValue))
     })
 
     it('rejects SellerDeposit with Seller already deposited ', async () => {
-      await expectRevert(contractBuyerSellerDeposit.sellerDeposit({from: seller, value: depositValue}),  "Seller already deposited")
+      await expectRevert(contractBuyerSellerDeposit.sellerDeposit({from: seller, value: depositValue}),  "Deposited")
     })
   })
 
   describe('EscrowFactory ReverseBuyerDeposit', async () => {
     it('rejects ReverseBuyerDeposit with the buyer has not desposited CANNOT reverseDeposit', async () => {
-      await expectRevert(contractReverseBuyerDeposit.reverseBuyerDeposit({from: buyer}),  "the buyer has not desposited CANNOT reverseDeposit")
+      await expectRevert(contractReverseBuyerDeposit.reverseBuyerDeposit({from: buyer}),  "deposit required")
     })
 
     it('succeeds', async() => {
       await contractReverseBuyerDeposit.buyerDeposit({from: buyer, value: depositValue});
-      var balance = await contractReverseBuyerDeposit.getContractBalance()
+      var balance = await web3.eth.getBalance(contractReverseBuyerDeposit.address)
       assert.equal(balance, depositValue)
       var buyerReverseDeposit_receipt = await contractReverseBuyerDeposit.reverseBuyerDeposit({from: buyer})
-      expectEvent(buyerReverseDeposit_receipt, 'BuyerDepositReversed', {msg: "the buyer has reversed their deposit"});
+      expectEvent(buyerReverseDeposit_receipt, 'BuyerDepositReversed', {msg: "buyer reversed deposit"});
       var buyer_reverse_deposit = await contractReverseBuyerDeposit.getIfAddressDeposited(buyer)
       assert.equal(buyer_reverse_deposit, 0, "depositCheck[buyer] is 0")
-      var balance = await contractReverseBuyerDeposit.getContractBalance()
+      var balance = await web3.eth.getBalance(contractReverseBuyerDeposit.address)
       assert.equal(balance, 0)
       await contractReverseBuyerDeposit.buyerDeposit({from: buyer, value: depositValue});
     })
 
     it('rejects ReverseBuyerDeposit with the the seller has deposited already CANNOT reverseDeposit', async () => {
       await contractReverseBuyerDeposit.sellerDeposit({from: seller, value: depositValue});
-      await expectRevert(contractReverseBuyerDeposit.reverseBuyerDeposit({from: buyer}),  "the seller has deposited already CANNOT reverseDeposit")
+      await expectRevert(contractReverseBuyerDeposit.reverseBuyerDeposit({from: buyer}),  "deposit required")
     })
   })
 
   describe('EscrowFactory ReverseSellerDeposit', async () => {
     it('rejects ReverseSellerDeposit with the seller has not desposited CANNOT reverseDeposit', async () => {
-      await expectRevert(contractReverseSellerDeposit.reverseSellerDeposit({from: seller}),  "the seller has not desposited CANNOT reverseDeposit")
+      await expectRevert(contractReverseSellerDeposit.reverseSellerDeposit({from: seller}),  "deposit required")
     })
 
     it('succeeds', async() => {
       await contractReverseSellerDeposit.sellerDeposit({from: seller, value: depositValue});
-      var balance = await contractReverseSellerDeposit.getContractBalance()
+      var balance = await web3.eth.getBalance(contractReverseSellerDeposit.address)
       assert.equal(balance, depositValue)
       var sellerReverseDeposit_receipt = await contractReverseSellerDeposit.reverseSellerDeposit({from: seller})
-      expectEvent(sellerReverseDeposit_receipt, 'SellerDepositReversed', {msg: "the seller has reversed their deposit"});
+      expectEvent(sellerReverseDeposit_receipt, 'SellerDepositReversed', {msg: "seller reversed deposit"});
       var seller_reverse_deposit = await contractReverseSellerDeposit.getIfAddressDeposited(seller)
       assert.equal(seller_reverse_deposit, 0, "depositCheck[seller] is 0")
-      var balance = await contractReverseSellerDeposit.getContractBalance()
+      var balance = await web3.eth.getBalance(contractReverseSellerDeposit.address)
       assert.equal(balance, 0)
       await contractReverseSellerDeposit.sellerDeposit({from: seller, value: depositValue});
     })
 
     it('rejects ReverseSellerDeposit with the the buyer has deposited already CANNOT reverseDeposit', async () => {
       await contractReverseSellerDeposit.buyerDeposit({from: buyer, value: depositValue});
-      await expectRevert(contractReverseSellerDeposit.reverseSellerDeposit({from: seller}),  "the buyer has deposited already CANNOT reverseDeposit")
+      await expectRevert(contractReverseSellerDeposit.reverseSellerDeposit({from: seller}),  "deposit required")
     })
   })
 
   describe('EscrowFactory ClaimDeposits', async () => {
     it('rejects claimDeposits with buyer ', async () => {
-      await expectRevert(contractClaimDeposit.claimDeposits({from: buyer}),  "the buyer has not made a deposit for claimDeposits")
+      await expectRevert(contractClaimDeposit.claimDeposits({from: buyer}),  "deposit required")
       await contractClaimDeposit.buyerDeposit({from: buyer, value: depositValue});
     })
 
     it('rejects claimDeposits with seller ', async () => {
-      await expectRevert(contractClaimDeposit.claimDeposits({from: seller}),  "the seller has not made a deposit for claimDeposits")
+      await expectRevert(contractClaimDeposit.claimDeposits({from: seller}),  "deposit required")
       await contractClaimDeposit.sellerDeposit({from: seller, value: depositValue});
-      var balance = await contractClaimDeposit.getContractBalance()
+      var balance = await web3.eth.getBalance(contractClaimDeposit.address)
       assert.equal(balance, parseInt(depositValue)+parseInt(depositValue))
     })
 
@@ -139,7 +139,7 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
     })
 
     it('rejects claimDeposits with buyer signature already signed ', async () => {
-      await expectRevert(contractClaimDeposit.claimDeposits({from: buyer}),  "the sender have already signed off on claimDeposit")
+      await expectRevert(contractClaimDeposit.claimDeposits({from: buyer}),  "already signed")
     })
 
     it('allows ClaimDeposits for seller ending with signatureCount = 0', async() => {
@@ -150,7 +150,7 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       var buyer_signature = await contractClaimDeposit.getSignature(buyer)
       var seller_signature = await contractClaimDeposit.getSignature(seller)
       var signature_count = await contractClaimDeposit.getSignatureCount()
-      var balance = await contractClaimDeposit.getContractBalance()
+      var balance = await web3.eth.getBalance(contractClaimDeposit.address)
       assert.equal(balance, 0)
       assert.equal(buyer_signature, 0, "depositCheck[buyer] is 0")
       assert.equal(seller_signature, 0, "depositCheck[seller] is 0")
@@ -163,7 +163,7 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
     })
 
     it('rejects claimDeposits with amountCheck ', async () => {
-      await expectRevert(contractClaimDeposit.claimDeposits({from: buyer}),  "the buyer has already sent an amount for claimDeposits")
+      await expectRevert(contractClaimDeposit.claimDeposits({from: buyer}),  "amount exist")
     })
   })
 
@@ -173,12 +173,12 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
     })
 
     it('rejects with the buyer has not deposited yet', async () => {
-      await expectRevert(contractSendAmount.sendAmount({from: buyer, value: amountValue}),  "the buyer has not deposited yet")
+      await expectRevert(contractSendAmount.sendAmount({from: buyer, value: amountValue}),  "deposit required")
     })
 
     it('rejects with the seller has not deposited yet', async () => {
       await contractSendAmount.buyerDeposit({from: buyer, value: depositValue});
-      await expectRevert(contractSendAmount.sendAmount({from: buyer, value: amountValue}),  "the seller has not deposited yet")
+      await expectRevert(contractSendAmount.sendAmount({from: buyer, value: amountValue}),  "deposit required")
     })
 
     it('succeeds', async() => {
@@ -187,35 +187,35 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       var amount_check = await contractSendAmount.getAmountCheck(buyer)
       assert.equal(amount_check, 1, "amountCheck[buyer] is 1")
       expectEvent(send_amount, 'AmountSent', {msg: "Buyer has sent the payment amount to the escrow"});
-      var balance = await contractSendAmount.getContractBalance()
+      var balance = await web3.eth.getBalance(contractSendAmount.address)
       assert.equal(balance, parseInt(depositValue) + parseInt(depositValue) + parseInt(amountValue))
     })
 
     it('rejects with the buyer has already send the amount', async () => {
-      await expectRevert(contractSendAmount.sendAmount({from: buyer, value: amountValue}),  "the buyer has already send the amount")
+      await expectRevert(contractSendAmount.sendAmount({from: buyer, value: amountValue}),  "amount exist")
     })
   })
 
   describe('EscrowFactory PaySeller', async () => {
     it('rejects with the buyer has not deposited yet', async () => {
-      await expectRevert(contractPaySeller.paySeller({from: buyer}),  "the buyer has not deposited yet")
+      await expectRevert(contractPaySeller.paySeller({from: buyer}),  "deposit required")
     })
 
     it('rejects with the seller has not deposited yet', async () => {
       await contractPaySeller.buyerDeposit({from: buyer, value: depositValue});
-      await expectRevert(contractPaySeller.paySeller({from: buyer}),  "the seller has not deposited yet")
+      await expectRevert(contractPaySeller.paySeller({from: buyer}),  "deposit required")
     })
 
     it('rejects with the buyer has not sent the amount yet', async () => {
       await contractPaySeller.sellerDeposit({from: seller, value: depositValue});
-      await expectRevert(contractPaySeller.paySeller({from: buyer}),  "the buyer has not sent the amount yet")
+      await expectRevert(contractPaySeller.paySeller({from: buyer}),  "amount required")
     })
 
     it('succeeds', async() => {
       await contractPaySeller.sendAmount({from: buyer, value: amountValue})
       var pay_seller = await contractPaySeller.paySeller({from: buyer})
       expectEvent(pay_seller, 'SellerPaid', {msg: "The seller has been paid and all deposits have been returned - transaction complete"});
-      var balance = await contractPaySeller.getContractBalance()
+      var balance = await web3.eth.getBalance(contractPaySeller.address)
       var contractComplete = await contractPaySeller.getContractComplete()
       assert.equal(balance, 0)
       assert.equal(contractComplete, true)
@@ -224,24 +224,24 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
 
   describe('EscrowFactory RefundBuyer', async () => {
     it('rejects with the buyer has not deposited yet', async () => {
-      await expectRevert(contractRefundBuyer.refundBuyer({from: seller}),  "the buyer has not deposited yet")
+      await expectRevert(contractRefundBuyer.refundBuyer({from: seller}),  "deposit required")
     })
 
     it('rejects with the seller has not deposited yet', async () => {
       await contractRefundBuyer.buyerDeposit({from: buyer, value: depositValue});
-      await expectRevert(contractRefundBuyer.refundBuyer({from: seller}),  "the seller has not deposited yet")
+      await expectRevert(contractRefundBuyer.refundBuyer({from: seller}),  "deposit required")
     })
 
     it('rejects with the buyer has not sent the amount yet', async () => {
       await contractRefundBuyer.sellerDeposit({from: seller, value: depositValue});
-      await expectRevert(contractRefundBuyer.refundBuyer({from: seller}),  "the buyer has not sent the amount yet")
+      await expectRevert(contractRefundBuyer.refundBuyer({from: seller}),  "amount required")
     })
 
     it('succeeds', async() => {
       await contractRefundBuyer.sendAmount({from: buyer, value: amountValue})
       var refund_buyer = await contractRefundBuyer.refundBuyer({from: seller})
       expectEvent(refund_buyer, 'BuyerRefunded', {msg: "The buyer has been refunded and all deposits have been returned - transaction cancelled"});
-      var balance = await contractRefundBuyer.getContractBalance()
+      var balance = await web3.eth.getBalance(contractRefundBuyer.address)
       var contractComplete = await contractPaySeller.getContractComplete()
       assert.equal(balance, 0)
       assert.equal(contractComplete, true)
@@ -256,7 +256,7 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       await contractAdminActionComplete.requestAdminAction({from: buyer})
       var reversed_contract = await contractAdminActionComplete.adminContractTakeAction(true, 0)
       expectEvent(reversed_contract, 'ContractActionCompletedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded."});
-      var balance = await contractAdminActionComplete.getContractBalance()
+      var balance = await web3.eth.getBalance(contractAdminActionComplete.address)
       var contractComplete = await contractAdminActionComplete.getContractComplete()
       assert.equal(balance, 0)
       assert.equal(contractComplete, false)
@@ -275,7 +275,7 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       await contractAdminActionComplete.requestAdminAction({from: seller})
       var reversed_contract = await contractAdminActionComplete.adminContractTakeAction(true, 1)
       expectEvent(reversed_contract, 'ContractActionCompletedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded."});
-      var balance = await contractAdminActionComplete.getContractBalance()
+      var balance = await web3.eth.getBalance(contractAdminActionComplete.address)
       var contractComplete = await contractAdminActionComplete.getContractComplete()
       assert.equal(balance, 0)
       assert.equal(contractComplete, false)
@@ -295,17 +295,17 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
 
   describe('EscrowFactory RequestAdminAction', async () => {
     it('rejects with the buyer has not deposited yet', async () => {
-      await expectRevert(contractRequestAdminAction.requestAdminAction({from: buyer}),  "the buyer has not deposited yet")
+      await expectRevert(contractRequestAdminAction.requestAdminAction({from: buyer}),  "deposit required")
     })
 
     it('rejects with the seller has not deposited yet', async () => {
       await contractRequestAdminAction.buyerDeposit({from: buyer, value: depositValue});
-      await expectRevert(contractRequestAdminAction.requestAdminAction({from: buyer}),  "the seller has not deposited yet")
+      await expectRevert(contractRequestAdminAction.requestAdminAction({from: buyer}),  "deposit required")
     })
 
     it('rejects with the buyer has not sent the amount yet', async () => {
       await contractRequestAdminAction.sellerDeposit({from: seller, value: depositValue});
-      await expectRevert(contractRequestAdminAction.requestAdminAction({from: buyer}),  "the buyer has not sent the amount yet")
+      await expectRevert(contractRequestAdminAction.requestAdminAction({from: buyer}),  "amount required")
     })
 
     it('succeeds', async() => {
@@ -313,7 +313,7 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       var pay_seller = await contractRequestAdminAction.requestAdminAction({from: buyer})
       expectEvent(pay_seller, 'AdminActionRequested', {msg: "An action from admin has been requested."});
       var status = await contractRequestAdminAction.getContractStatus()
-      assert.equal(status, "Request Admin Action")
+      assert.equal(status, "Request Action")
     })
   })
    

@@ -253,7 +253,7 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       await contractAdminActionComplete.buyerDeposit({from: buyer, value: depositValue});
       await contractAdminActionComplete.sellerDeposit({from: seller, value: depositValue});
       await contractAdminActionComplete.sendAmount({from: buyer, value: amountValue})
-      await contractAdminActionComplete.requestAdminAction({from: buyer})
+      await contractAdminActionComplete.requestAdminAction("Buyer Request: I request a refund", {from: buyer})
       var reversed_contract = await contractAdminActionComplete.adminContractTakeAction(true, 0)
       expectEvent(reversed_contract, 'ContractActionCompletedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded."});
       var balance = await web3.eth.getBalance(contractAdminActionComplete.address)
@@ -266,13 +266,15 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       assert.equal(seller_deposit, 0, "depositCheck[seller] is 0")
       var amount_check = await contractAdminActionComplete.getAmountCheck(buyer)
       assert.equal(amount_check, 0, "amountCheck[buyer] is 0")
+      var notes_check = await contractAdminActionComplete.notes()
+      assert.equal(notes_check, "Some notes \n Buyer Request: I request a refund", "notes is correct")
     })
 
     it('succeeds pay seller', async() => {
       await contractAdminActionComplete.buyerDeposit({from: buyer, value: depositValue});
       await contractAdminActionComplete.sellerDeposit({from: seller, value: depositValue});
       await contractAdminActionComplete.sendAmount({from: buyer, value: amountValue})
-      await contractAdminActionComplete.requestAdminAction({from: seller})
+      await contractAdminActionComplete.requestAdminAction("Seller Request: I request a to be paid", {from: seller})
       var reversed_contract = await contractAdminActionComplete.adminContractTakeAction(true, 1)
       expectEvent(reversed_contract, 'ContractActionCompletedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded."});
       var balance = await web3.eth.getBalance(contractAdminActionComplete.address)
@@ -285,6 +287,8 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       assert.equal(seller_deposit, 0, "depositCheck[seller] is 0")
       var amount_check = await contractAdminActionComplete.getAmountCheck(buyer)
       assert.equal(amount_check, 0, "amountCheck[buyer] is 0")
+      var notes_check = await contractAdminActionComplete.notes()
+      assert.equal(notes_check, "Some notes \n Buyer Request: I request a refund \n Seller Request: I request a to be paid", "notes is correct")
     })
 
     it('gets the contract owner', async() => {
@@ -295,25 +299,27 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
 
   describe('EscrowFactory RequestAdminAction', async () => {
     it('rejects with the buyer has not deposited yet', async () => {
-      await expectRevert(contractRequestAdminAction.requestAdminAction({from: buyer}),  "deposit required")
+      await expectRevert(contractRequestAdminAction.requestAdminAction("Buyer Request: I request a refund", {from: buyer}),  "deposit required")
     })
 
     it('rejects with the seller has not deposited yet', async () => {
       await contractRequestAdminAction.buyerDeposit({from: buyer, value: depositValue});
-      await expectRevert(contractRequestAdminAction.requestAdminAction({from: buyer}),  "deposit required")
+      await expectRevert(contractRequestAdminAction.requestAdminAction("Buyer Request: I request a refund", { from: buyer}),  "deposit required")
     })
 
     it('rejects with the buyer has not sent the amount yet', async () => {
       await contractRequestAdminAction.sellerDeposit({from: seller, value: depositValue});
-      await expectRevert(contractRequestAdminAction.requestAdminAction({from: buyer}),  "amount required")
+      await expectRevert(contractRequestAdminAction.requestAdminAction("Buyer Request: I request a refund", {from: buyer}),  "amount required")
     })
 
     it('succeeds', async() => {
       await contractRequestAdminAction.sendAmount({from: buyer, value: amountValue})
-      var pay_seller = await contractRequestAdminAction.requestAdminAction({from: buyer})
+      var pay_seller = await contractRequestAdminAction.requestAdminAction("Buyer Request: I request a refund", {from: buyer})
       expectEvent(pay_seller, 'AdminActionRequested', {msg: "An action from admin has been requested."});
       var status = await contractRequestAdminAction.getContractStatus()
       assert.equal(status, "Request Action")
+      var notes_check = await contractRequestAdminAction.notes()
+      assert.equal(notes_check, "Some notes \n Buyer Request: I request a refund", "notes is correct")
     })
   })
    

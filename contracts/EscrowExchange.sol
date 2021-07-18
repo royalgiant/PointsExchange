@@ -5,25 +5,12 @@ import "./EscrowFactory.sol";
 
 contract EscrowExchange {
 	uint public contractCount = 0;
-	uint adminNeededContractCount = 0;
 	address payable public owner;
-	mapping(address => bool) public isAdmin;
 	mapping(address => uint[]) public addressToIndex; // i.e. [0, 4, 5, 6, 8, 10] contract indices
 	mapping(address => mapping(uint => bool)) public addressContractIndexExists; // Booleans to check whether an contract index (i.e. contract id) exists for this user.
 	mapping(uint => EscrowFactory) public contractIndexesForUsers; // Map of id to the contract. Used to retrieve the contract
-	// mapping(uint => ThirdPartyNeededContract) public adminNeededContracts;
-
-	modifier isAdministrator() {
-        require(msg.sender == owner || isAdmin[msg.sender] == true, "administrator only");
-        _;
-    }
 
 	event ContractCreated(address buyer, address seller, uint amount, uint deposit, uint signatureCount, string status, string notes, bool depositMade);
-
-	// struct ThirdPartyNeededContract {
-	// 	uint contractIndex;
-	// 	uint8 completed;
-	// } 
 
 	constructor() public {
 		owner = msg.sender;
@@ -81,25 +68,5 @@ contract EscrowExchange {
     	contractCount = contractCount + 1;
 
     	emit ContractCreated(buyer, seller, amount, deposit, 0, "Open", notes, false);
-    }
-
-    // function contractInterventionRequest(uint index, string memory _notes) public {
-    // 	adminNeededContracts[adminNeededContractCount] = ThirdPartyNeededContract(index, 0);
-    // 	adminNeededContractCount = adminNeededContractCount + 1;
-    // 	EscrowFactory retrieved_contract = contractIndexesForUsers[index];
-    // 	retrieved_contract.requestAdminAction(_notes);
-    // }
-
-    function adminContractTakeAction(uint index, uint8 action) public isAdministrator{
-    	EscrowFactory retrieved_contract = contractIndexesForUsers[index];
-    	retrieved_contract.adminContractTakeAction(true, action);
-    }
-
-    function setAdmin(bool state, address newAdmin) public isAdministrator {
-    	isAdmin[newAdmin] = state;
-    }
-
-    function getAdmin(address admin) public view returns (bool) {
-    	return isAdmin[admin];
     }
 }

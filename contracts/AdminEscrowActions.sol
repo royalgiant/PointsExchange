@@ -24,15 +24,15 @@ contract AdminEscrowActions {
 		owner = msg.sender;
 	}
 
-	function contractInterventionRequest(uint index, string memory _notes, address escrow_factory_address) public {
-    	adminNeededContracts[adminNeededContractCount] = ThirdPartyNeededContract(index, 0, escrow_factory_address);
+	function contractInterventionRequest(uint index, string memory _notes, address escrow_factory_contract_address) public {
+    	adminNeededContracts[adminNeededContractCount] = ThirdPartyNeededContract(index, 0, escrow_factory_contract_address);
     	adminNeededContractCount = adminNeededContractCount + 1;
-    	EscrowFactory retrieved_contract = EscrowFactory(escrow_factory_address);
+    	EscrowFactory retrieved_contract = EscrowFactory(escrow_factory_contract_address);
     	retrieved_contract.requestAdminAction(_notes);
     }
 
-    function adminContractTakeAction(uint index, uint8 action, address escrow_factory_address) public isAdministrator {
-    	EscrowFactory retrieved_contract = EscrowFactory(escrow_factory_address);
+    function adminContractTakeAction(uint index, uint8 action, address escrow_factory_contract_address) public isAdministrator {
+    	EscrowFactory retrieved_contract = EscrowFactory(escrow_factory_contract_address);
     	retrieved_contract.adminContractTakeAction(true, action);
     }
 

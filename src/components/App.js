@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Web3 from 'web3'
 import EscrowExchange from '../abis/EscrowExchange.json'
 import EscrowFactory from '../abis/EscrowFactory.json'
+import AdminEscrowActions from '../abis/AdminEscrowActions.json'
 import Navbar from './Navbar'
 import Main from './Main'
 
@@ -32,20 +33,22 @@ class App extends Component {
     this.setState({ account: accounts[0] })
     const networkId = await web3.eth.net.getId()
     const EscrowExchangeNetworkData = EscrowExchange.networks[networkId]
+    const AdminEscrowActionNetworkData = AdminEscrowActions.networks[networkId]
     if(EscrowExchangeNetworkData) {
       const escrowExchange = new web3.eth.Contract(EscrowExchange.abi, EscrowExchangeNetworkData.address)
-      this.setState({ escrowExchange })
+      const adminEscrowActions = new web3.eth.Contract(AdminEscrowActions.abi, AdminEscrowActionNetworkData.address)
+      this.setState({ escrowExchange, adminEscrowActions })
       const contractCount = await escrowExchange.methods.getContractCountForCurrentUser().call({from: this.state.account})
       this.setState({ contractCount })
       // Load Contracts FOR CURRENT USER
       for (var i = 0; i < contractCount; i++) {
         var contractDetails = await escrowExchange.methods.getContractForCurrentUser(i).call({from: this.state.account})
-        var contract = new web3.eth.Contract(EscrowFactory.abi, contractDetails[10])
-        var buyerDepositCheck = await contract.methods.getIfAddressDeposited(contractDetails[0]).call({ from: this.state.account })
-        var sellerDepositCheck = await contract.methods.getIfAddressDeposited(contractDetails[1]).call({ from: this.state.account })
+        var contract = new web3.eth.Contract(EscrowFactory.abi, contractDetails[11])
+        var buyerDepositCheck = await contract.methods.getIfAddressDeposited(contractDetails[1]).call({ from: this.state.account })
+        var sellerDepositCheck = await contract.methods.getIfAddressDeposited(contractDetails[2]).call({ from: this.state.account })
         var contractCompleted = await contract.methods.getContractComplete().call({ from: this.state.account })
-        var isAdmin = await escrowExchange.methods.getAdmin(this.state.account).call({from: this.state.account})
-        Object.assign(contractDetails, {11: sellerDepositCheck, 12: buyerDepositCheck, 13: contractCompleted, 14: isAdmin})
+        var isAdmin = await adminEscrowActions.methods.getAdmin(this.state.account).call({from: this.state.account})
+        Object.assign(contractDetails, {12: sellerDepositCheck, 13: buyerDepositCheck, 14: contractCompleted, 15: isAdmin})
         this.setState({
           contracts: [...this.state.contracts, contract],
           contractDetails: [...this.state.contractDetails, contractDetails]
@@ -79,8 +82,9 @@ class App extends Component {
     this.sendAmount = this.sendAmount.bind(this)
     this.paySeller = this.paySeller.bind(this)
     this.refundBuyer = this.refundBuyer.bind(this)
+    this.requestAdminAction = this.requestAdminAction.bind(this)
     this.createContract = this.createContract.bind(this)
-    this.adminReverseContract = this.adminReverseContract.bind(this)
+    this.adminContractTakeAction = this.adminContractTakeAction.bind(this)
   }
 
   // EscrowExchange Calls
@@ -93,9 +97,10 @@ class App extends Component {
     })
   }
   
-  adminReverseContract(index) {
+  // Binary_action is a 0,1 which represents refund_buyer, pay_seller
+  adminContractTakeAction(index, binary_action, address) {
     this.setState({ loading: true })
-    this.state.escrowExchange.methods.adminReverseContract(index).send({ from: this.state.account})
+    this.state.adminEscrowActions.methods.adminContractTakeAction(index, binary_action, address).send({ from: this.state.account})
     .once('receipt', (receipt) => {
       this.setState({ loading: false })
     })
@@ -186,6 +191,15 @@ class App extends Component {
     })
   }
 
+  requestAdminAction(contract, notes) {
+    this.setState({ loading: true })
+    contract.methods.requestAdminAction(notes).send({ from: this.state.account })
+    .once('receipt', (receipt) => {
+      this.setState({ loading: false })
+      window.location.reload()
+    })
+  }
+
   render() {
     return (
       <div>
@@ -205,6 +219,8 @@ class App extends Component {
                   sendAmount={this.sendAmount}
                   paySeller={this.paySeller}
                   refundBuyer={this.refundBuyer}
+                  requestAdminAction={this.requestAdminAction}
+                  adminContractTakeAction={this.adminContractTakeAction}
                   myContractsDetails={this.state.contractDetails}
                   contractObjects={this.state.contracts}
                   account={this.state.account}

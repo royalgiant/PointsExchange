@@ -33,6 +33,7 @@ contract AdminEscrowActions {
 
     function adminContractTakeAction(uint index, uint8 action, address escrow_factory_contract_address) public isAdministrator {
     	EscrowFactory retrieved_contract = EscrowFactory(escrow_factory_contract_address);
+    	adminNeededContracts[index].completed = 1;
     	retrieved_contract.adminContractTakeAction(true, action);
     }
 

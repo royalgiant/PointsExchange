@@ -46,7 +46,7 @@ class App extends Component {
         var contract = new web3.eth.Contract(EscrowFactory.abi, contractDetails[11])
         var buyerDepositCheck = await contract.methods.getIfAddressDeposited(contractDetails[1]).call({ from: this.state.account })
         var sellerDepositCheck = await contract.methods.getIfAddressDeposited(contractDetails[2]).call({ from: this.state.account })
-        var contractCompleted = await contract.methods.getContractComplete().call({ from: this.state.account })
+        var contractCompleted = await contract.methods.contractComplete().call({ from: this.state.account })
         var isAdmin = await adminEscrowActions.methods.getAdmin(this.state.account).call({from: this.state.account})
         Object.assign(contractDetails, {12: sellerDepositCheck, 13: buyerDepositCheck, 14: contractCompleted, 15: isAdmin})
         this.setState({
@@ -82,7 +82,7 @@ class App extends Component {
     this.sendAmount = this.sendAmount.bind(this)
     this.paySeller = this.paySeller.bind(this)
     this.refundBuyer = this.refundBuyer.bind(this)
-    this.requestAdminAction = this.requestAdminAction.bind(this)
+    this.contractInterventionRequest = this.contractInterventionRequest.bind(this)
     this.createContract = this.createContract.bind(this)
     this.adminContractTakeAction = this.adminContractTakeAction.bind(this)
   }
@@ -97,6 +97,8 @@ class App extends Component {
     })
   }
   
+  // AdminEscrowActions Calls
+
   // Binary_action is a 0,1 which represents refund_buyer, pay_seller
   adminContractTakeAction(index, binary_action, address) {
     this.setState({ loading: true })
@@ -105,6 +107,17 @@ class App extends Component {
       this.setState({ loading: false })
     })
   }
+
+  contractInterventionRequest(index, notes, address) {
+    this.setState({ loading: true })
+    this.state.adminEscrowActions.methods.contractInterventionRequest(index, notes, address).send({ from: this.state.account})
+    .once('receipt', (receipt) => {
+      this.setState({ loading: false })
+      alert("Your request for admin intervention has been submitted. We will review the contract shortly.")
+      window.location.reload()
+    })
+  }
+
 
   // Escrow Calls
 
@@ -191,15 +204,6 @@ class App extends Component {
     })
   }
 
-  requestAdminAction(contract, notes) {
-    this.setState({ loading: true })
-    contract.methods.requestAdminAction(notes).send({ from: this.state.account })
-    .once('receipt', (receipt) => {
-      this.setState({ loading: false })
-      window.location.reload()
-    })
-  }
-
   render() {
     return (
       <div>
@@ -219,7 +223,7 @@ class App extends Component {
                   sendAmount={this.sendAmount}
                   paySeller={this.paySeller}
                   refundBuyer={this.refundBuyer}
-                  requestAdminAction={this.requestAdminAction}
+                  contractInterventionRequest={this.contractInterventionRequest}
                   adminContractTakeAction={this.adminContractTakeAction}
                   myContractsDetails={this.state.contractDetails}
                   contractObjects={this.state.contracts}

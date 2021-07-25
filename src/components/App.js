@@ -37,6 +37,7 @@ class App extends Component {
     if(EscrowExchangeNetworkData) {
       const escrowExchange = new web3.eth.Contract(EscrowExchange.abi, EscrowExchangeNetworkData.address)
       const adminEscrowActions = new web3.eth.Contract(AdminEscrowActions.abi, AdminEscrowActionNetworkData.address)
+      var isAdmin = await adminEscrowActions.methods.getAdmin(this.state.account).call({from: this.state.account})
       this.setState({ escrowExchange, adminEscrowActions })
       const contractCount = await escrowExchange.methods.getContractCountForCurrentUser().call({from: this.state.account})
       this.setState({ contractCount })
@@ -47,12 +48,23 @@ class App extends Component {
         var buyerDepositCheck = await contract.methods.getIfAddressDeposited(contractDetails[1]).call({ from: this.state.account })
         var sellerDepositCheck = await contract.methods.getIfAddressDeposited(contractDetails[2]).call({ from: this.state.account })
         var contractCompleted = await contract.methods.contractComplete().call({ from: this.state.account })
-        var isAdmin = await adminEscrowActions.methods.getAdmin(this.state.account).call({from: this.state.account})
         Object.assign(contractDetails, {12: sellerDepositCheck, 13: buyerDepositCheck, 14: contractCompleted, 15: isAdmin})
         this.setState({
           contracts: [...this.state.contracts, contract],
           contractDetails: [...this.state.contractDetails, contractDetails]
         })
+      }
+      if (isAdmin) {
+        const adminNeededContractCount = await adminEscrowActions.methods.adminNeededContractCount().call({from: this.state.account})
+        for (var j = 0; j < adminNeededContractCount; j++) {
+          var adminContractStructs = await adminEscrowActions.methods.adminNeededContracts(j).call();
+          this.setState({adminContractStructs: [...this.state.adminContractStructs, adminContractStructs]})
+          var adminContracts = await adminEscrowActions.methods.getRetrievedContract(adminContractStructs.contractAddress).call();
+          this.setState({adminContracts: [...this.state.adminContracts, adminContracts]})
+        }
+        console.log("Done")
+        console.log(this.state.adminContractStructs)
+        console.log(this.state.adminContracts)
       }
       this.setState({ loading: false})
     } else {
@@ -66,6 +78,8 @@ class App extends Component {
       account: '',
       contracts: [],
       contractDetails: [],
+      adminContractStructs: [],
+      adminContracts: [],
       buyer:'',
       seller: '',
       amount: 0,
@@ -226,6 +240,7 @@ class App extends Component {
                   contractInterventionRequest={this.contractInterventionRequest}
                   adminContractTakeAction={this.adminContractTakeAction}
                   myContractsDetails={this.state.contractDetails}
+                  adminContractStructs={this.state.adminContractStructs}
                   contractObjects={this.state.contracts}
                   account={this.state.account}
                   />

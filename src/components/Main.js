@@ -70,7 +70,7 @@ class Main extends Component {
     if (Boolean(Number(buyerDepositCheck)) === true && Boolean(Number(sellerDepositCheck)) === true &&  Boolean(Number(amountCheck)) === false && Boolean(Number(signed)) === false && contractComplete === false) {
       var contract = this.props.contractObjects[key]
       return(
-        <div>
+        <div className={styles.claimDepositsButton}>
           <p>The Signature Count is <strong>{signatureCount}</strong> <i>(2 is required to reclaim Deposit)</i>.</p>
           <Button href="#" className={styles.actionButtons} onClick={ () => this.claimDeposits(contract)}>Claim Deposit</Button>
         </div>
@@ -295,6 +295,7 @@ class Main extends Component {
                   </tbody>
                 </Table>
               </Tab>
+              <Tab eventKey="admin-contracts" title="Admin Action Required Contracts"></Tab>
             </Tabs>   
           </Col>
         </Row>

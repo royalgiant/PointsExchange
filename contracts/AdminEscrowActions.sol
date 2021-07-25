@@ -26,12 +26,28 @@ contract AdminEscrowActions {
 
 	constructor() public {
 		owner = msg.sender;
+		isAdmin[msg.sender] = true;
+	}
+
+	function getRetrievedContract(address escrow_factory_contract_address) public view returns (address, address, uint, uint, string memory, string memory, address) {
+		EscrowFactory retrieved_contract = EscrowFactory(escrow_factory_contract_address);
+		address buyer = retrieved_contract.buyer();
+
+        return (
+        	buyer, 
+        	retrieved_contract.seller(), 
+        	retrieved_contract.amount(),
+        	retrieved_contract.deposit(),
+        	retrieved_contract.getContractStatus(), 
+        	retrieved_contract.notes(),
+        	address(retrieved_contract)
+        );
 	}
 
 	function contractInterventionRequest(uint index, string memory _notes, address escrow_factory_contract_address) public {
     	if (RequestedHelpContractExists[escrow_factory_contract_address] == false) {
     		adminNeededContracts[adminNeededContractCount] = ThirdPartyNeededContract(index, 0, escrow_factory_contract_address); // Needs to change to perhaps use the contract address as index...
-    		adminNeededContractCount = adminNeededContractCount + 1;
+    		adminNeededContractCount ++;
     		RequestedHelpContractExists[escrow_factory_contract_address] = true;
     	}
     	EscrowFactory retrieved_contract = EscrowFactory(escrow_factory_contract_address);

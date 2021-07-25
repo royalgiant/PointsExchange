@@ -18,9 +18,13 @@ contract("AdminEscrowActions", ([deployer, buyer, seller]) => {
   before(async() => {
     adminEscrowAction = await AdminEscrowActions.deployed()
     retrievedContract = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
+    retrievedContract2 = await EscrowFactory.new(buyer, seller, amountValue, depositValue, "Some notes", deployer)
     await retrievedContract.buyerDeposit({from: buyer, value: depositValue});
     await retrievedContract.sellerDeposit({from: seller, value: depositValue});
     await retrievedContract.sendAmount({from: buyer, value: amountValue})
+    await retrievedContract2.buyerDeposit({from: buyer, value: depositValue});
+    await retrievedContract2.sellerDeposit({from: seller, value: depositValue});
+    await retrievedContract2.sendAmount({from: buyer, value: amountValue})
   })
 
   describe('contract', async () => {
@@ -62,6 +66,21 @@ contract("AdminEscrowActions", ([deployer, buyer, seller]) => {
         return adminEscrowInstance.adminNeededContracts(0);
       }).then(function(contract_receipt) {
         assert.equal(contract_receipt.completed, 1, 'true is correct');
+      })
+    })
+
+     it("getRetrievedContract and its attributes", async () => {
+      return AdminEscrowActions.deployed().then(function(instance) {
+        adminEscrowInstance = instance
+        adminEscrowInstance.contractInterventionRequest(0, "some notes", retrievedContract2.address);
+        return adminEscrowInstance.getRetrievedContract(retrievedContract2.address);
+      }).then(function(retrieved_contract2){
+        assert.equal(retrieved_contract2[0], buyer, 'buyer is correct')
+        assert.equal(retrieved_contract2[1], seller, 'seller is correct')
+        assert.equal(retrieved_contract2[2].toString(), amountValue, 'amount is correct')
+        assert.equal(retrieved_contract2[3].toString(), depositValue, 'deposit is correct')
+        assert.equal(retrieved_contract2[4], "Request Action", 'status is correct')
+        assert.equal(retrieved_contract2[5], "Some notes \n some notes", 'notes is correct')
       })
     })
 

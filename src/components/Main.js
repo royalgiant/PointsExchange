@@ -7,12 +7,15 @@ import Col from 'react-bootstrap/Col';
 import Table from 'react-bootstrap/Table';
 import styles from '../css/pointsexchange.module.css';
 import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
+import ToggleButton from 'react-bootstrap/ToggleButton';
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 
 class Main extends Component {
 
   constructor(props) {
     super(props)
-    this.state = { notesForAdmin: "", notesAdminTextCount: 0 };
+    this.state = { notesForAdmin: "", notesAdminTextCount: 0, showCompleted: false, showDepositError: false };
   }
 
   notesForAdminHandler = (e) => {
@@ -113,6 +116,7 @@ class Main extends Component {
             <button type="submit" className="btn btn-primary">Request Admin Intervention To Refund Buyer</button>
           </form>
           <div><i><b>Warning:</b> Please be aware that paying the seller is an <b>irreversible action</b> and will complete the contract.</i></div>
+          <div><i><b>Admin Intervention:</b> Please be aware that admin intervention will incur a fee of <b>1.5% of the TOTAL DEPOSIT</b> to pay for the gas fee and admin processing. You can avoid this fee by resolving your problem with the other party directly.</i></div>
         </div>
       )
     }
@@ -141,6 +145,7 @@ class Main extends Component {
             <button type="submit" className="btn btn-primary">Request Admin Intervention To Pay Seller</button>
           </form>
           <div><i><b>Warning:</b> Please be aware that the refunding the buyer is an <b>irreversible action</b> and will complete the contract.</i></div>
+          <div><i><b>Admin Intervention:</b> Please be aware that admin intervention will incur a fee of <b>1.5% of the TOTAL DEPOSIT</b> to pay for the gas fee and admin processing. You can avoid this fee by resolving your problem with the other party directly.</i></div>
         </div>
       )
     }
@@ -154,14 +159,13 @@ class Main extends Component {
     this.props.contractInterventionRequest(key, this.state.notesForAdmin, contractAddress)
   }
 
-  showAdminContractTakeActionButtons(index, contractDetails) {
-    if (contractDetails[15] === true) {
-      var address = contractDetails[11]
+  showAdminContractTakeActionButtons(index, address) {
+    if (this.props.isAdmin === true) {
       return(
         <div>
           <Button href="#" className={styles.actionButtons} onClick={ () => this.adminContractTakeAction(index, 0, address)}>Admin Refund Buyer</Button>
           <Button href="#" className={styles.actionButtons} onClick={ () => this.adminContractTakeAction(index, 1, address)}>Admin Pay Seller</Button>
-          <div><i><b>Warning:</b> Please be aware that these are <b>irreversible actions</b> and will refund <b>all deposits</b> and either refund the buyer or pay the seller the <b>amount</b>.</i></div>
+          <div><i><b>Warning:</b> Please be aware that these are <b>irreversible actions</b> and will refund <b>all deposits</b> and either refund the buyer or pay the seller the <b>amount</b>.</i> This will <b>COMPLETE</b> the contract.</div>
         </div>
       )
     }
@@ -171,11 +175,100 @@ class Main extends Component {
     this.props.adminContractTakeAction(index, action, address)
   }
 
+  showHideCompletedContracts(key) {
+    if (parseInt(this.props.adminContractStructs[key].completed) == 0) {
+      return null
+    } else if (parseInt(this.props.adminContractStructs[key].completed) == 1 && this.state.showCompleted) {
+      return null
+    } else {
+      return styles.hideCompletedContracts
+    }
+  }
+
+  toggleCompleted() {
+    this.setState({showCompleted: !this.state.showCompleted})
+  }
+
+  toggleButton() {
+    return(
+      <ToggleButtonGroup name="toggleCompleted" type="checkbox">
+        <ToggleButton className="mb-2" id="toggle-check" variant="outline-primary" checked={this.state.showCompleted} onChange={() => this.toggleCompleted()}>Show Completed Contracts</ToggleButton>
+      </ToggleButtonGroup>
+    )
+  }
+
+  showAdminActionContractsTab() {
+    if (this.props.isAdmin === true) {
+      return(
+        <Tab eventKey="admin-contracts" title="Admin Action Required Contracts">
+          <h1><center>Admin Action Required Contracts</center></h1>
+          {this.toggleButton()}
+          <Table size="sm" responsive="sm" hover>
+            <thead>
+              <tr>
+                <th>Contract Addresses:</th>
+                <th>Amount</th>
+                <th>Deposit</th>
+                <th>Notes</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              { this.props.adminContracts.map((adminContract, key) => {
+                var buyer = adminContract[0]
+                var seller = adminContract[1]
+                var amount = adminContract[2]
+                var deposit = adminContract[3]
+                var status = adminContract[4]
+                var notes = adminContract[5]
+                var contractAddress = adminContract[6]
+                return(
+                  <React.Fragment key={key}>
+                    <tr key={key} onClick={this.onClickHandler} className={this.showHideCompletedContracts(key)}>
+                      <td className={styles.contractIndexKey}>
+                        <Button className={styles.contractIndexKeyButton} variant="link">Contract Address:{contractAddress}</Button>
+                        <p className={styles.address}><b>Buyer Address:</b> {buyer}</p>
+                        <p className={styles.address}><b>Seller Address:</b> {seller}</p>
+                      </td>
+                      <td>{window.web3.utils.fromWei((amount).toString(), 'Ether')} ETH</td>
+                      <td>{window.web3.utils.fromWei((deposit).toString(), 'Ether')} ETH</td>
+                      <td>{notes}</td>
+                      <td>{status}</td>
+                    </tr>
+                    <tr className="collapse">
+                      <td colSpan="7">
+                        <div>
+                          { (status !== "Closed") ? this.showAdminContractTakeActionButtons(key, contractAddress) : null}
+                        </div>
+                      </td>
+                    </tr>
+                  </React.Fragment>
+                )
+              })}
+            </tbody>
+          </Table>
+        </Tab>
+      )
+    }
+  }
+
+  showDepositError() {
+    if (this.state.showDepositError) {
+      return(
+        <Alert variant="danger" onClose={() => this.setState({showDepositError: false})} dismissible>
+          <Alert.Heading>Your Deposit is Too Low</Alert.Heading>
+          <p>The <b>deposit</b> must be <i>at least 25%</i> of the <b>amount</b> set.</p>
+        </Alert>
+      )
+    }
+  }
+
   render() {
     return (
       <Container fluid>
         <Row className="justify-content-md-center">
           <Col md="auto">
+            {this.showDepositError()}
             <Tabs fill justify defaultActiveKey="my-contracts" id="uncontrolled-contract-template" variant="pills">
               <Tab eventKey="create-contract" title="Create Contract">
                 <h1>Start a New Contract</h1>
@@ -186,7 +279,11 @@ class Main extends Component {
                   const amount = window.web3.utils.toWei(this.amount.value.toString(), 'Ether')
                   const deposit = window.web3.utils.toWei(this.deposit.value.toString(), 'Ether')
                   const notes = this.notes.value
-                  this.props.createContract(buyer, seller, amount, deposit, notes)
+                  if(deposit < (amount * 0.25)) {
+                    {this.setState({showDepositError: true})}
+                  } else {
+                    this.props.createContract(buyer, seller, amount, deposit, notes)
+                  }
                 }}>
                   <div className="form-group mr-sm-2">
                     <input
@@ -280,12 +377,12 @@ class Main extends Component {
                           <tr className="collapse">
                             <td colSpan="7">
                               <div>
-                                {this.showDepositButton(depositCheck, contractDetails, key)}
-                                {this.reverseDepositButton(contractDetails, key)}
-                                {this.showClaimDepositsButton(signatureCount, buyerDepositCheck, sellerDepositCheck, amountCheck, currentUserSignature, contractComplete, key)}
-                                {this.showSendAmountButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, amount, contractComplete, key)}
-                                {this.showPaySellerButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, contractAddress, contractComplete, key)}
-                                {this.showRefundBuyerButton(seller, buyerDepositCheck, sellerDepositCheck, amountCheck, contractAddress, contractComplete, key)}
+                                {(status !== "Closed") ? this.showDepositButton(depositCheck, contractDetails, key) : null}
+                                {(status !== "Closed") ? this.reverseDepositButton(contractDetails, key) : null}
+                                {(status !== "Closed") ? this.showClaimDepositsButton(signatureCount, buyerDepositCheck, sellerDepositCheck, amountCheck, currentUserSignature, contractComplete, key) : null}
+                                {(status !== "Closed") ? this.showSendAmountButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, amount, contractComplete, key) : null}
+                                {(status !== "Closed") ? this.showPaySellerButton(buyer, buyerDepositCheck, sellerDepositCheck, amountCheck, contractAddress, contractComplete, key) : null}
+                                {(status !== "Closed") ? this.showRefundBuyerButton(seller, buyerDepositCheck, sellerDepositCheck, amountCheck, contractAddress, contractComplete, key) : null}
                               </div>
                             </td>
                           </tr>
@@ -295,7 +392,7 @@ class Main extends Component {
                   </tbody>
                 </Table>
               </Tab>
-              <Tab eventKey="admin-contracts" title="Admin Action Required Contracts"></Tab>
+              {this.showAdminActionContractsTab()}
             </Tabs>   
           </Col>
         </Row>

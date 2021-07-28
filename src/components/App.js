@@ -38,7 +38,7 @@ class App extends Component {
       const escrowExchange = new web3.eth.Contract(EscrowExchange.abi, EscrowExchangeNetworkData.address)
       const adminEscrowActions = new web3.eth.Contract(AdminEscrowActions.abi, AdminEscrowActionNetworkData.address)
       var isAdmin = await adminEscrowActions.methods.getAdmin(this.state.account).call({from: this.state.account})
-      this.setState({ escrowExchange, adminEscrowActions })
+      this.setState({ escrowExchange, adminEscrowActions, isAdmin })
       const contractCount = await escrowExchange.methods.getContractCountForCurrentUser().call({from: this.state.account})
       this.setState({ contractCount })
       // Load Contracts FOR CURRENT USER
@@ -84,7 +84,8 @@ class App extends Component {
       seller: '',
       amount: 0,
       deposit: 0,
-      loading: true
+      loading: true,
+      isAdmin: false
     }
 
     this.addContractAddressToRegistry = this.addContractAddressToRegistry.bind(this)
@@ -241,8 +242,10 @@ class App extends Component {
                   adminContractTakeAction={this.adminContractTakeAction}
                   myContractsDetails={this.state.contractDetails}
                   adminContractStructs={this.state.adminContractStructs}
+                  adminContracts={this.state.adminContracts}
                   contractObjects={this.state.contracts}
                   account={this.state.account}
+                  isAdmin={this.state.isAdmin}
                   />
               }
             </main>

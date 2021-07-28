@@ -24,3 +24,7 @@
 .claimDepositsButton {
 	display: inline;
 }
+
+.hideCompletedContracts {
+	display:  none;
+}

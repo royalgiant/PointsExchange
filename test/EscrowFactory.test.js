@@ -42,8 +42,8 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       expectEvent(buyerDeposit_receipt, 'BuyerDeposited', {from: buyer, msg: "deposited", amount: depositValue });
       var buyer_deposit = await contractBuyerSellerDeposit.getIfAddressDeposited(buyer)
       assert.equal(buyer_deposit, 1, "depositCheck[buyer] is 1")
-      var balance = await  web3.eth.getBalance(contractBuyerSellerDeposit.address)
-      assert.equal(balance, parseInt(depositValue))
+      var new_balance = await  web3.eth.getBalance(contractBuyerSellerDeposit.address)
+      assert.equal(new_balance, parseInt(depositValue))
     })
 
     it('rejects buyerDeposit with Buyer already deposited ', async () => {
@@ -61,8 +61,8 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       expectEvent(sellerDeposit_receipt, 'SellerDeposited', {from: seller, msg: "deposited", amount: depositValue });
       var seller_deposit = await contractBuyerSellerDeposit.getIfAddressDeposited(seller)
       assert.equal(seller_deposit, 1, "depositCheck[seller] is 1")
-      var balance = await web3.eth.getBalance(contractBuyerSellerDeposit.address)
-      assert.equal(balance, parseInt(depositValue) + parseInt(depositValue))
+      var new_balance = await web3.eth.getBalance(contractBuyerSellerDeposit.address)
+      assert.equal(new_balance, parseInt(depositValue) + parseInt(depositValue))
     })
 
     it('rejects SellerDeposit with Seller already deposited ', async () => {
@@ -77,14 +77,14 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
 
     it('succeeds', async() => {
       await contractReverseBuyerDeposit.buyerDeposit({from: buyer, value: depositValue});
-      var balance = await web3.eth.getBalance(contractReverseBuyerDeposit.address)
-      assert.equal(balance, depositValue)
+      var new_balance = await web3.eth.getBalance(contractReverseBuyerDeposit.address)
+      assert.equal(new_balance, depositValue)
       var buyerReverseDeposit_receipt = await contractReverseBuyerDeposit.reverseBuyerDeposit({from: buyer})
       expectEvent(buyerReverseDeposit_receipt, 'BuyerDepositReversed', {msg: "buyer reversed deposit"});
       var buyer_reverse_deposit = await contractReverseBuyerDeposit.getIfAddressDeposited(buyer)
       assert.equal(buyer_reverse_deposit, 0, "depositCheck[buyer] is 0")
-      var balance = await web3.eth.getBalance(contractReverseBuyerDeposit.address)
-      assert.equal(balance, 0)
+      var new_balance = await web3.eth.getBalance(contractReverseBuyerDeposit.address)
+      assert.equal(new_balance, 0)
       await contractReverseBuyerDeposit.buyerDeposit({from: buyer, value: depositValue});
     })
 
@@ -101,14 +101,14 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
 
     it('succeeds', async() => {
       await contractReverseSellerDeposit.sellerDeposit({from: seller, value: depositValue});
-      var balance = await web3.eth.getBalance(contractReverseSellerDeposit.address)
-      assert.equal(balance, depositValue)
+      var new_balance = await web3.eth.getBalance(contractReverseSellerDeposit.address)
+      assert.equal(new_balance, depositValue)
       var sellerReverseDeposit_receipt = await contractReverseSellerDeposit.reverseSellerDeposit({from: seller})
       expectEvent(sellerReverseDeposit_receipt, 'SellerDepositReversed', {msg: "seller reversed deposit"});
       var seller_reverse_deposit = await contractReverseSellerDeposit.getIfAddressDeposited(seller)
       assert.equal(seller_reverse_deposit, 0, "depositCheck[seller] is 0")
-      var balance = await web3.eth.getBalance(contractReverseSellerDeposit.address)
-      assert.equal(balance, 0)
+      var new_balance = await web3.eth.getBalance(contractReverseSellerDeposit.address)
+      assert.equal(new_balance, 0)
       await contractReverseSellerDeposit.sellerDeposit({from: seller, value: depositValue});
     })
 
@@ -127,8 +127,8 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
     it('rejects claimDeposits with seller ', async () => {
       await expectRevert(contractClaimDeposit.claimDeposits({from: seller}),  "deposit required")
       await contractClaimDeposit.sellerDeposit({from: seller, value: depositValue});
-      var balance = await web3.eth.getBalance(contractClaimDeposit.address)
-      assert.equal(balance, parseInt(depositValue)+parseInt(depositValue))
+      var new_balance = await web3.eth.getBalance(contractClaimDeposit.address)
+      assert.equal(new_balance, parseInt(depositValue)+parseInt(depositValue))
     })
 
     it('allows ClaimDeposits for buyer ending with signatureCount = 1', async() => {
@@ -150,8 +150,8 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       var buyer_signature = await contractClaimDeposit.getSignature(buyer)
       var seller_signature = await contractClaimDeposit.getSignature(seller)
       var signature_count = await contractClaimDeposit.signatureCount()
-      var balance = await web3.eth.getBalance(contractClaimDeposit.address)
-      assert.equal(balance, 0)
+      var new_balance = await web3.eth.getBalance(contractClaimDeposit.address)
+      assert.equal(new_balance, 0)
       assert.equal(buyer_signature, 0, "depositCheck[buyer] is 0")
       assert.equal(seller_signature, 0, "depositCheck[seller] is 0")
       assert.equal(buyer_signature, 0, "signature[buyer] is 0")
@@ -187,8 +187,8 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       var amount_check = await contractSendAmount.getAmountCheck(buyer)
       assert.equal(amount_check, 1, "amountCheck[buyer] is 1")
       expectEvent(send_amount, 'AmountSent', {msg: "Buyer has sent the payment amount to the escrow"});
-      var balance = await web3.eth.getBalance(contractSendAmount.address)
-      assert.equal(balance, parseInt(depositValue) + parseInt(depositValue) + parseInt(amountValue))
+      var new_balance = await web3.eth.getBalance(contractSendAmount.address)
+      assert.equal(new_balance, parseInt(depositValue) + parseInt(depositValue) + parseInt(amountValue))
     })
 
     it('rejects with the buyer has already send the amount', async () => {
@@ -215,10 +215,12 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       await contractPaySeller.sendAmount({from: buyer, value: amountValue})
       var pay_seller = await contractPaySeller.paySeller({from: buyer})
       expectEvent(pay_seller, 'SellerPaid', {msg: "The seller has been paid and all deposits have been returned - transaction complete"});
-      var balance = await web3.eth.getBalance(contractPaySeller.address)
+      var new_balance = await web3.eth.getBalance(contractPaySeller.address)
       var contractComplete = await contractPaySeller.contractComplete()
-      assert.equal(balance, 0)
+      var status = await contractPaySeller.getContractStatus()
+      assert.equal(new_balance, 0)
       assert.equal(contractComplete, true)
+      assert.equal(status, "Closed")
     })
   })
 
@@ -241,10 +243,12 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       await contractRefundBuyer.sendAmount({from: buyer, value: amountValue})
       var refund_buyer = await contractRefundBuyer.refundBuyer({from: seller})
       expectEvent(refund_buyer, 'BuyerRefunded', {msg: "The buyer has been refunded and all deposits have been returned - transaction cancelled"});
-      var balance = await web3.eth.getBalance(contractRefundBuyer.address)
-      var contractComplete = await contractPaySeller.contractComplete()
-      assert.equal(balance, 0)
+      var new_balance = await web3.eth.getBalance(contractRefundBuyer.address)
+      var contractComplete = await contractRefundBuyer.contractComplete()
+      var status = await contractRefundBuyer.getContractStatus()
+      assert.equal(new_balance, 0)
       assert.equal(contractComplete, true)
+      assert.equal(status, "Closed")
     })
   })
 
@@ -255,11 +259,13 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       await contractAdminActionComplete.sendAmount({from: buyer, value: amountValue})
       await contractAdminActionComplete.requestAdminAction("Buyer Request: I request a refund", {from: buyer})
       var reversed_contract = await contractAdminActionComplete.adminContractTakeAction(true, 0)
-      expectEvent(reversed_contract, 'ContractActionCompletedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded."});
-      var balance = await web3.eth.getBalance(contractAdminActionComplete.address)
+      expectEvent(reversed_contract, 'ContractActionCompletedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded or paid out."});
+      var new_balance = await web3.eth.getBalance(contractAdminActionComplete.address)
       var contractComplete = await contractAdminActionComplete.contractComplete()
-      assert.equal(balance, 0)
-      assert.equal(contractComplete, false)
+      var status = await contractAdminActionComplete.getContractStatus()
+      assert.equal(new_balance, 0)
+      assert.equal(contractComplete, true)
+      assert.equal(status, "Closed")
       var buyer_deposit = await contractAdminActionComplete.getIfAddressDeposited(buyer)
       assert.equal(buyer_deposit, 0, "depositCheck[buyer] is 0")
       var seller_deposit = await contractAdminActionComplete.getIfAddressDeposited(seller)
@@ -276,11 +282,13 @@ contract("EscrowFactory", ([deployer, buyer, seller]) => {
       await contractAdminActionComplete.sendAmount({from: buyer, value: amountValue})
       await contractAdminActionComplete.requestAdminAction("Seller Request: I request a to be paid", {from: seller})
       var reversed_contract = await contractAdminActionComplete.adminContractTakeAction(true, 1)
-      expectEvent(reversed_contract, 'ContractActionCompletedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded."});
-      var balance = await web3.eth.getBalance(contractAdminActionComplete.address)
+      expectEvent(reversed_contract, 'ContractActionCompletedByAdmin', {msg: "The contract has been completely reverted by admin. All deposits and amounts have been refunded or paid out."});
+      var new_balance = await web3.eth.getBalance(contractAdminActionComplete.address)
       var contractComplete = await contractAdminActionComplete.contractComplete()
-      assert.equal(balance, 0)
-      assert.equal(contractComplete, false)
+      var status = await contractAdminActionComplete.getContractStatus()
+      assert.equal(new_balance, 0)
+      assert.equal(contractComplete, true)
+      assert.equal(status, "Closed")
       var buyer_deposit = await contractAdminActionComplete.getIfAddressDeposited(buyer)
       assert.equal(buyer_deposit, 0, "depositCheck[buyer] is 0")
       var seller_deposit = await contractAdminActionComplete.getIfAddressDeposited(seller)

@@ -101,16 +101,6 @@ class App extends Component {
     this.createContract = this.createContract.bind(this)
     this.adminContractTakeAction = this.adminContractTakeAction.bind(this)
   }
-
-  // EscrowExchange Calls
-
-  addContractAddressToRegistry(buyerAddress, sellerAddress, contractAddress) {
-    this.setState({ loading: true })
-    this.state.escrowExchange.methods.addContractAddressToRegistry(buyerAddress, sellerAddress, contractAddress)
-    .once('receipt', (receipt) => {
-      this.setState({ loading: false })
-    })
-  }
   
   // AdminEscrowActions Calls
 
